@@ -4,7 +4,7 @@ var TerserPlugin = require("terser-webpack-plugin");
 
 // Return the configuration
 module.exports = (env, argv) => {
-    var isDev = argv.mode !== "production"
+    var isDev = argv.mode !== "production";
     return {
         // Set the main source as the entry point
         entry: [
