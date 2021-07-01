@@ -1,7 +1,14 @@
 import { Components } from "gd-sprest-bs";
 import { CanvasForm } from "../common";
-import { IFilterItem } from "./filter.d";
-export * from "./filter";
+
+/**
+ * Filter Item
+ */
+ export interface IFilterItem {
+    header: string;
+    items: Components.ICheckboxGroupItem[];
+    onFilter?: (value: string) => void;
+}
 
 /**
  * Filter Slideout

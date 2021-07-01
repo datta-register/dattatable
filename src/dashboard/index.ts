@@ -1,13 +1,29 @@
-import { FilterSlideout } from "./filter";
+import { Components } from "gd-sprest-bs";
+import { FilterSlideout, IFilterItem } from "./filter";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Navigation } from "./navigation";
-import { DataTable } from "./table";
-import { IDataTable } from "./table.d";
-import { IDashboardProps } from "./index.d";
+import { DataTable, IDataTable } from "./table";
 
-// Styling
-import "./styles.scss";
+// Dashboard
+export interface IDashboardProps {
+    columns: Components.ITableColumn[];
+    el: HTMLElement;
+    footer?: {
+        items?: Components.INavbarItem[];
+        itemsEnd?: Components.INavbarItem[];
+    };
+    filters?: IFilterItem[];
+    header?: {
+        title?: string;
+    }
+    navigation?: {
+        title?: string;
+        items?: Components.INavbarItem[];
+        itemsEnd?: Components.INavbarItem[];
+    };
+    rows?: any[];
+}
 
 /**
  * Dashboard

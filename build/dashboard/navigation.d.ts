@@ -1,5 +1,4 @@
 import { Components } from "gd-sprest-bs";
-
 /**
  * Navigation
  */
@@ -11,3 +10,12 @@ interface INavProps {
     onSearch: (value: string) => void;
     title: string;
 }
+/**
+ * Navigation
+ */
+export declare class Navigation {
+    private _props;
+    constructor(props: INavProps);
+    private render;
+}
+export {};

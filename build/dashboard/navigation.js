@@ -1,37 +1,24 @@
-import { Components } from "gd-sprest-bs";
-import { filterSquare } from "gd-sprest-bs/build/icons/svgs/filterSquare";
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Navigation = void 0;
+var gd_sprest_bs_1 = require("gd-sprest-bs");
+var filterSquare_1 = require("gd-sprest-bs/build/icons/svgs/filterSquare");
 /**
  * Navigation
  */
- interface INavProps {
-    el: HTMLElement;
-    items: Components.INavbarItem[];
-    itemsEnd: Components.INavbarItem[];
-    onShowFilter: Function;
-    onSearch: (value: string) => void;
-    title: string;
-}
-
-/**
- * Navigation
- */
-export class Navigation {
-    private _props: INavProps = null;
-
+var Navigation = /** @class */ (function () {
     // Constructor
-    constructor(props: INavProps) {
+    function Navigation(props) {
+        this._props = null;
         // Save the properties
         this._props = props;
-
         // Render the navigation
         this.render();
     }
-
     // Renders the component
-    private render() {
+    Navigation.prototype.render = function () {
         // Render a navbar
-        let nav = Components.Navbar({
+        var nav = gd_sprest_bs_1.Components.Navbar({
             el: this._props.el,
             brand: this._props.title,
             className: "header",
@@ -43,15 +30,16 @@ export class Navigation {
                 onSearch: this._props.onSearch
             }
         });
-
         // Render the filter icon
-        let icon = document.createElement("div");
+        var icon = document.createElement("div");
         icon.classList.add("filter-icon");
         icon.classList.add("nav-link");
         icon.classList.add("text-dark");
         icon.style.cursor = "pointer";
-        icon.appendChild(filterSquare());
-        icon.addEventListener("click", this._props.onShowFilter as any);
+        icon.appendChild(filterSquare_1.filterSquare());
+        icon.addEventListener("click", this._props.onShowFilter);
         nav.el.firstElementChild.appendChild(icon);
-    }
-}
+    };
+    return Navigation;
+}());
+exports.Navigation = Navigation;

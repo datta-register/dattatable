@@ -1,6 +1,12 @@
 import { Components } from "gd-sprest-bs";
-import { IHeaderProps } from "./header.d";
-export * from "./header";
+
+/**
+ * Header
+ */
+ export interface IHeaderProps {
+    el: HTMLElement;
+    title?: string;
+}
 
 /**
  * Header

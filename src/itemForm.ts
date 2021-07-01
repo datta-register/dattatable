@@ -1,11 +1,10 @@
 import { Components, Helper, SPTypes } from "gd-sprest-bs";
 import { CanvasForm } from "./common";
-import { IItemForm } from "./itemForm.d";
 
 /**
  * Item Form
  */
-class _ItemForm implements IItemForm {
+class _ItemForm {
     private _displayForm: Components.IListFormDisplay = null;
     private _editForm: Components.IListFormEdit = null;
     private _updateEvent: Function = null;
