@@ -2,7 +2,7 @@ import { Components } from "gd-sprest-bs";
 /**
  * Item Form
  */
-declare class _ItemForm {
+export declare class Form {
     private _displayForm;
     private _editForm;
     private _updateEvent;
@@ -18,5 +18,4 @@ declare class _ItemForm {
     private load;
     private save;
 }
-export declare const ItemForm: _ItemForm;
-export {};
+export declare const ItemForm: Form;

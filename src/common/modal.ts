@@ -3,7 +3,7 @@ import { Components } from "gd-sprest-bs";
 /**
  * Modal
  */
-class _Modal {
+export class ModalDialog {
     private _modal: Components.IModal = null;
     private _elBody: HTMLElement = null;
     private _elFooter: HTMLElement = null;
@@ -112,4 +112,4 @@ class _Modal {
     // Shows the modal
     show() { this._modal.show(); }
 }
-export const Modal = new _Modal();
+export const Modal = new ModalDialog();

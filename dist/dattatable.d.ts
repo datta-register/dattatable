@@ -6,6 +6,14 @@ declare module 'dattatable' {
     export * from "dattatable/common";
     export * from "dattatable/dashboard";
     export * from "dattatable/itemForm";
+    import { Dashboard } from "dattatable/dashboard";
+    const DattaTable: {
+        CanvasForm: import("./common").Canvas;
+        Dashboard: typeof Dashboard;
+        ItemForm: import("./itemForm").Form;
+        Modal: import("./common").ModalDialog;
+    };
+    export default DattaTable;
 }
 
 declare module 'dattatable/common' {
@@ -57,7 +65,7 @@ declare module 'dattatable/itemForm' {
     /**
       * Item Form
       */
-    class _ItemForm {
+    export class Form {
         get form(): Components.IListFormDisplay | Components.IListFormEdit;
         get ListName(): string;
         set ListName(value: string);
@@ -66,15 +74,14 @@ declare module 'dattatable/itemForm' {
         edit(itemId: number, onUpdate?: () => void): void;
         view(itemId: number, onUpdate?: () => void): void;
     }
-    export const ItemForm: _ItemForm;
-    export {};
+    export const ItemForm: Form;
 }
 
 declare module 'dattatable/common/canvas' {
     /**
       * Canvas Form
       */
-    class _CanvasForm {
+    export class Canvas {
         constructor();
         get el(): HTMLElement;
         hide(): void;
@@ -83,15 +90,14 @@ declare module 'dattatable/common/canvas' {
         setType(type: any): void;
         show(): void;
     }
-    export const CanvasForm: _CanvasForm;
-    export {};
+    export const CanvasForm: Canvas;
 }
 
 declare module 'dattatable/common/modal' {
     /**
       * Modal
       */
-    class _Modal {
+    export class ModalDialog {
         constructor();
         hide(): void;
         setBody(content: any): void;
@@ -101,8 +107,7 @@ declare module 'dattatable/common/modal' {
         setType(type: any): void;
         show(): void;
     }
-    export const Modal: _Modal;
-    export {};
+    export const Modal: ModalDialog;
 }
 
 declare module 'dattatable/dashboard/filter' {

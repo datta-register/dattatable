@@ -4,7 +4,7 @@ import { CanvasForm } from "./common";
 /**
  * Item Form
  */
-class _ItemForm {
+export class Form {
     private _displayForm: Components.IListFormDisplay = null;
     private _editForm: Components.IListFormEdit = null;
     private _updateEvent: Function = null;
@@ -133,4 +133,4 @@ class _ItemForm {
         }
     }
 }
-export const ItemForm = new _ItemForm();
+export const ItemForm = new Form();

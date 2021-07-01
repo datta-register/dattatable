@@ -1,26 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ItemForm = void 0;
+exports.ItemForm = exports.Form = void 0;
 var gd_sprest_bs_1 = require("gd-sprest-bs");
 var common_1 = require("./common");
 /**
  * Item Form
  */
-var _ItemForm = /** @class */ (function () {
-    function _ItemForm() {
+var Form = /** @class */ (function () {
+    function Form() {
         this._displayForm = null;
         this._editForm = null;
         this._updateEvent = null;
         // List name
         this._listName = null;
     }
-    Object.defineProperty(_ItemForm.prototype, "form", {
+    Object.defineProperty(Form.prototype, "form", {
         // The current form being displayed
         get: function () { return this._displayForm || this._editForm; },
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(_ItemForm.prototype, "ListName", {
+    Object.defineProperty(Form.prototype, "ListName", {
         get: function () { return this._listName; },
         set: function (value) { this._listName = value; },
         enumerable: false,
@@ -28,21 +28,21 @@ var _ItemForm = /** @class */ (function () {
     });
     /** Public Methods */
     // Creates a new task
-    _ItemForm.prototype.create = function (onUpdate) {
+    Form.prototype.create = function (onUpdate) {
         // Set the update event
         this._updateEvent = onUpdate;
         // Load the item
         this.load(gd_sprest_bs_1.SPTypes.ControlMode.New);
     };
     // Edits a task
-    _ItemForm.prototype.edit = function (itemId, onUpdate) {
+    Form.prototype.edit = function (itemId, onUpdate) {
         // Set the update event
         this._updateEvent = onUpdate;
         // Load the form
         this.load(gd_sprest_bs_1.SPTypes.ControlMode.Edit, itemId);
     };
     // Views the task
-    _ItemForm.prototype.view = function (itemId, onUpdate) {
+    Form.prototype.view = function (itemId, onUpdate) {
         // Set the update event
         this._updateEvent = onUpdate;
         // Load the form
@@ -50,7 +50,7 @@ var _ItemForm = /** @class */ (function () {
     };
     /** Private Methods */
     // Load the form information
-    _ItemForm.prototype.load = function (mode, itemId) {
+    Form.prototype.load = function (mode, itemId) {
         var _this = this;
         // Clear the forms
         this._displayForm = null;
@@ -106,7 +106,7 @@ var _ItemForm = /** @class */ (function () {
         });
     };
     // Saves the form
-    _ItemForm.prototype.save = function (form, isNew) {
+    Form.prototype.save = function (form, isNew) {
         var _this = this;
         // Validate the form
         if (form.isValid()) {
@@ -125,6 +125,7 @@ var _ItemForm = /** @class */ (function () {
             });
         }
     };
-    return _ItemForm;
+    return Form;
 }());
-exports.ItemForm = new _ItemForm();
+exports.Form = Form;
+exports.ItemForm = new Form();

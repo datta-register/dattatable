@@ -1,7 +1,7 @@
 /**
  * Canvas Form
  */
-declare class _CanvasForm {
+export declare class Canvas {
     private _canvas;
     private _elBody;
     private _elHeader;
@@ -14,5 +14,4 @@ declare class _CanvasForm {
     setType(type: any): void;
     show(): void;
 }
-export declare const CanvasForm: _CanvasForm;
-export {};
+export declare const CanvasForm: Canvas;

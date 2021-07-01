@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Modal = void 0;
+exports.Modal = exports.ModalDialog = void 0;
 var gd_sprest_bs_1 = require("gd-sprest-bs");
 /**
  * Modal
  */
-var _Modal = /** @class */ (function () {
+var ModalDialog = /** @class */ (function () {
     // Constructor
-    function _Modal() {
+    function ModalDialog() {
         this._modal = null;
         this._elBody = null;
         this._elFooter = null;
@@ -17,9 +17,9 @@ var _Modal = /** @class */ (function () {
         this.render();
     }
     // Hides the modal
-    _Modal.prototype.hide = function () { this._modal.hide(); };
+    ModalDialog.prototype.hide = function () { this._modal.hide(); };
     // Renders the canvas
-    _Modal.prototype.render = function () {
+    ModalDialog.prototype.render = function () {
         var _this = this;
         // Create the element
         var el = document.createElement("div");
@@ -47,7 +47,7 @@ var _Modal = /** @class */ (function () {
         this._elHeader.classList.add("m-0");
     };
     // Sets the body
-    _Modal.prototype.setBody = function (content) {
+    ModalDialog.prototype.setBody = function (content) {
         // Clear the body
         while (this._elBody.firstChild) {
             this._elBody.removeChild(this._elBody.firstChild);
@@ -66,9 +66,9 @@ var _Modal = /** @class */ (function () {
         }
     };
     // Sets the close event
-    _Modal.prototype.setCloseEvent = function (event) { this._onCloseEvent = event; };
+    ModalDialog.prototype.setCloseEvent = function (event) { this._onCloseEvent = event; };
     // Sets the footer
-    _Modal.prototype.setFooter = function (content) {
+    ModalDialog.prototype.setFooter = function (content) {
         // Clear the body
         while (this._elFooter.firstChild) {
             this._elFooter.removeChild(this._elFooter.firstChild);
@@ -87,7 +87,7 @@ var _Modal = /** @class */ (function () {
         }
     };
     // Sets the header
-    _Modal.prototype.setHeader = function (content) {
+    ModalDialog.prototype.setHeader = function (content) {
         // Clear the body
         while (this._elHeader.firstChild) {
             this._elHeader.removeChild(this._elHeader.firstChild);
@@ -106,9 +106,10 @@ var _Modal = /** @class */ (function () {
         }
     };
     // Sets the modal type
-    _Modal.prototype.setType = function (type) { this._modal.setType(type); };
+    ModalDialog.prototype.setType = function (type) { this._modal.setType(type); };
     // Shows the modal
-    _Modal.prototype.show = function () { this._modal.show(); };
-    return _Modal;
+    ModalDialog.prototype.show = function () { this._modal.show(); };
+    return ModalDialog;
 }());
-exports.Modal = new _Modal();
+exports.ModalDialog = ModalDialog;
+exports.Modal = new ModalDialog();

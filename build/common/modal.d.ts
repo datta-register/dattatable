@@ -1,7 +1,7 @@
 /**
  * Modal
  */
-declare class _Modal {
+export declare class ModalDialog {
     private _modal;
     private _elBody;
     private _elFooter;
@@ -17,5 +17,4 @@ declare class _Modal {
     setType(type: any): void;
     show(): void;
 }
-export declare const Modal: _Modal;
-export {};
+export declare const Modal: ModalDialog;
