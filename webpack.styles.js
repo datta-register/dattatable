@@ -1,53 +1,22 @@
 var path = require("path");
-var TerserPlugin = require("terser-webpack-plugin");
 
 // Return the configuration
 module.exports = (env, argv) => {
-    var isDev = argv.mode !== "production";
     return {
         // Set the main source as the entry point
-        entry: path.resolve(__dirname, "build/index.js"),
+        entry: [
+            path.resolve(__dirname, "src/styles.ts")
+        ],
 
         // Output location
         output: {
-            path: path.resolve(__dirname, "dist"),
-            filename: "dattatable" + (isDev ? "" : ".min") + ".js"
-        },
-
-        // Optimize and minimize the code
-        optimization: {
-            minimize: (isDev ? false : true),
-            minimizer: [
-                new TerserPlugin({
-                    extractComments: false,
-                    terserOptions: {
-                        output: {
-                            // Remove all comments if it's not a dev build
-                            comments: (isDev ? true : false),
-                        }
-                    },
-                }),
-            ]
+            path: path.resolve(__dirname, "build"),
+            filename: "styles.js"
         },
 
         // Resolve the file names
         resolve: {
-            extensions: [".js", ".css", ".scss", ".ts"],
-            alias: {
-                // Reference the minified versions
-                "datatables.net": "datatables.net/js/jquery.dataTables.min.js",
-                "datatables.net-bs5": "datatables.net-bs5/js/dataTables.bootstrap5.min.js",
-                "jquery": "jquery/dist/jquery.min.js",
-                "moment.js": "moment/min/moment.min.js"
-            }
-        },
-
-        // Dev Server
-        devServer: {
-            inline: true,
-            hot: true,
-            open: true,
-            publicPath: "/dist/"
+            extensions: [".js", ".css", ".scss", ".ts"]
         },
 
         // Loaders

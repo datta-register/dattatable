@@ -3,13 +3,13 @@ import { Components } from "gd-sprest-bs";
 // DataTables.net
 import * as $ from "jquery";
 import "datatables.net";
-import "datatables.net-bs4";
-import "../../node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css"
+import "datatables.net-bs5";
 
 /**
  * Data Table
  */
- export interface IDataTable {
+export interface IDataTable {
+    datatable: any;
     filter: (idx: number, value?: string) => void;
     refresh: (rows: any[]) => void;
     search: (value?: string) => void;
@@ -20,7 +20,9 @@ import "../../node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css"
  */
 export interface IDataTableProps {
     columns: Components.ITableColumn[];
+    dtProps?: any;
     el: HTMLElement;
+    onRender?: (dt: any) => void;
     rows?: any[];
 }
 
@@ -28,15 +30,13 @@ export interface IDataTableProps {
  * Data Table
  */
 export class DataTable implements IDataTable {
-    private _columns: Components.ITableColumn[] = null;
     private _datatable = null;
-    private _el: HTMLElement = null;
+    private _props: IDataTableProps = null;
 
     // Constructor
     constructor(props: IDataTableProps) {
         // Save the properties
-        this._columns = props.columns;
-        this._el = props.el;
+        this._props = props;
 
         // Render the table
         this.refresh(props.rows);
@@ -44,23 +44,17 @@ export class DataTable implements IDataTable {
 
     // Applies the datatables.net plugin
     private applyPlugin(table: Components.ITable) {
-        // Set the datatable properties
-        let dtProps: any = {
-            dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
-            "columnDefs": [
-                {
-                    "targets": 3,
-                    "orderable": false,
-                    "searchable": false
-                }
-            ]
-        };
-
         // Render the datatable
-        this._datatable = $(table.el).DataTable(dtProps);
+        this._datatable = $(table.el).DataTable(this._props.dtProps);
+
+        // Call the render event
+        this._props.onRender ? this._props.onRender(this._datatable) : null;
     }
 
     /** Public Interface */
+
+    // Datatables.net object
+    get datatable(): any { return this._datatable; }
 
     // Filters the status
     filter(idx: number, value: string = "") {
@@ -79,13 +73,13 @@ export class DataTable implements IDataTable {
         }
 
         // Clear the datatable element
-        while (this._el.firstChild) { this._el.removeChild(this._el.firstChild); }
+        while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
 
         // Render the data table
         let table = Components.Table({
-            el: this._el,
+            el: this._props.el,
             rows,
-            columns: this._columns
+            columns: this._props.columns
         });
 
         // Apply the plugin
