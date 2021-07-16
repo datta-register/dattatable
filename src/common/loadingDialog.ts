@@ -55,7 +55,6 @@ export class LoadingDialogModal {
         // Render a spinner
         Components.Spinner({
             el: elMain,
-            className: "bg-sharepoint",
             type: Components.SpinnerTypes.Primary
         });
 
