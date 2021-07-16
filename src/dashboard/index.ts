@@ -21,9 +21,14 @@ export interface IDashboardProps {
     footer?: {
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
+        onRender?: (el: HTMLElement) => void;
     };
-    filters?: IFilterItem[];
+    filters?: {
+        filters: IFilterItem[];
+        onRender?: (el: HTMLElement) => void;
+    }
     header?: {
+        onRender?: (el: HTMLElement) => void;
         title?: string;
     },
     hideFilter?: boolean;
@@ -34,6 +39,7 @@ export interface IDashboardProps {
         title?: string | HTMLElement;
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
+        onRender?: (el: HTMLElement) => void;
     };
     onRender?: (dt: any) => void;
     rows?: any[];
@@ -63,7 +69,10 @@ export class Dashboard {
     // Renders the component
     private render() {
         // Create the filters
-        this._filters = new FilterSlideout(this._props.filters);
+        this._filters = new FilterSlideout({
+            filters: this._props.filters ? this._props.filters.filters : [],
+            onRender: this._props.filters ? this._props.filters.onRender : null
+        });
 
         // Render the template
         this._props.el.innerHTML = `
@@ -91,6 +100,7 @@ export class Dashboard {
             let header = this._props.header || {};
             new Header({
                 el: this._props.el.querySelector("#header"),
+                onRender: this._props.header ? this._props.header.onRender : null,
                 title: header.title
             });
         }
@@ -108,6 +118,7 @@ export class Dashboard {
                 items: navigation.items,
                 itemsEnd: navigation.itemsEnd,
                 title: navigation.title,
+                onRender: navigation.onRender,
                 onSearch: value => {
                     // Search the data table
                     this._dt.search(value);
@@ -138,7 +149,8 @@ export class Dashboard {
             new Footer({
                 el: this._props.el.querySelector("#footer"),
                 items: footer.items,
-                itemsEnd: footer.itemsEnd
+                itemsEnd: footer.itemsEnd,
+                onRender: footer.onRender
             });
         }
     }

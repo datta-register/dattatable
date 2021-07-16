@@ -7,7 +7,16 @@ import { CanvasForm } from "../common";
 export interface IFilterItem {
     header: string;
     items: Components.ICheckboxGroupItem[];
+    multi?: boolean;
     onFilter?: (value: string) => void;
+}
+
+/**
+ * Properties
+ */
+export interface IFilterProps {
+    filters: IFilterItem[];
+    onRender?: (el: HTMLElement) => void;
 }
 
 /**
@@ -19,9 +28,9 @@ export class FilterSlideout {
     private _filters: IFilterItem[] = null;
     private _items: Array<Components.IAccordionItem> = null;
 
-    constructor(filters: IFilterItem[] = []) {
+    constructor(props: IFilterProps) {
         // Save the filters
-        this._filters = filters;
+        this._filters = props.filters || [];
 
         // Initialize the variables
         this._cbs = [];
@@ -29,6 +38,9 @@ export class FilterSlideout {
 
         // Generate the items
         this.generateFilters();
+
+        // Call the render event
+        props.onRender ? props.onRender(this._el) : null;
     }
 
     // Generates the filters
@@ -56,7 +68,7 @@ export class FilterSlideout {
             let filter = this._filters[i];
 
             // Add the filter
-            this._items.push(this.generateItem(filter.header, filter.items, filter.onFilter));
+            this._items.push(this.generateItem(filter));
         }
 
         // Default the first filter to be displayed
@@ -70,19 +82,20 @@ export class FilterSlideout {
     }
 
     // Generates the navigation dropdown items
-    private generateItem(text: string, items: Components.ICheckboxGroupItem[], onFilter: (value: string) => void) {
+    private generateItem(filter: IFilterItem) {
         // Create the item
         let item: Components.IAccordionItem = {
-            header: text,
+            header: filter.header,
             onRender: el => {
                 // Render the checkbox group
                 this._cbs.push(Components.CheckboxGroup({
                     el,
-                    items,
+                    items: filter.items,
+                    multi: filter.multi,
                     type: Components.CheckboxGroupTypes.Switch,
                     onChange: (item: Components.ICheckboxGroupItem) => {
                         // Execute the event
-                        onFilter(item ? item.label : "");
+                        filter.onFilter ? filter.onFilter(item ? item.label : "") : null;
                     }
                 }));
             }

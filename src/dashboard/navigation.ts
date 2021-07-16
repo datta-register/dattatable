@@ -9,6 +9,7 @@ interface INavProps {
     hideFilter?: boolean;
     items: Components.INavbarItem[];
     itemsEnd: Components.INavbarItem[];
+    onRender?: (el:HTMLElement) => void;
     onShowFilter: Function;
     onSearch: (value: string) => void;
     title: string | HTMLElement;
@@ -27,6 +28,9 @@ export class Navigation {
 
         // Render the navigation
         this.render();
+
+        // Call the render event
+        props.onRender ? props.onRender(this._props.el) : null;
     }
 
     // Renders the component

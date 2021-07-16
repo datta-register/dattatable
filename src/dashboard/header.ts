@@ -5,6 +5,7 @@ import { Components } from "gd-sprest-bs";
  */
  export interface IHeaderProps {
     el: HTMLElement;
+    onRender?: (el:HTMLElement) => void;
     title?: string;
 }
 
@@ -21,6 +22,9 @@ export class Header {
 
         // Render the header
         this.render();
+
+        // Call the render event
+        props.onRender ? props.onRender(this._props.el) : null;
     }
 
     // Renders the component

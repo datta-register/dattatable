@@ -11,6 +11,7 @@ import "datatables.net-bs5";
 export interface IDataTable {
     datatable: any;
     filter: (idx: number, value?: string) => void;
+    onRender?: (el:HTMLElement) => void;
     refresh: (rows: any[]) => void;
     search: (value?: string) => void;
 }
@@ -40,6 +41,9 @@ export class DataTable implements IDataTable {
 
         // Render the table
         this.refresh(props.rows);
+
+        // Call the render event
+        props.onRender ? props.onRender(this._props.el) : null;
     }
 
     // Applies the datatables.net plugin

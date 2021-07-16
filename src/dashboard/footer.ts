@@ -7,6 +7,7 @@ import { Components } from "gd-sprest-bs";
     el: HTMLElement;
     items?: Components.INavbarItem[];
     itemsEnd?: Components.INavbarItem[];
+    onRender?: (el:HTMLElement) => void;
 }
 
 /**
@@ -22,6 +23,9 @@ export class Footer {
 
         // Render the footer
         this.render();
+
+        // Call the render event
+        props.onRender ? props.onRender(this._props.el) : null;
     }
 
     // Renders the component
