@@ -15,7 +15,7 @@
     z-index: 2010;
     div.d-flex {
         align-items: center;
-        background-color: rgb(255, 255, 255);
+        background-color: #FFF;
         border-radius: 0.3rem;
         border: 1px solid rgba(0,0,0,0.2);
         background-clip: padding-box;
@@ -29,7 +29,7 @@
 
 /* Assign styling to the loading-dialog-backdrop */
 #loading-dialog-backdrop {
-    background-color: rgb(0, 0, 0);
+    background-color: #000;
     height: 100vh;
     left: 0px;
     opacity: 0.5;
