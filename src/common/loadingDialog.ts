@@ -30,15 +30,7 @@ export class LoadingDialogModal {
         // Create the backdrop element
         this._elBackdrop = document.createElement("div");
         this._elBackdrop.id = "loading-dialog-backdrop";
-        this._elBackdrop.style.backgroundColor = "#000";
         this._elBackdrop.style.display = "none";
-        this._elBackdrop.style.height = "100vh";
-        this._elBackdrop.style.left = "0";
-        this._elBackdrop.style.opacity = "0.5";
-        this._elBackdrop.style.position = "fixed";
-        this._elBackdrop.style.top = "0";
-        this._elBackdrop.style.width = "100vw";
-        this._elBackdrop.style.zIndex = "2000";
         document.body.appendChild(this._elBackdrop);
 
         // Create the loading dialog element
@@ -46,12 +38,6 @@ export class LoadingDialogModal {
         this._el.id = "loading-dialog";
         this._el.classList.add("bs");
         this._el.style.display = "none";
-        this._el.style.height = "100vh";
-        this._el.style.left = "0";
-        this._el.style.position = "fixed";
-        this._el.style.top = "0";
-        this._el.style.width = "100vw";
-        this._el.style.zIndex = "2010";
         this._el.innerHTML = "<div></div>";
         document.body.appendChild(this._el);
 
@@ -59,32 +45,24 @@ export class LoadingDialogModal {
         let elMain = this._el.firstChild as HTMLElement;
         elMain.classList.add("d-flex");
         elMain.classList.add("flex-column");
-        elMain.classList.add("align-items-center");
-        elMain.style.backgroundColor = "#FFF";
-        elMain.style.marginLeft = "30vw";
-        elMain.style.marginTop = "30vh";
-        elMain.style.height = "40vh";
-        elMain.style.width = "40vw";
 
         // Append the header
         this._elHeader = document.createElement("div");
-        this._elHeader.classList.add("text-center");
-        this._elHeader.classList.add("fs-2");
-        this._elHeader.classList.add("m-2");
+        this._elHeader.classList.add("fs-4");
         this._elHeader.classList.add("p-2");
         elMain.appendChild(this._elHeader);
 
         // Render a spinner
         Components.Spinner({
             el: elMain,
+            className: "bg-sharepoint",
             type: Components.SpinnerTypes.Primary
         });
 
         // Append the body
         this._elBody = document.createElement("div");
-        this._elBody.classList.add("fs-4");
-        this._elBody.classList.add("px-2");
-        this._elBody.classList.add("w-100");
+        this._elBody.classList.add("fs-6");
+        this._elBody.classList.add("p-2");
         elMain.appendChild(this._elBody);
     }
 
