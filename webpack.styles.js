@@ -5,7 +5,7 @@ module.exports = (env, argv) => {
     return {
         // Set the main source as the entry point
         entry: [
-            path.resolve(__dirname, "src/styles.ts")
+            path.resolve(__dirname, "src/styles.scss")
         ],
 
         // Output location
