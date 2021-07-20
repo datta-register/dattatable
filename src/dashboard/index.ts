@@ -39,6 +39,7 @@ export interface IDashboardProps {
         title?: string | HTMLElement;
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
+        onFilterRendered?: (el: HTMLElement) => void;
         onRendering?: (props: Components.INavbarProps) => void;
         onRendered?: (el?: HTMLElement) => void;
     };
@@ -128,6 +129,7 @@ export class Dashboard {
                 items: navigation.items,
                 itemsEnd: navigation.itemsEnd,
                 title: navigation.title,
+                onFilterRendered: navigation.onFilterRendered,
                 onRendering: navigation.onRendering,
                 onRendered: navigation.onRendered,
                 onSearch: value => {

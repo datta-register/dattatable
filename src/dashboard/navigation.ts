@@ -9,6 +9,7 @@ interface INavProps {
     hideFilter?: boolean;
     items: Components.INavbarItem[];
     itemsEnd: Components.INavbarItem[];
+    onFilterRendered?: (el: HTMLElement) => void;
     onRendering?: (props: Components.INavbarProps) => void;
     onRendered?: (el: HTMLElement) => void;
     onShowFilter: Function;
@@ -67,6 +68,9 @@ export class Navigation {
             icon.appendChild(filterSquare());
             icon.addEventListener("click", this._props.onShowFilter as any);
             nav.el.firstElementChild.appendChild(icon);
+
+            // Call the render event
+            this._props.onFilterRendered ? this._props.onFilterRendered(icon) : null;
         }
     }
 }
