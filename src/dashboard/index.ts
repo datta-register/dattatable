@@ -15,8 +15,6 @@ export * from "./table";
 
 // Dashboard
 export interface IDashboardProps {
-    columns: Components.ITableColumn[];
-    dtProps?: any;
     el: HTMLElement;
     footer?: {
         items?: Components.INavbarItem[];
@@ -45,6 +43,8 @@ export interface IDashboardProps {
         onRendered?: (el?: HTMLElement) => void;
     };
     table?: {
+        columns: Components.ITableColumn[];
+        dtProps?: any;
         onRendered?: (el?: HTMLElement, dt?: any) => void;
         rows?: any[];
     }
@@ -143,8 +143,8 @@ export class Dashboard {
 
         // Render the data table
         this._dt = new DataTable({
-            columns: this._props.columns,
-            dtProps: this._props.dtProps,
+            columns: this._props.table ? this._props.table.columns : null,
+            dtProps: this._props.table ? this._props.table.dtProps : null,
             el: this._props.el.querySelector("#datatable"),
             onRendered: this._props.table ? this._props.table.onRendered : null,
             rows: this._props.table ? this._props.table.rows : null
