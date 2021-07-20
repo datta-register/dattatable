@@ -3,9 +3,10 @@ import { Components } from "gd-sprest-bs";
 /**
  * Header
  */
- export interface IHeaderProps {
+export interface IHeaderProps {
     el: HTMLElement;
-    onRender?: (el:HTMLElement) => void;
+    onRendering?: (props: Components.IJumbotronProps) => void;
+    onRendered?: (el: HTMLElement) => void;
     title?: string;
 }
 
@@ -24,16 +25,22 @@ export class Header {
         this.render();
 
         // Call the render event
-        props.onRender ? props.onRender(this._props.el) : null;
+        props.onRendered ? props.onRendered(this._props.el) : null;
     }
 
     // Renders the component
     private render() {
-        // Render a jumbotron
-        Components.Jumbotron({
+        // Define the default props
+        let props: Components.IJumbotronProps = {
             el: this._props.el,
             className: "header",
             lead: this._props.title
-        });
+        };
+
+        // Call the rendering event
+        this._props.onRendering ? this._props.onRendering(props) : null;
+
+        // Render a jumbotron
+        Components.Jumbotron(props);
     }
 }

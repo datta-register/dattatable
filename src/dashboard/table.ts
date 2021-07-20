@@ -11,7 +11,7 @@ import "datatables.net-bs5";
 export interface IDataTable {
     datatable: any;
     filter: (idx: number, value?: string) => void;
-    onRender?: (el:HTMLElement) => void;
+    onRendered?: (el: HTMLElement) => void;
     refresh: (rows: any[]) => void;
     search: (value?: string) => void;
 }
@@ -23,7 +23,7 @@ export interface IDataTableProps {
     columns: Components.ITableColumn[];
     dtProps?: any;
     el: HTMLElement;
-    onRender?: (dt: any) => void;
+    onRendered?: (dt: any) => void;
     rows?: any[];
 }
 
@@ -43,7 +43,7 @@ export class DataTable implements IDataTable {
         this.refresh(props.rows);
 
         // Call the render event
-        props.onRender ? props.onRender(this._props.el) : null;
+        props.onRendered ? props.onRendered(this._props.el) : null;
     }
 
     // Applies the datatables.net plugin
@@ -52,7 +52,7 @@ export class DataTable implements IDataTable {
         this._datatable = $(table.el).DataTable(this._props.dtProps);
 
         // Call the render event
-        this._props.onRender ? this._props.onRender(this._datatable) : null;
+        this._props.onRendered ? this._props.onRendered(this._datatable) : null;
     }
 
     /** Public Interface */

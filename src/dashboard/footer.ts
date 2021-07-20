@@ -3,11 +3,12 @@ import { Components } from "gd-sprest-bs";
 /**
  * Footer
  */
- export interface IFooterProps {
+export interface IFooterProps {
     el: HTMLElement;
     items?: Components.INavbarItem[];
     itemsEnd?: Components.INavbarItem[];
-    onRender?: (el:HTMLElement) => void;
+    onRendering?: (props: Components.INavbarProps) => void;
+    onRendered?: (el: HTMLElement) => void;
 }
 
 /**
@@ -25,16 +26,22 @@ export class Footer {
         this.render();
 
         // Call the render event
-        props.onRender ? props.onRender(this._props.el) : null;
+        props.onRendered ? props.onRendered(this._props.el) : null;
     }
 
     // Renders the component
     private render() {
-        // Render a navbar
-        Components.Navbar({
+        // Define the default props
+        let props: Components.INavbarProps = {
             el: this._props.el,
             items: this._props.items,
             itemsEnd: this._props.itemsEnd
-        });
+        };
+
+        // Call the rendering event
+        this._props.onRendering ? this._props.onRendering(props) : null;
+
+        // Render a navbar
+        Components.Navbar(props);
     }
 }

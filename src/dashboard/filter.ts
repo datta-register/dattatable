@@ -16,7 +16,7 @@ export interface IFilterItem {
  */
 export interface IFilterProps {
     filters: IFilterItem[];
-    onRender?: (el: HTMLElement) => void;
+    onRendered?: (el: HTMLElement) => void;
 }
 
 /**
@@ -40,7 +40,7 @@ export class FilterSlideout {
         this.generateFilters();
 
         // Call the render event
-        props.onRender ? props.onRender(this._el) : null;
+        props.onRendered ? props.onRendered(this._el) : null;
     }
 
     // Generates the filters

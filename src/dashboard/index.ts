@@ -21,14 +21,16 @@ export interface IDashboardProps {
     footer?: {
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
-        onRender?: (el: HTMLElement) => void;
+        onRendering?: (props: Components.INavbarProps) => void;
+        onRendered?: (el: HTMLElement) => void;
     };
     filters?: {
         items: IFilterItem[];
-        onRender?: (el: HTMLElement) => void;
+        onRendered?: (el: HTMLElement) => void;
     }
     header?: {
-        onRender?: (el: HTMLElement) => void;
+        onRendering?: (props: Components.IJumbotronProps) => void;
+        onRendered?: (el: HTMLElement) => void;
         title?: string;
     },
     hideFilter?: boolean;
@@ -39,9 +41,10 @@ export interface IDashboardProps {
         title?: string | HTMLElement;
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
-        onRender?: (el: HTMLElement) => void;
+        onRendering?: (props: Components.INavbarProps) => void;
+        onRendered?: (el: HTMLElement) => void;
     };
-    onRender?: (dt: any) => void;
+    onRendered?: (dt: any) => void;
     rows?: any[];
     useModal?: boolean;
 }
@@ -71,7 +74,7 @@ export class Dashboard {
         // Create the filters
         this._filters = new FilterSlideout({
             filters: this._props.filters ? this._props.filters.items : [],
-            onRender: this._props.filters ? this._props.filters.onRender : null
+            onRendered: this._props.filters ? this._props.filters.onRendered : null
         });
 
         // Render the template
@@ -100,7 +103,8 @@ export class Dashboard {
             let header = this._props.header || {};
             new Header({
                 el: this._props.el.querySelector("#header"),
-                onRender: this._props.header ? this._props.header.onRender : null,
+                onRendering: this._props.header ? this._props.header.onRendering : null,
+                onRendered: this._props.header ? this._props.header.onRendered : null,
                 title: header.title
             });
         }
@@ -118,7 +122,8 @@ export class Dashboard {
                 items: navigation.items,
                 itemsEnd: navigation.itemsEnd,
                 title: navigation.title,
-                onRender: navigation.onRender,
+                onRendering: navigation.onRendering,
+                onRendered: navigation.onRendered,
                 onSearch: value => {
                     // Search the data table
                     this._dt.search(value);
@@ -135,7 +140,7 @@ export class Dashboard {
             columns: this._props.columns,
             dtProps: this._props.dtProps,
             el: this._props.el.querySelector("#datatable"),
-            onRender: this._props.onRender,
+            onRendered: this._props.onRendered,
             rows: this._props.rows
         });
 
@@ -150,7 +155,8 @@ export class Dashboard {
                 el: this._props.el.querySelector("#footer"),
                 items: footer.items,
                 itemsEnd: footer.itemsEnd,
-                onRender: footer.onRender
+                onRendering: footer.onRendering,
+                onRendered: footer.onRendered
             });
         }
     }

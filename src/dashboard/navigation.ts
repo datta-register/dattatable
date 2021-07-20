@@ -9,7 +9,8 @@ interface INavProps {
     hideFilter?: boolean;
     items: Components.INavbarItem[];
     itemsEnd: Components.INavbarItem[];
-    onRender?: (el:HTMLElement) => void;
+    onRendering?: (props: Components.INavbarProps) => void;
+    onRendered?: (el: HTMLElement) => void;
     onShowFilter: Function;
     onSearch: (value: string) => void;
     title: string | HTMLElement;
@@ -30,13 +31,13 @@ export class Navigation {
         this.render();
 
         // Call the render event
-        props.onRender ? props.onRender(this._props.el) : null;
+        props.onRendered ? props.onRendered(this._props.el) : null;
     }
 
     // Renders the component
     private render() {
-        // Render a navbar
-        let nav = Components.Navbar({
+        // Define the default props
+        let props: Components.INavbarProps = {
             el: this._props.el,
             brand: this._props.title,
             className: "header",
@@ -47,7 +48,13 @@ export class Navigation {
                 onChange: this._props.onSearch,
                 onSearch: this._props.onSearch
             }
-        });
+        };
+
+        // Call the rendering event
+        this._props.onRendering ? this._props.onRendering(props) : null;
+
+        // Render a navbar
+        let nav = Components.Navbar(props);
 
         // See if we are showing the filter
         if (this._props.hideFilter != true) {
