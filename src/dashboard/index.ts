@@ -22,15 +22,15 @@ export interface IDashboardProps {
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
         onRendering?: (props: Components.INavbarProps) => void;
-        onRendered?: (el: HTMLElement) => void;
+        onRendered?: (el?: HTMLElement) => void;
     };
     filters?: {
         items: IFilterItem[];
-        onRendered?: (el: HTMLElement) => void;
+        onRendered?: (el?: HTMLElement) => void;
     }
     header?: {
         onRendering?: (props: Components.IJumbotronProps) => void;
-        onRendered?: (el: HTMLElement) => void;
+        onRendered?: (el?: HTMLElement) => void;
         title?: string;
     },
     hideFilter?: boolean;
@@ -42,10 +42,13 @@ export interface IDashboardProps {
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
         onRendering?: (props: Components.INavbarProps) => void;
-        onRendered?: (el: HTMLElement) => void;
+        onRendered?: (el?: HTMLElement) => void;
     };
-    onRendered?: (dt: any) => void;
-    rows?: any[];
+    table?: {
+        onRendered?: (el?: HTMLElement, dt?: any) => void;
+        rows?: any[];
+    }
+    onRendered?: (el?: HTMLElement) => void;
     useModal?: boolean;
 }
 
@@ -67,6 +70,9 @@ export class Dashboard {
 
         // Render the dashboard
         this.render();
+
+        // Call the render event
+        props.onRendered ? props.onRendered(this._props.el) : null;
     }
 
     // Renders the component
@@ -140,8 +146,8 @@ export class Dashboard {
             columns: this._props.columns,
             dtProps: this._props.dtProps,
             el: this._props.el.querySelector("#datatable"),
-            onRendered: this._props.onRendered,
-            rows: this._props.rows
+            onRendered: this._props.table ? this._props.table.onRendered : null,
+            rows: this._props.table ? this._props.table.rows : null
         });
 
         // See if we are hiding the footer
