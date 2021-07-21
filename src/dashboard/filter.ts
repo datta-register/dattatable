@@ -8,7 +8,7 @@ export interface IFilterItem {
     header: string;
     items: Components.ICheckboxGroupItem[];
     multi?: boolean;
-    onFilter?: (value: string) => void;
+    onFilter?: (value: string | string[]) => void;
 }
 
 /**
@@ -93,9 +93,26 @@ export class FilterSlideout {
                     items: filter.items,
                     multi: filter.multi,
                     type: Components.CheckboxGroupTypes.Switch,
-                    onChange: (item: Components.ICheckboxGroupItem) => {
-                        // Execute the event
-                        filter.onFilter ? filter.onFilter(item ? item.label : "") : null;
+                    onChange: (value: Components.ICheckboxGroupItem | Components.ICheckboxGroupItem[]) => {
+                        // See if this is a single item
+                        if (filter.multi) {
+                            let values = [];
+
+                            // Parse the items
+                            let items = (value || []) as Components.ICheckboxGroupItem[];
+                            for (let i = 0; i < items.length; i++) {
+                                // Append the value
+                                values.push(items[i].label);
+                            }
+
+                            // Execute the event
+                            filter.onFilter ? filter.onFilter(values) : null;
+                        } else {
+                            let item = value as Components.ICheckboxGroupItem;
+
+                            // Execute the event
+                            filter.onFilter ? filter.onFilter(item ? item.label : "") : null;
+                        }
                     }
                 }));
             }
