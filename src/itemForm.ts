@@ -95,7 +95,7 @@ class _ItemForm {
             itemId
         }).then(info => {
             // Set the header
-            (this._useModal ? Modal : CanvasForm).setHeader("<h5>" + (info.item ? info.item.Title : "Create Item") + "</h5>");
+            (this._useModal ? Modal : CanvasForm).setHeader(info.item ? info.item.Title : "Create Item");
 
             // Render the form based on the type
             if (mode == SPTypes.ControlMode.Display) {
@@ -110,6 +110,9 @@ class _ItemForm {
                 // Render the display form
                 this._displayForm = Components.ListForm.renderDisplayForm(props);
 
+                /* Remove the bottom margin from the last row of the form */
+                (this._displayForm.el.lastChild as HTMLElement).classList.remove("mb-3");
+                
                 // Update the body
                 (this._useModal ? Modal : CanvasForm).setBody(this._displayForm.el);
             } else {
@@ -128,15 +131,17 @@ class _ItemForm {
                 // Render the edit form
                 this._editForm = Components.ListForm.renderEditForm(props);
 
+                /* Remove the bottom margin from the last row of the form */
+                (this._editForm.el.lastChild as HTMLElement).classList.remove("mb-3");
+                
                 // Render the save button
                 let elButton = document.createElement("div");
                 elButton.classList.add("float-end");
-                elButton.classList.add("mt-3");
                 this._useModal ? Modal.setFooter(elButton) : el.appendChild(elButton);
                 Components.Button({
                     el: elButton,
                     text: isNew ? "Create" : "Update",
-                    type: Components.ButtonTypes.OutlineSuccess,
+                    type: Components.ButtonTypes.OutlinePrimary,
                     onClick: () => { this.save(this._editForm, info, isNew); }
                 });
 
