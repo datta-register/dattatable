@@ -43,10 +43,6 @@ class _Modal {
                 this._onCloseEvent ? this._onCloseEvent() : null;
             }
         });
-
-        // Set the header
-        this._elHeader = this._modal.el.querySelector(".modal-title");
-        this._elHeader.classList.add("m-0");
     }
 
     // Sets the body
