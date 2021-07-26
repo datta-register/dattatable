@@ -14,6 +14,13 @@ class _CanvasForm {
         this.render();
     }
 
+    // Clears the canvas form
+    clear() {
+        // Clear the header and body
+        this.setHeader("");
+        this.setBody("");
+    }
+
     // Element
     get el(): HTMLElement { return this._canvas.el as HTMLElement; }
 

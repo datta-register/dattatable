@@ -16,6 +16,14 @@ class _Modal {
         this.render();
     }
 
+    // Clears the canvas form
+    clear() {
+        // Clear the header, body and footer
+        this.setHeader("");
+        this.setBody("");
+        this.setFooter("");
+    }
+
     // Hides the modal
     hide() { this._modal.hide(); }
 
