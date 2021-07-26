@@ -46,6 +46,7 @@ class _Modal {
             },
             onRenderBody: el => { this._elBody = el; },
             onRenderFooter: el => { this._elFooter = el; },
+            onRenderHeader: el => { this._elHeader = el; },
             onClose: () => {
                 // Call the close event
                 this._onCloseEvent ? this._onCloseEvent() : null;
