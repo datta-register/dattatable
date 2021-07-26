@@ -60,10 +60,6 @@ export class Navigation {
         // Update the navbar color palate
         nav.el.classList.remove("navbar-light");
         nav.el.classList.add("navbar-dark");
-        nav.el.querySelectorAll("#navbar_content ul.navbar-nav li.nav-item a").forEach((el: HTMLElement) => {
-            el.classList.remove("btn-outline-dark");
-            el.classList.add("btn-outline-light");
-        });
         
         // See if we are showing the filter
         if (this._props.hideFilter != true) {
