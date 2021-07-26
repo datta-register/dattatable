@@ -182,6 +182,9 @@ export class Dashboard {
     // Returns a filter checkbox group by its key
     getFilter(key: string) { return this._filters.getFilter(key); }
 
+    // Hides the filter
+    hideFilter() { this._filters.hide(); }
+
     // Refresh the table
     refresh(rows: any[]) {
         // Refresh the table
@@ -196,4 +199,7 @@ export class Dashboard {
 
     // Sets a filter checkbox group value
     setFilterValue(key: string, value?: string) { return this._filters.setFilterValue(key, value); }
+
+    // Shows the filter
+    showFilter() { this._filters.show(); }
 }

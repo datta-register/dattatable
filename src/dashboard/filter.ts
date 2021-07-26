@@ -149,6 +149,9 @@ export class FilterSlideout {
         }
     }
 
+    // Hides the filter
+    hide() { CanvasForm.hide(); }
+
     // Shows the filters
     show() {
         // Set the header and body
