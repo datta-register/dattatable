@@ -41,7 +41,7 @@ export class Navigation {
         let props: Components.INavbarProps = {
             el: this._props.el,
             brand: this._props.title,
-            className: "header",
+            className: "bg-sharepoint header rounded",
             items: this._props.items,
             itemsEnd: this._props.itemsEnd,
             searchBox: {
@@ -57,13 +57,21 @@ export class Navigation {
         // Render a navbar
         let nav = Components.Navbar(props);
 
+        // Update the navbar color palate
+        nav.el.classList.remove("navbar-light");
+        nav.el.classList.add("navbar-dark");
+        nav.el.querySelectorAll("#navbar_content ul.navbar-nav li.nav-item a").forEach((el: HTMLElement) => {
+            el.classList.remove("btn-outline-dark");
+            el.classList.add("btn-outline-light");
+        });
+        
         // See if we are showing the filter
         if (this._props.hideFilter != true) {
             // Render the filter icon
             let icon = document.createElement("div");
             icon.classList.add("filter-icon");
             icon.classList.add("nav-link");
-            icon.classList.add("text-dark");
+            icon.classList.add("text-light");
             icon.style.cursor = "pointer";
             icon.appendChild(filterSquare());
             icon.addEventListener("click", this._props.onShowFilter as any);
