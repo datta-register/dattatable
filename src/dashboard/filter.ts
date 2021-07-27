@@ -146,7 +146,7 @@ export class FilterSlideout {
     }
 
     // Sets a checkbox group filter
-    setFilterValue(key: string, value: string = "") {
+    setFilterValue(key: string, value: string | string[]) {
         // Get the filter
         let filter = this.getFilter(key);
         if (filter) {

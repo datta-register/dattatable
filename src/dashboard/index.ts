@@ -200,7 +200,7 @@ export class Dashboard {
     }
 
     // Sets a filter checkbox group value
-    setFilterValue(key: string, value?: string) { return this._filters.setFilterValue(key, value); }
+    setFilterValue(key: string, value?: string | string[]) { return this._filters.setFilterValue(key, value); }
 
     // Shows the filter
     showFilter() { this._filters.show(); }
