@@ -161,7 +161,7 @@ export class FilterSlideout {
     // Shows the filters
     show() {
         // Set the header and body
-        CanvasForm.setHeader("Filters");
+        CanvasForm.setHeader("<h5 class="m-0">Filters</h5>");
         CanvasForm.setBody(this._el || "<p>Loading the Filters...</p>");
 
         // Show the filters
