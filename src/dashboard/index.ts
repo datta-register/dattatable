@@ -24,6 +24,7 @@ export interface IDashboardProps {
     };
     filters?: {
         items: IFilterItem[];
+        onClear?: () => void;
         onRendered?: (el?: HTMLElement) => void;
     }
     header?: {
@@ -81,6 +82,7 @@ export class Dashboard {
         // Create the filters
         this._filters = new FilterSlideout({
             filters: this._props.filters ? this._props.filters.items : [],
+            onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null
         });
 

@@ -16,6 +16,7 @@ export interface IFilterItem {
  */
 export interface IFilterProps {
     filters: IFilterItem[];
+    onClear?: () => void;
     onRendered?: (el: HTMLElement) => void;
 }
 
@@ -27,10 +28,12 @@ export class FilterSlideout {
     private _el: HTMLElement = null;
     private _filters: IFilterItem[] = null;
     private _items: Array<Components.IAccordionItem> = null;
+    private _onClear: () => void;
 
     constructor(props: IFilterProps) {
-        // Save the filters
+        // Save the properties
         this._filters = props.filters || [];
+        this._onClear = props.onClear;
 
         // Initialize the variables
         this._cbs = [];
@@ -60,6 +63,9 @@ export class FilterSlideout {
                     // Clear the filter
                     this._cbs[i].setValue("");
                 }
+
+                // Execute the event
+                this._onClear ? this._onClear() : null;
             }
         });
 
