@@ -58,8 +58,9 @@ class _ItemForm {
     edit(props: {
         itemId: number;
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
-        onSave?: (values: any) => any;
-        onUpdate?: (item?: any) => any;
+        onSave?: (values: any) => any | PromiseLike<any>;
+        onUpdate?: (item?: any) => void;
+        onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
         useModal?: boolean;
     }) {
         // Set the properties
