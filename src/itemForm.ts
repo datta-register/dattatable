@@ -13,6 +13,10 @@ class _ItemForm {
     private _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
     private _updateEvent: Function = null;
 
+    // Form Information
+    private _info = null;
+    get FormInfo(): Helper.IListFormResult { return this._info; }
+
     // Form Modes
     private _controlMode: number = null;
     get IsDisplay(): boolean { return this._controlMode == SPTypes.ControlMode.Display; }
@@ -107,13 +111,16 @@ class _ItemForm {
             listName: this.ListName,
             itemId
         }).then(info => {
+            // Save the form information
+            this._info = info;
+
             // Set the header
-            (this._useModal ? Modal : CanvasForm).setHeader(info.item ? info.item.Title : "Create Item");
+            (this._useModal ? Modal : CanvasForm).setHeader(this._info.item ? this._info.item.Title : "Create Item");
 
             // Render the form based on the type
             if (this.IsDisplay) {
                 let props: Components.IListFormDisplayProps = {
-                    info,
+                    info: this._info,
                     rowClassName: "mb-3"
                 };
 
@@ -132,7 +139,7 @@ class _ItemForm {
                 let el = document.createElement("div");
                 let props: Components.IListFormEditProps = {
                     el,
-                    info,
+                    info: this._info,
                     rowClassName: "mb-3",
                     controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
                 };
@@ -154,7 +161,7 @@ class _ItemForm {
                     el: elButton,
                     text: this.IsNew ? "Create" : "Update",
                     type: Components.ButtonTypes.OutlinePrimary,
-                    onClick: () => { this.save(this._editForm, info); }
+                    onClick: () => { this.save(this._editForm); }
                 });
 
                 // Update the body
@@ -170,7 +177,7 @@ class _ItemForm {
     }
 
     // Saves the form
-    private save(form: Components.IListFormEdit, info: Helper.IListFormResult) {
+    private save(form: Components.IListFormEdit) {
         // Display a loading dialog
         LoadingDialog.setHeader("Saving the Item");
         LoadingDialog.setBody("Validating the form...");
@@ -184,7 +191,7 @@ class _ItemForm {
             // Saves the item
             let saveItem = (values) => {
                 // Save the item
-                Components.ListForm.saveItem(info, values).then(item => {
+                Components.ListForm.saveItem(this._info, values).then(item => {
                     // Call the update event
                     this._updateEvent ? this._updateEvent(item) : null;
 
