@@ -30,8 +30,8 @@ class _ItemForm {
     // Creates a new task
     create(props?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
-        onSave?: (values: any) => any;
-        onUpdate?: (item?: any) => any;
+        onSave?: (values: any) => any | PromiseLike<any>;
+        onUpdate?: (item?: any) => void;
         useModal?: boolean;
     }) {
         // Set the properties
@@ -112,7 +112,7 @@ class _ItemForm {
 
                 /* Remove the bottom margin from the last row of the form */
                 (this._displayForm.el.lastChild as HTMLElement).classList.remove("mb-3");
-                
+
                 // Update the body
                 (this._useModal ? Modal : CanvasForm).setBody(this._displayForm.el);
             } else {
@@ -133,7 +133,7 @@ class _ItemForm {
 
                 /* Remove the bottom margin from the last row of the form */
                 (this._editForm.el.lastChild as HTMLElement).classList.remove("mb-3");
-                
+
                 // Render the save button
                 let elButton = document.createElement("div");
                 elButton.classList.add("float-end");
@@ -169,19 +169,35 @@ class _ItemForm {
             // Update the title
             LoadingDialog.setBody((isNew ? "Creating" : "Updating") + " the Item");
 
+            // Saves the item
+            let saveItem = (values) => {
+                // Save the item
+                Components.ListForm.saveItem(info, values).then(item => {
+                    // Call the update event
+                    this._updateEvent ? this._updateEvent(item) : null;
+
+                    // Close the dialogs
+                    (this._useModal ? Modal : CanvasForm).hide();
+                    LoadingDialog.hide();
+                });
+            }
+
             // Call the save event
             let values = form.getValues();
             values = this._onSave ? this._onSave(values) : values;
 
-            // Save the item
-            Components.ListForm.saveItem(info, values).then(item => {
-                // Call the update event
-                this._updateEvent ? this._updateEvent(item) : null;
+            // See if the onSave event returned a promise
+            if (typeof (values.then) === "function") {
+                // Wait for the promise to complete
+                values.then(values => {
+                    // Save the item
+                    saveItem(values);
+                });
+            } else {
+                // Save the item
+                saveItem(values);
+            }
 
-                // Close the dialogs
-                (this._useModal ? Modal : CanvasForm).hide();
-                LoadingDialog.hide();
-            });
         } else {
             // Close the dialog
             LoadingDialog.hide();
