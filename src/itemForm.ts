@@ -13,6 +13,12 @@ class _ItemForm {
     private _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
     private _updateEvent: Function = null;
 
+    // Form Modes
+    private _controlMode: number = null;
+    get IsDisplay(): boolean { return this._controlMode == SPTypes.ControlMode.Display; }
+    get IsEdit(): boolean { return this._controlMode == SPTypes.ControlMode.Edit; }
+    get IsNew(): boolean { return this._controlMode == SPTypes.ControlMode.New; }
+
     // The current form being displayed
     get form(): Components.IListFormDisplay | Components.IListFormEdit { return this._displayForm || this._editForm; }
 
@@ -37,6 +43,7 @@ class _ItemForm {
         useModal?: boolean;
     }) {
         // Set the properties
+        this._controlMode = SPTypes.ControlMode.New;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onSave = props.onSave;
         this._onValidation = props.onValidation;
@@ -44,7 +51,7 @@ class _ItemForm {
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the item
-        this.load(SPTypes.ControlMode.New);
+        this.load();
     }
 
     // Edits a task
@@ -56,13 +63,14 @@ class _ItemForm {
         useModal?: boolean;
     }) {
         // Set the properties
+        this._controlMode = SPTypes.ControlMode.Edit;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onSave = props.onSave;
         this._updateEvent = props.onUpdate;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
-        this.load(SPTypes.ControlMode.Edit, props.itemId);
+        this.load(props.itemId);
     }
 
     // Views the task
@@ -72,17 +80,18 @@ class _ItemForm {
         useModal?: boolean;
     }) {
         // Set the properties
+        this._controlMode = SPTypes.ControlMode.Display;
         this._onCreateViewForm = props.onCreateViewForm;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
-        this.load(SPTypes.ControlMode.Display, props.itemId);
+        this.load(props.itemId);
     }
 
     /** Private Methods */
 
     // Load the form information
-    private load(mode: number, itemId?: number) {
+    private load(itemId?: number) {
         // Clear the forms
         this._displayForm = null;
         this._editForm = null;
@@ -101,7 +110,7 @@ class _ItemForm {
             (this._useModal ? Modal : CanvasForm).setHeader(info.item ? info.item.Title : "Create Item");
 
             // Render the form based on the type
-            if (mode == SPTypes.ControlMode.Display) {
+            if (this.IsDisplay) {
                 let props: Components.IListFormDisplayProps = {
                     info,
                     rowClassName: "mb-3"
@@ -119,13 +128,12 @@ class _ItemForm {
                 // Update the body
                 (this._useModal ? Modal : CanvasForm).setBody(this._displayForm.el);
             } else {
-                let isNew = mode == SPTypes.ControlMode.New;
                 let el = document.createElement("div");
                 let props: Components.IListFormEditProps = {
                     el,
                     info,
                     rowClassName: "mb-3",
-                    controlMode: isNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
+                    controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
                 };
 
                 // Call the event if it exists
@@ -143,9 +151,9 @@ class _ItemForm {
                 this._useModal ? Modal.setFooter(elButton) : el.appendChild(elButton);
                 Components.Button({
                     el: elButton,
-                    text: isNew ? "Create" : "Update",
+                    text: this.IsNew ? "Create" : "Update",
                     type: Components.ButtonTypes.OutlinePrimary,
-                    onClick: () => { this.save(this._editForm, info, isNew); }
+                    onClick: () => { this.save(this._editForm, info); }
                 });
 
                 // Update the body
@@ -161,7 +169,7 @@ class _ItemForm {
     }
 
     // Saves the form
-    private save(form: Components.IListFormEdit, info: Helper.IListFormResult, isNew: boolean) {
+    private save(form: Components.IListFormEdit, info: Helper.IListFormResult) {
         // Display a loading dialog
         LoadingDialog.setHeader("Saving the Item");
         LoadingDialog.setBody("Validating the form...");
@@ -170,7 +178,7 @@ class _ItemForm {
         // Validate the form
         this.validate(form).then(() => {
             // Update the title
-            LoadingDialog.setBody((isNew ? "Creating" : "Updating") + " the Item");
+            LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
 
             // Saves the item
             let saveItem = (values) => {
