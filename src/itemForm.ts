@@ -5,13 +5,19 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
  * Item Form
  */
 class _ItemForm {
-    private _displayForm: Components.IListFormDisplay = null;
-    private _editForm: Components.IListFormEdit = null;
     private _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
     private _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
     private _onSave: (values: any) => any | PromiseLike<any> = null;
     private _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
     private _updateEvent: Function = null;
+
+    // Display Form
+    private _displayForm: Components.IListFormDisplay = null;
+    get DisplayForm(): Components.IListFormDisplay { return this._displayForm; }
+
+    // Edit Form
+    private _editForm: Components.IListFormEdit = null;
+    get EditForm(): Components.IListFormEdit { return this._editForm; }
 
     // Form Information
     private _info = null;
@@ -22,9 +28,6 @@ class _ItemForm {
     get IsDisplay(): boolean { return this._controlMode == SPTypes.ControlMode.Display; }
     get IsEdit(): boolean { return this._controlMode == SPTypes.ControlMode.Edit; }
     get IsNew(): boolean { return this._controlMode == SPTypes.ControlMode.New; }
-
-    // The current form being displayed
-    get form(): Components.IListFormDisplay | Components.IListFormEdit { return this._displayForm || this._editForm; }
 
     // List name
     private _listName: string = null;
