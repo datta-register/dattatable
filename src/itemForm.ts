@@ -7,9 +7,10 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 class _ItemForm {
     private _displayForm: Components.IListFormDisplay = null;
     private _editForm: Components.IListFormEdit = null;
-    private _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
-    private _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
-    private _onSave: (values: any) => any;
+    private _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
+    private _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
+    private _onSave: (values: any) => any | PromiseLike<any> = null;
+    private _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
     private _updateEvent: Function = null;
 
     // The current form being displayed
@@ -32,11 +33,13 @@ class _ItemForm {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
         onSave?: (values: any) => any | PromiseLike<any>;
         onUpdate?: (item?: any) => void;
+        onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
         useModal?: boolean;
     }) {
         // Set the properties
         this._onCreateEditForm = props.onCreateEditForm;
         this._onSave = props.onSave;
+        this._onValidation = props.onValidation;
         this._updateEvent = props.onUpdate;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
@@ -165,7 +168,7 @@ class _ItemForm {
         LoadingDialog.show();
 
         // Validate the form
-        if (form.isValid()) {
+        this.validate(form).then(() => {
             // Update the title
             LoadingDialog.setBody((isNew ? "Creating" : "Updating") + " the Item");
 
@@ -197,11 +200,43 @@ class _ItemForm {
                 // Save the item
                 saveItem(values);
             }
-
-        } else {
+        }, () => {
             // Close the dialog
             LoadingDialog.hide();
-        }
+        });
+    }
+
+    // Validates the form
+    private validate(form: Components.IListFormEdit): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            let isValid = form.isValid();
+
+            // Ensure it's valid
+            if (!isValid) {
+                // Reject the request
+                reject();
+                return;
+            }
+
+            // Call the validation event
+            let returnVal: any = this._onValidation ? this._onValidation(form.getValues()) : null;
+            if (returnVal && typeof (returnVal.then) === "function") {
+                // Wait for the promise to complete
+                returnVal.then(isValid => {
+                    // Resolve the request
+                    isValid ? resolve() : reject();
+                });
+            } else {
+                if (typeof (returnVal) === "boolean") {
+                    // Update the flag
+                    isValid = returnVal;
+                }
+
+                // Resolve the request
+                isValid ? resolve() : reject();
+            }
+        });
     }
 }
 export const ItemForm = new _ItemForm();
