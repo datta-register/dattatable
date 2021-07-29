@@ -209,7 +209,7 @@ class _ItemForm {
             values = this._onSave ? this._onSave(values) : values;
 
             // See if the onSave event returned a promise
-            if (typeof (values.then) === "function") {
+            if (values && typeof (values.then) === "function") {
                 // Wait for the promise to complete
                 values.then(values => {
                     // Save the item
