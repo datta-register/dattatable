@@ -5,8 +5,14 @@ import { Components } from "gd-sprest-bs";
  */
 class _CanvasForm {
     private _canvas: Components.IOffcanvas = null;
+
+    // Modal Body
     private _elBody: HTMLElement = null;
+    get BodyElement(): HTMLElement { return this._elBody; }
+
+    // Modal Header
     private _elHeader: HTMLElement = null;
+    get HeaderElement(): HTMLElement { return this._elBody; }
 
     // Constructor
     constructor() {

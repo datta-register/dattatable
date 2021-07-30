@@ -7,6 +7,8 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 class _ItemForm {
     private _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
     private _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
+    private _onSetFooter?: (el: HTMLElement) => void = null;
+    private _onSetHeader?: (el: HTMLElement) => void = null;
     private _onSave: (values: any) => any | PromiseLike<any> = null;
     private _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
     private _updateEvent: Function = null;
@@ -45,6 +47,8 @@ class _ItemForm {
     create(props?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
         onSave?: (values: any) => any | PromiseLike<any>;
+        onSetFooter?: (el: HTMLElement) => void;
+        onSetHeader?: (el: HTMLElement) => void;
         onUpdate?: (item?: any) => void;
         onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
         useModal?: boolean;
@@ -53,6 +57,8 @@ class _ItemForm {
         this._controlMode = SPTypes.ControlMode.New;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onSave = props.onSave;
+        this._onSetFooter = props.onSetFooter;
+        this._onSetHeader = props.onSetHeader;
         this._onValidation = props.onValidation;
         this._updateEvent = props.onUpdate;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
@@ -66,6 +72,8 @@ class _ItemForm {
         itemId: number;
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
         onSave?: (values: any) => any | PromiseLike<any>;
+        onSetFooter?: (el: HTMLElement) => void;
+        onSetHeader?: (el: HTMLElement) => void;
         onUpdate?: (item?: any) => void;
         onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
         useModal?: boolean;
@@ -74,6 +82,8 @@ class _ItemForm {
         this._controlMode = SPTypes.ControlMode.Edit;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onSave = props.onSave;
+        this._onSetFooter = props.onSetFooter;
+        this._onSetHeader = props.onSetHeader;
         this._updateEvent = props.onUpdate;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
@@ -85,11 +95,15 @@ class _ItemForm {
     view(props: {
         itemId: number;
         onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
+        onSetFooter?: (el: HTMLElement) => void;
+        onSetHeader?: (el: HTMLElement) => void;
         useModal?: boolean;
     }) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
         this._onCreateViewForm = props.onCreateViewForm;
+        this._onSetFooter = props.onSetFooter;
+        this._onSetHeader = props.onSetHeader;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
@@ -119,6 +133,9 @@ class _ItemForm {
 
             // Set the header
             (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
+
+            // Call the header event
+            this._onSetHeader ? this._onSetHeader(this._useModal ? Modal.HeaderElement : CanvasForm.HeaderElement) : null;
 
             // Render the form based on the type
             if (this.IsDisplay) {
@@ -158,13 +175,13 @@ class _ItemForm {
 
                 // Render the save button
                 let elButton = document.createElement("div");
-                
+
                 // Add styling if not using a modal
                 if (!this._useModal) {
                     elButton.classList.add("float-end");
                     elButton.style.padding = "1rem 0";
                 }
-                
+
                 // Append the create/update button
                 this._useModal ? Modal.setFooter(elButton) : el.appendChild(elButton);
                 Components.Button({
@@ -173,6 +190,9 @@ class _ItemForm {
                     type: Components.ButtonTypes.OutlinePrimary,
                     onClick: () => { this.save(this._editForm); }
                 });
+
+                // Call the footer event
+                this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButton) : null;
 
                 // Update the body
                 (this._useModal ? Modal : CanvasForm).setBody(el);

@@ -5,10 +5,19 @@ import { Components } from "gd-sprest-bs";
  */
 class _Modal {
     private _modal: Components.IModal = null;
-    private _elBody: HTMLElement = null;
-    private _elFooter: HTMLElement = null;
-    private _elHeader: HTMLElement = null;
     private _onCloseEvent: Function = null;
+
+    // Modal Body
+    private _elBody: HTMLElement = null;
+    get BodyElement(): HTMLElement { return this._elBody; }
+
+    // Modal Footer
+    private _elFooter: HTMLElement = null;
+    get FooterElement(): HTMLElement { return this._elBody; }
+
+    // Modal Header
+    private _elHeader: HTMLElement = null;
+    get HeaderElement(): HTMLElement { return this._elBody; }
 
     // Constructor
     constructor() {
