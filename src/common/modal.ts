@@ -13,11 +13,11 @@ class _Modal {
 
     // Modal Footer
     private _elFooter: HTMLElement = null;
-    get FooterElement(): HTMLElement { return this._elBody; }
+    get FooterElement(): HTMLElement { return this._elFooter; }
 
     // Modal Header
     private _elHeader: HTMLElement = null;
-    get HeaderElement(): HTMLElement { return this._elBody; }
+    get HeaderElement(): HTMLElement { return this._elHeader; }
 
     // Constructor
     constructor() {

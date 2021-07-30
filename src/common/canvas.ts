@@ -12,7 +12,7 @@ class _CanvasForm {
 
     // Modal Header
     private _elHeader: HTMLElement = null;
-    get HeaderElement(): HTMLElement { return this._elBody; }
+    get HeaderElement(): HTMLElement { return this._elHeader; }
 
     // Constructor
     constructor() {
