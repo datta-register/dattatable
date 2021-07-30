@@ -111,7 +111,26 @@
     }
     /* Fix padding on the nav links */
     .nav-link {
+        color: #0078d4;
         padding: 0 !important;
+    }
+    /* Set background color and border for nav-tabs */
+    .bs .nav-tabs .nav-link {
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 0.25rem 0.25rem 0 0;
+        border: 2px solid #dee2e6;
+    }
+    /* Color match nav-tabs hover to secondary color */
+    .bs .nav-tabs .nav-link:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: #fff;
+    }
+    /* Color match nav-tabs active to SharePoint */
+    .bs .nav-tabs .nav-link.active, .bs .nav-tabs .show>.nav-link, .bs .nav-tabs .nav-link:focus {
+        background-color: #0078d4;
+        border-color: #0078d4;
+        color: #fff;
     }
     /* Define a custom padding-top value */
     .pt-03 {
@@ -126,6 +145,7 @@
     .page-item.active .page-link {
         background-color: #6c757d;
         border-color: #6c757d;
+        z-index: inherit;
     }
     /* Color match the pagination disabled border colors */
     .page-item.disabled .page-link {
