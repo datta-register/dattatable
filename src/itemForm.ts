@@ -118,7 +118,7 @@ class _ItemForm {
             this._info = info;
 
             // Set the header
-            (this._useModal ? Modal : CanvasForm).setHeader(this._info.item ? this._info.item.Title : "Create Item");
+            (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
 
             // Render the form based on the type
             if (this.IsDisplay) {
@@ -158,7 +158,13 @@ class _ItemForm {
 
                 // Render the save button
                 let elButton = document.createElement("div");
-                elButton.classList.add("float-end");
+                
+                // Add styling if not using a modal
+                if (!this._useModal) {
+                    elButton.classList.add("float-end");
+                    elButton.style.padding = "1rem 0";
+                }
+                
                 this._useModal ? Modal.setFooter(elButton) : el.appendChild(elButton);
                 Components.Button({
                     el: elButton,
