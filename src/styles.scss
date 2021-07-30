@@ -111,6 +111,7 @@
     }
     /* Fix padding on the nav links */
     .nav-link {
+        color: #0078d4;
         padding: 0 !important;
     }
     /* Define a custom padding-top value */
@@ -126,6 +127,7 @@
     .page-item.active .page-link {
         background-color: #6c757d;
         border-color: #6c757d;
+        z-index: inherit;
     }
     /* Color match the pagination disabled border colors */
     .page-item.disabled .page-link {
