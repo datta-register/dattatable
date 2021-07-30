@@ -165,6 +165,7 @@ class _ItemForm {
                     elButton.style.padding = "1rem 0";
                 }
                 
+                // Append the create/update button
                 this._useModal ? Modal.setFooter(elButton) : el.appendChild(elButton);
                 Components.Button({
                     el: elButton,

@@ -1,6 +1,6 @@
 {
     "name": "dattatable",
-    "version": "0.6.4",
+    "version": "0.6.5",
     "description": "",
     "main": "build/index.js",
     "typings": "build/index.d.ts",
@@ -36,7 +36,7 @@
         "css-loader": "^6.2.0",
         "datatables.net": "^1.10.25",
         "datatables.net-bs5": "^1.10.25",
-        "gd-sprest-bs": "^7.8.2",
+        "gd-sprest-bs": "^7.8.3",
         "html-loader": "^2.1.2",
         "jquery": "^3.6.0",
         "moment": "^2.29.1",
@@ -46,7 +46,7 @@
         "terser-webpack-plugin": "^5.1.4",
         "ts-loader": "^9.2.4",
         "url-loader": "^4.1.1",
-        "webpack": "^5.46.0",
+        "webpack": "^5.47.1",
         "webpack-cli": "^4.7.2"
     }
 }
