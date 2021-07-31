@@ -47,7 +47,7 @@ class _ItemForm {
     // Creates a new task
     create(props?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
-        _onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
         onSave?: (values: any) => any | PromiseLike<any>;
         onSetFooter?: (el: HTMLElement) => void;
         onSetHeader?: (el: HTMLElement) => void;
@@ -58,7 +58,7 @@ class _ItemForm {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
         this._onCreateEditForm = props.onCreateEditForm;
-        this._onGetListInfo = props._onGetListInfo;
+        this._onGetListInfo = props.onGetListInfo;
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
@@ -74,7 +74,7 @@ class _ItemForm {
     edit(props: {
         itemId: number;
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
-        _onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
         onSave?: (values: any) => any | PromiseLike<any>;
         onSetFooter?: (el: HTMLElement) => void;
         onSetHeader?: (el: HTMLElement) => void;
@@ -85,7 +85,7 @@ class _ItemForm {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Edit;
         this._onCreateEditForm = props.onCreateEditForm;
-        this._onGetListInfo = props._onGetListInfo;
+        this._onGetListInfo = props.onGetListInfo;
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
@@ -100,7 +100,7 @@ class _ItemForm {
     view(props: {
         itemId: number;
         onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
-        _onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
         onSetFooter?: (el: HTMLElement) => void;
         onSetHeader?: (el: HTMLElement) => void;
         useModal?: boolean;
@@ -108,7 +108,7 @@ class _ItemForm {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
         this._onCreateViewForm = props.onCreateViewForm;
-        this._onGetListInfo = props._onGetListInfo;
+        this._onGetListInfo = props.onGetListInfo;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
