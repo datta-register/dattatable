@@ -7,6 +7,7 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 class _ItemForm {
     private _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
     private _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
+    private _onFormButtonsRendering: (buttons: Components.IButtonProps[]) => Components.IButtonProps[] = null;
     private _onGetListInfo: (props: Helper.IListFormProps) => Helper.IListFormProps = null;
     private _onSetFooter?: (el: HTMLElement) => void = null;
     private _onSetHeader?: (el: HTMLElement) => void = null;
@@ -47,6 +48,7 @@ class _ItemForm {
     // Creates a new task
     create(props?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
+        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
         onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
         onSave?: (values: any) => any | PromiseLike<any>;
         onSetFooter?: (el: HTMLElement) => void;
@@ -58,6 +60,7 @@ class _ItemForm {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
         this._onCreateEditForm = props.onCreateEditForm;
+        this._onFormButtonsRendering = props.onFormButtonsRendering;
         this._onGetListInfo = props.onGetListInfo;
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
@@ -74,6 +77,7 @@ class _ItemForm {
     edit(props: {
         itemId: number;
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
+        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
         onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
         onSave?: (values: any) => any | PromiseLike<any>;
         onSetFooter?: (el: HTMLElement) => void;
@@ -85,6 +89,7 @@ class _ItemForm {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Edit;
         this._onCreateEditForm = props.onCreateEditForm;
+        this._onFormButtonsRendering = props.onFormButtonsRendering;
         this._onGetListInfo = props.onGetListInfo;
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
@@ -100,6 +105,7 @@ class _ItemForm {
     view(props: {
         itemId: number;
         onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
+        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
         onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
         onSetFooter?: (el: HTMLElement) => void;
         onSetHeader?: (el: HTMLElement) => void;
@@ -108,6 +114,7 @@ class _ItemForm {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
         this._onCreateViewForm = props.onCreateViewForm;
+        this._onFormButtonsRendering = props.onFormButtonsRendering;
         this._onGetListInfo = props.onGetListInfo;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
@@ -152,7 +159,9 @@ class _ItemForm {
 
             // Render the form based on the type
             if (this.IsDisplay) {
+                let el = document.createElement("div");
                 let props: Components.IListFormDisplayProps = {
+                    el,
                     info: this._info,
                     rowClassName: "mb-3"
                 };
@@ -166,8 +175,34 @@ class _ItemForm {
                 /* Remove the bottom margin from the last row of the form */
                 (this._displayForm.el.lastChild as HTMLElement).classList.remove("mb-3");
 
+                // Render the form buttons
+                let elButtons = document.createElement("div");
+                el.appendChild(elButtons);
+
+                // Add styling if not using a modal
+                if (!this._useModal) {
+                    elButtons.classList.add("float-end");
+                    elButtons.style.padding = "1rem 0";
+                }
+
+                // Append the create/update button
+                this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
+
+                // Call the item form button rendering event
+                let formButtons: Components.IButtonProps[] = [];
+                formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
+
+                // Render the form buttons
+                formButtons && formButtons.length > 0 ? Components.ButtonGroup({
+                    el: elButtons,
+                    buttons: formButtons
+                }) : null;
+
+                // Call the footer event
+                this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
+
                 // Update the body
-                (this._useModal ? Modal : CanvasForm).setBody(this._displayForm.el);
+                (this._useModal ? Modal : CanvasForm).setBody(el);
             } else {
                 let el = document.createElement("div");
                 let props: Components.IListFormEditProps = {
@@ -186,26 +221,34 @@ class _ItemForm {
                 /* Remove the bottom margin from the last row of the form */
                 (this._editForm.el.lastChild as HTMLElement).classList.remove("mb-3");
 
-                // Render the save button
-                let elButton = document.createElement("div");
+                // Render the form buttons
+                let elButtons = document.createElement("div");
 
                 // Add styling if not using a modal
                 if (!this._useModal) {
-                    elButton.classList.add("float-end");
-                    elButton.style.padding = "1rem 0";
+                    elButtons.classList.add("float-end");
+                    elButtons.style.padding = "1rem 0";
                 }
 
                 // Append the create/update button
-                this._useModal ? Modal.setFooter(elButton) : el.appendChild(elButton);
-                Components.Button({
-                    el: elButton,
+                this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
+
+                // Call the item form button rendering event
+                let formButtons: Components.IButtonProps[] = [{
                     text: this.IsNew ? "Create" : "Update",
                     type: Components.ButtonTypes.OutlinePrimary,
                     onClick: () => { this.save(this._editForm); }
-                });
+                }];
+                formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
+
+                // Render the form buttons
+                formButtons && formButtons.length > 0 ? Components.ButtonGroup({
+                    el: elButtons,
+                    buttons: formButtons
+                }) : null;
 
                 // Call the footer event
-                this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButton) : null;
+                this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
 
                 // Update the body
                 (this._useModal ? Modal : CanvasForm).setBody(el);
