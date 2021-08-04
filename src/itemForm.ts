@@ -264,15 +264,12 @@ class _ItemForm {
 
     // Saves the form
     private save(form: Components.IListFormEdit) {
-        // Display a loading dialog
-        LoadingDialog.setHeader("Saving the Item");
-        LoadingDialog.setBody("Validating the form...");
-        LoadingDialog.show();
-
         // Validate the form
         this.validate(form).then(() => {
-            // Update the title
+            // Display a loading dialog
+            LoadingDialog.setHeader("Saving the Item");
             LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
+            LoadingDialog.show();
 
             // Saves the item
             let saveItem = (values) => {
@@ -302,9 +299,6 @@ class _ItemForm {
                 // Save the item
                 saveItem(values);
             }
-        }, () => {
-            // Close the dialog
-            LoadingDialog.hide();
         });
     }
 
@@ -314,8 +308,16 @@ class _ItemForm {
         return new Promise((resolve, reject) => {
             let isValid = form.isValid();
 
+            // Display a loading dialog
+            LoadingDialog.setHeader("Saving the Item");
+            LoadingDialog.setBody("Validating the form...");
+            LoadingDialog.show();
+
             // Ensure it's valid
             if (!isValid) {
+                // Close the dialog
+                LoadingDialog.hide();
+
                 // Reject the request
                 reject();
                 return;
@@ -326,6 +328,9 @@ class _ItemForm {
             if (returnVal && typeof (returnVal.then) === "function") {
                 // Wait for the promise to complete
                 returnVal.then(isValid => {
+                    // Close the dialog
+                    LoadingDialog.hide();
+
                     // Resolve the request
                     isValid ? resolve() : reject();
                 });
@@ -334,6 +339,9 @@ class _ItemForm {
                     // Update the flag
                     isValid = returnVal;
                 }
+
+                // Close the dialog
+                LoadingDialog.hide();
 
                 // Resolve the request
                 isValid ? resolve() : reject();
