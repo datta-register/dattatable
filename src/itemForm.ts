@@ -45,6 +45,11 @@ class _ItemForm {
 
     /** Public Methods */
 
+    // Closes the item form
+    close() {
+        this._useModal ? Modal.hide() : CanvasForm.hide();
+    }
+
     // Creates a new task
     create(props?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
