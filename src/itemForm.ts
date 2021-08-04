@@ -94,6 +94,7 @@ class _ItemForm {
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
+        this._onValidation = props.onValidation;
         this._updateEvent = props.onUpdate;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
@@ -309,7 +310,7 @@ class _ItemForm {
             let isValid = form.isValid();
 
             // Display a loading dialog
-            LoadingDialog.setHeader("Saving the Item");
+            LoadingDialog.setHeader("Validation");
             LoadingDialog.setBody("Validating the form...");
             LoadingDialog.show();
 
