@@ -7,13 +7,13 @@ import { filterSquare } from "gd-sprest-bs/build/icons/svgs/filterSquare";
 interface INavProps {
     el: HTMLElement;
     hideFilter?: boolean;
-    items: Components.INavbarItem[];
-    itemsEnd: Components.INavbarItem[];
+    items?: Components.INavbarItem[];
+    itemsEnd?: Components.INavbarItem[];
     onFilterRendered?: (el: HTMLElement) => void;
     onRendering?: (props: Components.INavbarProps) => void;
     onRendered?: (el: HTMLElement) => void;
-    onShowFilter: Function;
-    onSearch: (value: string) => void;
+    onShowFilter?: Function;
+    onSearch?: (value: string) => void;
     title: string | HTMLElement;
 }
 
