@@ -51,7 +51,7 @@ class _ItemForm {
     }
 
     // Creates a new task
-    create(props?: {
+    create(props: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
         onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
         onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
@@ -61,7 +61,7 @@ class _ItemForm {
         onUpdate?: (item?: any) => void;
         onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
         useModal?: boolean;
-    }) {
+    } = {}) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
         this._onCreateEditForm = props.onCreateEditForm;

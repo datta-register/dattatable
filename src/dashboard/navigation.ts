@@ -60,7 +60,7 @@ export class Navigation {
         // Update the navbar color palate
         nav.el.classList.remove("navbar-light");
         nav.el.classList.add("navbar-dark");
-        
+
         // See if we are showing the filter
         if (this._props.hideFilter != true) {
             // Render the filter icon
@@ -70,7 +70,7 @@ export class Navigation {
             icon.classList.add("text-light");
             icon.style.cursor = "pointer";
             icon.appendChild(filterSquare());
-            icon.addEventListener("click", this._props.onShowFilter as any);
+            this._props.onShowFilter ? icon.addEventListener("click", this._props.onShowFilter as any) : null;
             nav.el.firstElementChild.appendChild(icon);
 
             // Call the render event
