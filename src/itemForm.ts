@@ -271,41 +271,48 @@ class _ItemForm {
     // Saves the form
     private save(form: Components.IListFormEdit) {
         // Validate the form
-        this.validate(form).then(() => {
-            // Display a loading dialog
-            LoadingDialog.setHeader("Saving the Item");
-            LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
-            LoadingDialog.show();
+        this.validate(form).then(
+            // Success
+            () => {
+                // Display a loading dialog
+                LoadingDialog.setHeader("Saving the Item");
+                LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
+                LoadingDialog.show();
 
-            // Saves the item
-            let saveItem = (values) => {
-                // Save the item
-                Components.ListForm.saveItem(this._info, values).then(item => {
-                    // Call the update event
-                    this._updateEvent ? this._updateEvent(item) : null;
+                // Saves the item
+                let saveItem = (values) => {
+                    // Save the item
+                    Components.ListForm.saveItem(this._info, values).then(item => {
+                        // Call the update event
+                        this._updateEvent ? this._updateEvent(item) : null;
 
-                    // Close the dialogs
-                    (this._useModal ? Modal : CanvasForm).hide();
-                    LoadingDialog.hide();
-                });
-            }
+                        // Close the dialogs
+                        (this._useModal ? Modal : CanvasForm).hide();
+                        LoadingDialog.hide();
+                    });
+                }
 
-            // Call the save event
-            let values = form.getValues();
-            values = this._onSave ? this._onSave(values) : values;
+                // Call the save event
+                let values = form.getValues();
+                values = this._onSave ? this._onSave(values) : values;
 
-            // See if the onSave event returned a promise
-            if (values && typeof (values.then) === "function") {
-                // Wait for the promise to complete
-                values.then(values => {
+                // See if the onSave event returned a promise
+                if (values && typeof (values.then) === "function") {
+                    // Wait for the promise to complete
+                    values.then(values => {
+                        // Save the item
+                        saveItem(values);
+                    });
+                } else {
                     // Save the item
                     saveItem(values);
-                });
-            } else {
-                // Save the item
-                saveItem(values);
+                }
+            },
+            // Error
+            () => {
+                // Do Nothing
             }
-        });
+        );
     }
 
     // Validates the form
