@@ -87,21 +87,22 @@ export class Dashboard {
         });
 
         // Render the template
-        this._props.el.innerHTML = `
-        <div class="dashboard">
-            <div class="row">
-                <div id="navigation" class="col"></div>
-            </div>
-            <div class="row">
-                <div id="header" class="col"></div>
-            </div>
-            <div class="row">
-                <div id="datatable" class="col"></div>
-            </div>
-            <div class="row">
-                <div id="footer" class="col"></div>
-            </div>
-        </div>`;
+        let elTemplate = document.createElement("div");
+        elTemplate.classList.add("dashboard");
+        elTemplate.innerHTML = `
+        <div class="row">
+            <div id="navigation" class="col"></div>
+        </div>
+        <div class="row">
+            <div id="header" class="col"></div>
+        </div>
+        <div class="row">
+            <div id="datatable" class="col"></div>
+        </div>
+        <div class="row">
+            <div id="footer" class="col"></div>
+        </div>`.trim();
+        this._props.el.appendChild(elTemplate);
 
         // See if we are hiding the header
         if (this._props.hideHeader) {
