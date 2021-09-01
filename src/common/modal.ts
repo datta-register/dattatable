@@ -41,7 +41,18 @@ class _Modal {
         // Create the element
         let el = document.createElement("div");
         el.id = "core-modal";
-        document.body.appendChild(el);
+
+        // Ensure the body exists
+        if (document.body) {
+            // Append the element
+            document.body.appendChild(el);
+        } else {
+            // Create an event
+            window.addEventListener("load", () => {
+                // Append the element
+                document.body.appendChild(el);
+            });
+        }
 
         // Render the canvas
         this._modal = Components.Modal({

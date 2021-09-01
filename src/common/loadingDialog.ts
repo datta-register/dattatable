@@ -31,7 +31,6 @@ export class LoadingDialogModal {
         this._elBackdrop = document.createElement("div");
         this._elBackdrop.id = "loading-dialog-backdrop";
         this._elBackdrop.style.display = "none";
-        document.body.appendChild(this._elBackdrop);
 
         // Create the loading dialog element
         this._el = document.createElement("div");
@@ -39,7 +38,20 @@ export class LoadingDialogModal {
         this._el.classList.add("bs");
         this._el.style.display = "none";
         this._el.innerHTML = "<div></div>";
-        document.body.appendChild(this._el);
+
+        // Ensure the body exists
+        if (document.body) {
+            // Append the elements
+            document.body.appendChild(this._elBackdrop);
+            document.body.appendChild(this._el);
+        } else {
+            // Create an event
+            window.addEventListener("load", () => {
+                // Append the elements
+                document.body.appendChild(this._elBackdrop);
+                document.body.appendChild(this._el);
+            });
+        }
 
         // Update the main element
         let elMain = this._el.firstChild as HTMLElement;
