@@ -66,6 +66,9 @@ class _CanvasForm {
         });
     }
 
+    // Sets the auto close flag
+    setAutoClose(value: boolean) { this._canvas.setAutoClose(value); }
+
     // Sets the body
     setBody(content) {
         // Clear the body

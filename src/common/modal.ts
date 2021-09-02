@@ -74,6 +74,9 @@ class _Modal {
         });
     }
 
+    // Sets the auto close flag
+    setAutoClose(value: boolean) { this._modal.setAutoClose(value); }
+
     // Sets the body
     setBody(content) {
         // Clear the body

@@ -15,6 +15,12 @@ class _ItemForm {
     private _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
     private _updateEvent: Function = null;
 
+    // Auto Close Flag
+    private set AutoClose(value: boolean) {
+        // Update the flag
+        this.UseModal ? Modal.setAutoClose(value) : CanvasForm.setAutoClose(value);
+    }
+
     // Display Form
     private _displayForm: Components.IListFormDisplay = null;
     get DisplayForm(): Components.IListFormDisplay { return this._displayForm; }
