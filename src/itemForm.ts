@@ -16,7 +16,7 @@ class _ItemForm {
     private _updateEvent: Function = null;
 
     // Auto Close Flag
-    private set AutoClose(value: boolean) {
+    set AutoClose(value: boolean) {
         // Update the flag
         this.UseModal ? Modal.setAutoClose(value) : CanvasForm.setAutoClose(value);
     }
