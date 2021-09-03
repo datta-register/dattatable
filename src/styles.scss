@@ -1,21 +1,26 @@
 @import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 .bs {
     /* Color match links to 'SharePoint Blue' */
-    a, .link-primary {
+    a,
+    .link-primary {
         color: #0078d4;
     }
     /* Color match hover links */
-    a:hover, a:focus, .link-primary:hover, .link-primary:focus {
+    a:hover,
+    a:focus,
+    .link-primary:hover,
+    .link-primary:focus {
         color: #004c86;
     }
     /* Color match active links */
-    a:active, .link-primary:active {
+    a:active,
+    .link-primary:active {
         color: #c4e4ff;
     }
     /* Color match accordion on focus */
     .accordion-button:focus {
         border-color: #2d8ad6;
-        box-shadow: 0 0 0 0.25rem rgba(45,138,214,0.25);
+        box-shadow: 0 0 0 0.25rem rgba(45, 138, 214, 0.25);
     }
     /* Color match accordion while expanded */
     .accordion-button:not(.collapsed) {
@@ -28,7 +33,9 @@
     }
     /* Color match the primary button to 'SharePoint Blue' */
     /* Don't reorder the btn-primary classes. It breaks active colors. */
-    .btn-primary, .btn-primary:disabled, .btn-primary.disabled {
+    .btn-primary,
+    .btn-primary:disabled,
+    .btn-primary.disabled {
         background-color: #0078d4;
         border-color: #0078d4;
     }
@@ -38,7 +45,9 @@
         border-color: #004c86;
     }
     /* Color match primary outline button */
-    .btn-outline-primary, .btn-outline-primary:disabled, .btn-outline-primary.disabled {
+    .btn-outline-primary,
+    .btn-outline-primary:disabled,
+    .btn-outline-primary.disabled {
         border-color: #0078d4;
         color: #0078d4;
     }
@@ -52,39 +61,56 @@
         color: #f8f9fa;
     }
     /* Fix color for outline light active */
-    .btn-outline-light:active, .btn-outline-light:hover {
+    .btn-outline-light:active,
+    .btn-outline-light:hover {
         color: #000;
     }
     /* Color match primary outline button focus */
-    .btn-check:focus+.bs .btn-outline-primary, .btn-outline-primary:focus {
-        box-shadow: 0 0 0 0.25rem rgba(45,138,214,0.5);
+    .btn-check:focus+.bs .btn-outline-primary,
+    .btn-outline-primary:focus {
+        box-shadow: 0 0 0 0.25rem rgba(45, 138, 214, 0.5);
     }
     /* Color match primary outline button active */
-    .btn-check:checked+.bs .btn-outline-primary, .btn-check:active+.bs .btn-outline-primary, .btn-outline-primary:active, .btn-outline-primary.active, .btn-outline-primary.dropdown-toggle.show {
+    .btn-check:checked+.bs .btn-outline-primary,
+    .btn-check:active+.bs .btn-outline-primary,
+    .btn-outline-primary:active,
+    .btn-outline-primary.active,
+    .btn-outline-primary.dropdown-toggle.show {
         background-color: #004c86;
         border-color: #004c86;
     }
     /* Color match the primary button focus */
-    .btn-check:focus+.btn-primary, .btn-primary:focus {
+    .btn-check:focus+.btn-primary,
+    .btn-primary:focus {
         background-color: #004c86;
         border-color: #004c86;
-        box-shadow: 0 0 0 0.25rem rgba(45,138,214,0.5);
+        box-shadow: 0 0 0 0.25rem rgba(45, 138, 214, 0.5);
     }
     /* Color match the primary button active */
-    .bs .btn-check:checked+.btn-primary, .btn-check:active+.btn-primary, .btn-primary:active, .btn-primary.active, .show>.btn-primary.dropdown-toggle {
+    .bs .btn-check:checked+.btn-primary,
+    .btn-check:active+.btn-primary,
+    .btn-primary:active,
+    .btn-primary.active,
+    .show>.btn-primary.dropdown-toggle {
         background-color: #c4e4ff;
         border-color: #c4e4ff;
     }
     /* Color match the shadow on active */
-    .btn-check:checked+.btn-primary:focus, .btn-check:active+.btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus, .show>.btn-primary.dropdown-toggle:focus {
-        box-shadow: 0 0 0 0.25rem rgba(45,138,214,0.5);
+    .btn-check:checked+.btn-primary:focus,
+    .btn-check:active+.btn-primary:focus,
+    .btn-primary:active:focus,
+    .btn-primary.active:focus,
+    .show>.btn-primary.dropdown-toggle:focus {
+        box-shadow: 0 0 0 0.25rem rgba(45, 138, 214, 0.5);
     }
     /* Color match dropdown hover */
-    .dropdown-item:hover, .dropdown-item:focus {
+    .dropdown-item:hover,
+    .dropdown-item:focus {
         background-color: #dee2e6;
     }
     /* Color match dropdown active */
-    .dropdown-item.active, .dropdown-item:active {
+    .dropdown-item.active,
+    .dropdown-item:active {
         background-color: #0078d4;
     }
     /** Color match the toggle background color to 'SharePoint Blue' */
@@ -93,9 +119,10 @@
         border-color: #0078d4;
     }
     /* Color match form-select active */
-    .form-select:active, .form-select:focus {
+    .form-select:active,
+    .form-select:focus {
         border-color: #2d8ad6;
-        box-shadow: 0 0 0 0.25rem rgba(45,138,214,0.25);
+        box-shadow: 0 0 0 0.25rem rgba(45, 138, 214, 0.25);
     }
     /* Color match the toggle on focus */
     .form-switch .form-check-input:focus {
@@ -127,7 +154,9 @@
         color: #fff;
     }
     /* Color match nav-tabs active to SharePoint */
-    .nav-tabs .nav-link.active, .nav-tabs .show>.nav-link, .nav-tabs .nav-link:focus {
+    .nav-tabs .nav-link.active,
+    .nav-tabs .show>.nav-link,
+    .nav-tabs .nav-link:focus {
         background-color: #0078d4;
         border-color: #0078d4;
         color: #fff;
@@ -162,9 +191,11 @@
         border-color: #6c757d;
     }
     /* Color match for SharePoint */
-    .page-link:focus, .form-control:focus, .form-check-input:focus {
+    .page-link:focus,
+    .form-control:focus,
+    .form-check-input:focus {
         border-color: #2d8ad6;
-        box-shadow: 0 0 0 0.25rem rgba(45,138,214,0.25);
+        box-shadow: 0 0 0 0.25rem rgba(45, 138, 214, 0.25);
         color: #333333;
     }
     /* Match the table header to the table footer; size & color */
@@ -181,7 +212,9 @@
     }
 }
 
+
 /* Set white background & alignment for footer */
+
 #footer nav {
     background-color: #fff !important;
     padding: 0 !important;
@@ -189,7 +222,10 @@
         padding-right: 0.75rem;
     }
 }
+
+
 /* Assign styling to the loading-dialog */
+
 #loading-dialog {
     left: 50%;
     top: 50%;
@@ -201,7 +237,7 @@
         align-items: center;
         background-color: #FFF;
         border-radius: 0.3rem;
-        border: 1px solid rgba(0,0,0,0.2);
+        border: 1px solid rgba(0, 0, 0, 0.2);
         background-clip: padding-box;
         margin: 30vh 30vw;
         div[role=status] {
@@ -211,7 +247,10 @@
         }
     }
 }
+
+
 /* Assign styling to the loading-dialog-backdrop */
+
 #loading-dialog-backdrop {
     background-color: #000;
     height: 100vh;
@@ -222,7 +261,10 @@
     width: 100vw;
     z-index: 2000;
 }
+
+
 /* Customize navigation alignment */
+
 #navigation {
     margin-top: 1.25rem;
     nav {
@@ -232,47 +274,10 @@
         }
     }
 }
-/* Tooltip primary theme color */
-.tippy-box[data-theme~='primary'] {
-    background-color: #0078d4;
-}
-/* Tooltip primary theme color */
-.tippy-box[data-theme~='primary'][data-placement^='top'] > .tippy-arrow::before {
-    border-top-color: #0078d4;
-}
-/* Tooltip primary theme color */
-.tippy-box[data-theme~='primary'][data-placement^='bottom'] > .tippy-arrow::before {
-    border-bottom-color: #0078d4;
-}
-/* Tooltip primary theme color */
-.tippy-box[data-theme~='primary'][data-placement^='left'] > .tippy-arrow::before {
-    border-left-color: #0078d4;
-}
-/* Tooltip primary theme color */
-.tippy-box[data-theme~='primary'][data-placement^='right'] > .tippy-arrow::before {
-    border-right-color: #0078d4;
-}
-/* Tooltip secondary theme color */
-.tippy-box[data-theme~='secondary'] {
-    background-color: #6c757d;
-}
-/* Tooltip secondary theme color */
-.tippy-box[data-theme~='secondary'][data-placement^='top'] > .tippy-arrow::before {
-    border-top-color: #6c757d;
-}
-/* Tooltip secondary theme color */
-.tippy-box[data-theme~='secondary'][data-placement^='bottom'] > .tippy-arrow::before {
-    border-bottom-color: #6c757d;
-}
-/* Tooltip secondary theme color */
-.tippy-box[data-theme~='secondary'][data-placement^='left'] > .tippy-arrow::before {
-    border-left-color: #6c757d;
-}
-/* Tooltip secondary theme color */
-.tippy-box[data-theme~='secondary'][data-placement^='right'] > .tippy-arrow::before {
-    border-right-color: #6c757d;
-}
+
+
 /* Color match colReorder line */
+
 div.DTCR_pointer {
     background-color: #0078d4;
 }

@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.2.0_webpack@5.51.2
   datatables.net: 1.10.25
   datatables.net-bs5: 1.10.25
-  gd-sprest-bs: 7.9.8
+  gd-sprest-bs: 8.0.1
   html-loader: 2.1.2_webpack@5.51.2
   jquery: 3.6.0
   moment: 2.29.1
@@ -1168,10 +1168,10 @@ packages:
       node: '>=10.0.0'
     resolution:
       integrity: sha512-Fxt+AfXgjMoin2maPIYzFZnQjAXjAL0PHscM5pRTtatFqB+vZxAM9tLp2Optnuw3QOQC40jTNeGYFOMvyf7v9g==
-  /@popperjs/core/2.10.0:
+  /@popperjs/core/2.10.1:
     dev: true
     resolution:
-      integrity: sha512-QWvCHtYwNIR3C/mxW9jGzOu1gbaZkq/6is2OedayPH7HsxI4CVuVzAZ1PmxRElXLwwwCN7aMjRhxtTAGLEZ8IQ==
+      integrity: sha512-HnUhk1Sy9IuKrxEMdIRCxpIqPw6BFsbYSEUO9p/hNw5sMld/+3OLMWQP80F8/db9qsv3qUjs7ZR5bS/R+iinXw==
   /@types/eslint-scope/3.7.1:
     dependencies:
       '@types/eslint': 7.28.0
@@ -2126,7 +2126,7 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-BRdNm8hbWzFzWHERTrejLqwHDfS4GibPoq5wjTPIoJHoBtKGPg3xAFfxmM+9ztbXelxcf2hwQcaz1PtmFeue8g==
-  /gd-bs/4.7.7:
+  /gd-bs/4.8.2:
     dependencies:
       bootstrap: 5.1.0
       bootstrap-icons: 1.5.0
@@ -2134,16 +2134,16 @@ packages:
       tippy.js: 6.3.1
     dev: true
     resolution:
-      integrity: sha512-Fa5jggJKvp6EHlk78b8WMQoALQR1oweVFfqTrEcrQ2VPOYMp+eGetLcouDCXEh8iPAKTEdz4o9WfkVahsEg65Q==
-  /gd-sprest-bs/7.9.8:
+      integrity: sha512-A4pn46BiR/oVep/OVcKPaeugAxPQxoTmETT8ZsYsKs1LZmi5V42LJas5W4echxM31L5a2Z2Pe7tjdLG4hTc+oQ==
+  /gd-sprest-bs/8.0.1:
     dependencies:
       flatpickr: 4.6.9
-      gd-bs: 4.7.7
+      gd-bs: 4.8.2
       gd-sprest: 6.5.6
       gd-sprest-def: 1.0.4
     dev: true
     resolution:
-      integrity: sha512-W0cIwY9e0MvPb3pN3o9VLGGHN/XzrjiBHhukBZ937EQBGstaxKsQqKuPDifAiK7oyvjwh8BKEIS4rWUGDe4/ow==
+      integrity: sha512-+8Qfh5WECvVUl45UaUXV+3boP0Q9fiC1E0xy1wZCFl4XSJlwn0l8UPYQ/rYEo0+XFSq9dkUPw0trh5gFYlKwtw==
   /gd-sprest-def/1.0.4:
     dev: true
     resolution:
@@ -3682,7 +3682,7 @@ packages:
       integrity: sha512-0Omye+RD4X7X69O0eql3lC4Heh/5iLj3ggxR/B5ketZLOtLiOqukUgjw3q4PDnNQbsrkKr3UMypqStQG3XKRvw==
   /tippy.js/6.3.1:
     dependencies:
-      '@popperjs/core': 2.10.0
+      '@popperjs/core': 2.10.1
     dev: true
     resolution:
       integrity: sha512-JnFncCq+rF1dTURupoJ4yPie5Cof978inW6/4S6kmWV7LL9YOSEVMifED3KdrVPEG+Z/TFH2CDNJcQEfaeuQww==
@@ -4034,7 +4034,7 @@ specifiers:
   css-loader: ^6.2.0
   datatables.net: ^1.10.25
   datatables.net-bs5: ^1.10.25
-  gd-sprest-bs: ^7.9.8
+  gd-sprest-bs: ^8.0.1
   html-loader: ^2.1.2
   jquery: ^3.6.0
   moment: ^2.29.1
