@@ -132,9 +132,23 @@
     .form-switch .form-check-input:checked {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
     }
+    /* Flip an image horizontally */
+    .img-flip-x {
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+    }
+    /* Flip an image vertically */
+    .img-flip-y {
+        -webkit-transform: scaleY(-1);
+        transform: scaleY(-1);
+    }
     /* Define a custom margin-start value */
     .ms-75 {
         margin-left: 0.75rem !important;
+    }
+    /* Set max-width to fit content */
+    .mw-fit {
+        max-width: fit-content !important;
     }
     /* Fix padding on the nav links */
     .nav-link {
@@ -160,6 +174,18 @@
         background-color: #0078d4;
         border-color: #0078d4;
         color: #fff;
+    }
+    /* Properly align the navbar brand text */
+    .navbar-brand {
+        align-items: baseline;
+    }
+    /* Define a custom padding-end value */
+    .pe-06 {
+        padding-right: 0.6rem !important;
+    }
+    /* Define a custom padding-start value */
+    .ps-75 {
+        padding-left: 0.75rem !important;
     }
     /* Define a custom padding-top value */
     .pt-03 {
@@ -210,11 +236,13 @@
     .text-default {
         color: #333333;
     }
+    /* Define a custom width value */
+    .w-5 {
+        width: 5% !important;
+    }
 }
 
-
 /* Set white background & alignment for footer */
-
 #footer nav {
     background-color: #fff !important;
     padding: 0 !important;
@@ -223,9 +251,7 @@
     }
 }
 
-
 /* Assign styling to the loading-dialog */
-
 #loading-dialog {
     left: 50%;
     top: 50%;
@@ -248,9 +274,7 @@
     }
 }
 
-
 /* Assign styling to the loading-dialog-backdrop */
-
 #loading-dialog-backdrop {
     background-color: #000;
     height: 100vh;
@@ -262,9 +286,7 @@
     z-index: 2000;
 }
 
-
 /* Customize navigation alignment */
-
 #navigation {
     margin-top: 1.25rem;
     nav {
@@ -275,9 +297,7 @@
     }
 }
 
-
 /* Color match colReorder line */
-
 div.DTCR_pointer {
     background-color: #0078d4;
 }
