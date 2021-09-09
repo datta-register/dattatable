@@ -119,6 +119,7 @@ class _InstallationRequired {
 
                     // Render the install button
                     Components.Tooltip({
+                        el,
                         content: "Installs the SharePoint Assets",
                         btnProps: {
                             assignTo: btn => { btnInstall = btn; },
@@ -146,6 +147,7 @@ class _InstallationRequired {
 
                     // Render the refresh button
                     Components.Tooltip({
+                        el,
                         content: "Refresh the Page",
                         btnProps: {
                             assignTo: btn => { btnRefresh = btn; },
