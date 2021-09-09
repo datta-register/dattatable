@@ -1,4 +1,6 @@
-import { Helper, Web } from "gd-sprest-bs";
+import { Components, Helper, Web } from "gd-sprest-bs";
+import { LoadingDialog } from "./loadingDialog";
+import { Modal } from "./modal";
 
 /**
  * Installation Required
@@ -80,6 +82,88 @@ class _InstallationRequired {
                 resolve(this._report.length > 0);
             });
         });
+    }
+
+    showDialog() {
+        // Set the header
+        Modal.setHeader("Installation Required");
+
+        // Set the body
+        Modal.setBody(Components.Card({
+            body: [
+                {
+                    text: "An installation is required. The following were missing in your environment:"
+                },
+                {
+                    onRender: el => {
+                        let items: Components.IListGroupItem[] = [];
+
+                        // Parse the report
+                        for (let i = 0; i < this._report.length; i++) {
+                            // Add the item
+                            items.push({ content: this._report[i] });
+                        }
+
+                        // Render a list
+                        Components.ListGroup({
+                            el,
+                            items
+                        });
+                    }
+                }
+            ],
+            footer: {
+                onRender: el => {
+                    let btnInstall: Components.IButton = null;
+                    let btnRefresh: Components.IButton = null;
+
+                    // Render the install button
+                    Components.Tooltip({
+                        content: "Installs the SharePoint Assets",
+                        btnProps: {
+                            assignTo: btn => { btnInstall = btn; },
+                            text: "Install",
+                            type: Components.ButtonTypes.OutlineSuccess,
+                            onClick: () => {
+                                // Show a loading dialog
+                                LoadingDialog.setHeader("Installing the Solution");
+                                LoadingDialog.setBody("This will close after the assets are installed.");
+                                LoadingDialog.show();
+
+                                this._cfg.install().then(() => {
+                                    // Hide the button
+                                    btnInstall.hide();
+
+                                    // Show the refresh button
+                                    btnRefresh.show();
+
+                                    // Close the dialog
+                                    LoadingDialog.hide();
+                                });
+                            }
+                        }
+                    });
+
+                    // Render the refresh button
+                    Components.Tooltip({
+                        content: "Refresh the Page",
+                        btnProps: {
+                            assignTo: btn => { btnRefresh = btn; },
+                            className: "d-none",
+                            text: "Refresh",
+                            type: Components.ButtonTypes.OutlinePrimary,
+                            onClick: () => {
+                                // Refresh the page
+                                window.location.href = window.location.href;
+                            }
+                        }
+                    });
+                }
+            }
+        }));
+
+        // Show the modal
+        Modal.show();
     }
 }
 export const InstallationRequired = new _InstallationRequired();
