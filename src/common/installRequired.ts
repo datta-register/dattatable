@@ -160,7 +160,7 @@ class _InstallationRequired {
                     });
                 }
             }
-        }));
+        }).el);
 
         // Show the modal
         Modal.show();
