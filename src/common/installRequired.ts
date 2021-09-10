@@ -156,7 +156,7 @@ class _InstallationRequired {
                             type: Components.ButtonTypes.OutlinePrimary,
                             onClick: () => {
                                 // Refresh the page
-                                window.location.href = window.location.href;
+                                window.location.reload();
                             }
                         }
                     });
