@@ -3,38 +3,38 @@ import { Components } from "gd-sprest-bs";
 /**
  * Canvas Form
  */
-export class _CanvasForm {
-    private _canvas: Components.IOffcanvas = null;
+export class CanvasForm {
+    private static _canvas: Components.IOffcanvas = null;
 
     // Modal Body
-    private _elBody: HTMLElement = null;
-    get BodyElement(): HTMLElement { return this._elBody; }
+    private static _elBody: HTMLElement = null;
+    static get BodyElement(): HTMLElement { return this._elBody; }
 
     // Modal Header
-    private _elHeader: HTMLElement = null;
-    get HeaderElement(): HTMLElement { return this._elHeader; }
+    private static _elHeader: HTMLElement = null;
+    static get HeaderElement(): HTMLElement { return this._elHeader; }
 
     // Constructor
     constructor() {
         // Render the canvas
-        this.render();
+        CanvasForm.render();
     }
 
     // Clears the canvas form
-    clear() {
+    static clear() {
         // Clear the header and body
         this.setHeader("");
         this.setBody("");
     }
 
     // Element
-    get el(): HTMLElement { return this._canvas.el as HTMLElement; }
+    static get el(): HTMLElement { return this._canvas.el as HTMLElement; }
 
     // Hides the canvas
-    hide() { this._canvas.hide(); }
+    static hide() { this._canvas.hide(); }
 
     // Renders the canvas
-    private render() {
+    private static render() {
         // Create the element
         let el = document.createElement("div");
         el.id = "core-canvas";
@@ -67,10 +67,10 @@ export class _CanvasForm {
     }
 
     // Sets the auto close flag
-    setAutoClose(value: boolean) { this._canvas.setAutoClose(value); }
+    static setAutoClose(value: boolean) { this._canvas.setAutoClose(value); }
 
     // Sets the body
-    setBody(content) {
+    static setBody(content) {
         // Clear the body
         while (this._elBody.firstChild) { this._elBody.removeChild(this._elBody.firstChild); }
 
@@ -88,7 +88,7 @@ export class _CanvasForm {
     }
 
     // Sets the header
-    setHeader(content) {
+    static setHeader(content) {
         // Clear the body
         while (this._elHeader.firstChild) { this._elHeader.removeChild(this._elHeader.firstChild); }
 
@@ -106,9 +106,11 @@ export class _CanvasForm {
     }
 
     // Sets the modal type
-    setType(type) { this._canvas.setType(type); }
+    static setType(type) { this._canvas.setType(type); }
 
     // Shows the canvas
-    show() { this._canvas.show(); }
+    static show() { this._canvas.show(); }
 }
-export const CanvasForm = new _CanvasForm();
+
+// Create an instance of the canvas form
+new CanvasForm();

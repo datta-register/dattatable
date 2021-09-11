@@ -6,12 +6,12 @@ import { Modal } from "./modal";
  * Installation Required
  * Checks the SharePoint configuration file to see if an install is required.
  */
-export class _InstallationRequired {
-    private _cfg: Helper.ISPConfig = null;
-    private _report: string[] = null;
+export class InstallationRequired {
+    private static _cfg: Helper.ISPConfig = null;
+    private static _report: string[] = null;
 
     // Checks the lists
-    private checkLists(): PromiseLike<void> {
+    private static checkLists(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve) => {
             // Parse the lists
@@ -67,7 +67,7 @@ export class _InstallationRequired {
     }
 
     // Checks the configuration to see if an installation is required
-    requiresInstall(cfg: Helper.ISPConfig): PromiseLike<boolean> {
+    static requiresInstall(cfg: Helper.ISPConfig): PromiseLike<boolean> {
         // Save the configuration
         this._cfg = cfg;
 
@@ -84,7 +84,7 @@ export class _InstallationRequired {
         });
     }
 
-    showDialog() {
+    static showDialog() {
         // Set the header
         Modal.setHeader("Installation Required");
 
@@ -168,4 +168,3 @@ export class _InstallationRequired {
         Modal.show();
     }
 }
-export const InstallationRequired = new _InstallationRequired();

@@ -4,60 +4,60 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 /**
  * Item Form
  */
-export class _ItemForm {
-    private _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
-    private _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
-    private _onFormButtonsRendering: (buttons: Components.IButtonProps[]) => Components.IButtonProps[] = null;
-    private _onGetListInfo: (props: Helper.IListFormProps) => Helper.IListFormProps = null;
-    private _onSetFooter?: (el: HTMLElement) => void = null;
-    private _onSetHeader?: (el: HTMLElement) => void = null;
-    private _onSave: (values: any) => any | PromiseLike<any> = null;
-    private _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
-    private _updateEvent: Function = null;
+export class ItemForm {
+    private static _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
+    private static _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
+    private static _onFormButtonsRendering: (buttons: Components.IButtonProps[]) => Components.IButtonProps[] = null;
+    private static _onGetListInfo: (props: Helper.IListFormProps) => Helper.IListFormProps = null;
+    private static _onSetFooter?: (el: HTMLElement) => void = null;
+    private static _onSetHeader?: (el: HTMLElement) => void = null;
+    private static _onSave: (values: any) => any | PromiseLike<any> = null;
+    private static _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
+    private static _updateEvent: Function = null;
 
     // Auto Close Flag
-    set AutoClose(value: boolean) {
+    static set AutoClose(value: boolean) {
         // Update the flag
         this.UseModal ? Modal.setAutoClose(value) : CanvasForm.setAutoClose(value);
     }
 
     // Display Form
-    private _displayForm: Components.IListFormDisplay = null;
-    get DisplayForm(): Components.IListFormDisplay { return this._displayForm; }
+    private static _displayForm: Components.IListFormDisplay = null;
+    static get DisplayForm(): Components.IListFormDisplay { return this._displayForm; }
 
     // Edit Form
-    private _editForm: Components.IListFormEdit = null;
-    get EditForm(): Components.IListFormEdit { return this._editForm; }
+    private static _editForm: Components.IListFormEdit = null;
+    static get EditForm(): Components.IListFormEdit { return this._editForm; }
 
     // Form Information
-    private _info = null;
-    get FormInfo(): Helper.IListFormResult { return this._info; }
+    private static _info = null;
+    static get FormInfo(): Helper.IListFormResult { return this._info; }
 
     // Form Modes
-    private _controlMode: number = null;
-    get IsDisplay(): boolean { return this._controlMode == SPTypes.ControlMode.Display; }
-    get IsEdit(): boolean { return this._controlMode == SPTypes.ControlMode.Edit; }
-    get IsNew(): boolean { return this._controlMode == SPTypes.ControlMode.New; }
+    private static _controlMode: number = null;
+    static get IsDisplay(): boolean { return this._controlMode == SPTypes.ControlMode.Display; }
+    static get IsEdit(): boolean { return this._controlMode == SPTypes.ControlMode.Edit; }
+    static get IsNew(): boolean { return this._controlMode == SPTypes.ControlMode.New; }
 
     // List name
-    private _listName: string = null;
-    get ListName(): string { return this._listName; }
-    set ListName(value: string) { this._listName = value; }
+    private static _listName: string = null;
+    static get ListName(): string { return this._listName; }
+    static set ListName(value: string) { this._listName = value; }
 
     // Flag to use a modal or canvas (default)
-    private _useModal: boolean = false;
-    get UseModal(): boolean { return this._useModal; }
-    set UseModal(value: boolean) { this._useModal = value; }
+    private static _useModal: boolean = false;
+    static get UseModal(): boolean { return this._useModal; }
+    static set UseModal(value: boolean) { this._useModal = value; }
 
     /** Public Methods */
 
     // Closes the item form
-    close() {
+    static close() {
         this._useModal ? Modal.hide() : CanvasForm.hide();
     }
 
     // Creates a new task
-    create(props: {
+    static create(props: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
         onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
         onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
@@ -85,7 +85,7 @@ export class _ItemForm {
     }
 
     // Edits a task
-    edit(props: {
+    static edit(props: {
         itemId: number;
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
         onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
@@ -114,7 +114,7 @@ export class _ItemForm {
     }
 
     // Views the task
-    view(props: {
+    static view(props: {
         itemId: number;
         onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
         onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
@@ -136,10 +136,10 @@ export class _ItemForm {
         this.load(props.itemId);
     }
 
-    /** Private Methods */
+    /** private static Methods */
 
     // Load the form information
-    private load(itemId?: number) {
+    private static load(itemId?: number) {
         // Clear the forms
         this._displayForm = null;
         this._editForm = null;
@@ -275,7 +275,7 @@ export class _ItemForm {
     }
 
     // Saves the form
-    private save(form: Components.IListFormEdit) {
+    private static save(form: Components.IListFormEdit) {
         // Validate the form
         this.validate(form).then(
             // Success
@@ -322,7 +322,7 @@ export class _ItemForm {
     }
 
     // Validates the form
-    private validate(form: Components.IListFormEdit): PromiseLike<void> {
+    private static validate(form: Components.IListFormEdit): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let isValid = form.isValid();
@@ -368,4 +368,3 @@ export class _ItemForm {
         });
     }
 }
-export const ItemForm = new _ItemForm();

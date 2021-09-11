@@ -3,30 +3,30 @@ import { Components } from "gd-sprest-bs";
 /**
  * Loading Dialog
  */
-export class _LoadingDialog {
-    private _el: HTMLElement = null;
-    private _elBody: HTMLElement = null;
-    private _elBackdrop: HTMLElement = null;
-    private _elHeader: HTMLElement = null;
+export class LoadingDialog {
+    private static _el: HTMLElement = null;
+    private static _elBody: HTMLElement = null;
+    private static _elBackdrop: HTMLElement = null;
+    private static _elHeader: HTMLElement = null;
 
     // Constructor
     constructor() {
         // Render the canvas
-        this.render();
+        LoadingDialog.render();
     }
 
     // Element
-    get el(): HTMLElement { return this._el; }
+    static get el(): HTMLElement { return this._el; }
 
     // Hides the canvas
-    hide() {
+    static hide() {
         // Update the display
         this._el.style.display = "none";
         this._elBackdrop.style.display = "none";
     }
 
     // Renders the canvas
-    private render() {
+    private static render() {
         // Create the backdrop element
         this._elBackdrop = document.createElement("div");
         this._elBackdrop.id = "loading-dialog-backdrop";
@@ -78,7 +78,7 @@ export class _LoadingDialog {
     }
 
     // Sets the body
-    setBody(content) {
+    static setBody(content) {
         // Clear the body
         while (this._elBody.firstChild) { this._elBody.removeChild(this._elBody.firstChild); }
 
@@ -96,7 +96,7 @@ export class _LoadingDialog {
     }
 
     // Sets the header
-    setHeader(content) {
+    static setHeader(content) {
         // Clear the body
         while (this._elHeader.firstChild) { this._elHeader.removeChild(this._elHeader.firstChild); }
 
@@ -114,10 +114,12 @@ export class _LoadingDialog {
     }
 
     // Shows the canvas
-    show() {
+    static show() {
         // Update the display
         this._el.style.display = "";
         this._elBackdrop.style.display = "";
     }
 }
-export const LoadingDialog = new _LoadingDialog();
+
+// Create an instance of the loading dialog
+new LoadingDialog();

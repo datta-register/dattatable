@@ -1,5 +1,5 @@
 import { Components } from "gd-sprest-bs";
-import { CanvasForm } from "../common";
+import { CanvasForm } from "../common/canvas";
 
 /**
  * Filter Item

@@ -3,30 +3,30 @@ import { Components } from "gd-sprest-bs";
 /**
  * Modal
  */
-export class _Modal {
-    private _modal: Components.IModal = null;
-    private _onCloseEvent: Function = null;
+export class Modal {
+    private static _modal: Components.IModal = null;
+    private static _onCloseEvent: Function = null;
 
     // Modal Body
-    private _elBody: HTMLElement = null;
-    get BodyElement(): HTMLElement { return this._elBody; }
+    private static _elBody: HTMLElement = null;
+    static get BodyElement(): HTMLElement { return this._elBody; }
 
     // Modal Footer
-    private _elFooter: HTMLElement = null;
-    get FooterElement(): HTMLElement { return this._elFooter; }
+    private static _elFooter: HTMLElement = null;
+    static get FooterElement(): HTMLElement { return this._elFooter; }
 
     // Modal Header
-    private _elHeader: HTMLElement = null;
-    get HeaderElement(): HTMLElement { return this._elHeader; }
+    private static _elHeader: HTMLElement = null;
+    static get HeaderElement(): HTMLElement { return this._elHeader; }
 
     // Constructor
     constructor() {
         // Render the canvas
-        this.render();
+        Modal.render();
     }
 
     // Clears the canvas form
-    clear() {
+    static clear() {
         // Clear the header, body and footer
         this.setHeader("");
         this.setBody("");
@@ -34,10 +34,10 @@ export class _Modal {
     }
 
     // Hides the modal
-    hide() { this._modal.hide(); }
+    static hide() { this._modal.hide(); }
 
     // Renders the canvas
-    private render() {
+    private static render() {
         // Create the element
         let el = document.createElement("div");
         el.id = "core-modal";
@@ -75,10 +75,10 @@ export class _Modal {
     }
 
     // Sets the auto close flag
-    setAutoClose(value: boolean) { this._modal.setAutoClose(value); }
+    static setAutoClose(value: boolean) { this._modal.setAutoClose(value); }
 
     // Sets the body
-    setBody(content) {
+    static setBody(content) {
         // Clear the body
         while (this._elBody.firstChild) { this._elBody.removeChild(this._elBody.firstChild); }
 
@@ -96,10 +96,10 @@ export class _Modal {
     }
 
     // Sets the close event
-    setCloseEvent(event) { this._onCloseEvent = event; }
+    static setCloseEvent(event) { this._onCloseEvent = event; }
 
     // Sets the footer
-    setFooter(content) {
+    static setFooter(content) {
         // Clear the body
         while (this._elFooter.firstChild) { this._elFooter.removeChild(this._elFooter.firstChild); }
 
@@ -117,7 +117,7 @@ export class _Modal {
     }
 
     // Sets the header
-    setHeader(content) {
+    static setHeader(content) {
         // Clear the body
         while (this._elHeader.firstChild) { this._elHeader.removeChild(this._elHeader.firstChild); }
 
@@ -135,9 +135,11 @@ export class _Modal {
     }
 
     // Sets the modal type
-    setType(type) { this._modal.setType(type); }
+    static setType(type) { this._modal.setType(type); }
 
     // Shows the modal
-    show() { this._modal.show(); }
+    static show() { this._modal.show(); }
 }
-export const Modal = new _Modal();
+
+// Create an instance of the modal
+new Modal();
