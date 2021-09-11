@@ -1,10 +1,15 @@
 # DattaTable Library
 
-This is a basic solution displaying data stored in a SharePoint list in a table using the datatables.net library.
+This library will help generate a dashboard or an interactive (datatables.net)[https://datatables.net/] table referencing data from a SharePoint list.
 
-## Dev Walkthrough
+## Supported Environments
 
-[Click here](https://github.com/gunjandatta/sp-dashboard/wiki) to build a basic example of this solution.
+* SharePoint On-Premise Environments 2013+
+* SharePoint Online (Classic/Modern)
+
+## How to Use
+
+Follow this [code walkthrough](https://github.com/gunjandatta/sp-dashboard/wiki) to build a basic example of this solution.
 
 ## [Documentation](https://datta-framework.github.io/dattatable/)
 
