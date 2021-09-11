@@ -10,22 +10,22 @@ This is a basic solution displaying data stored in a SharePoint list in a table 
 
 ### Common Methods
 
-* [formatDateTimeValue](docs/modules.html#formatDateTimeValue)
-* [formatDateValue](docs/modules.html#formatDateValue)
+* [formatDateTimeValue](modules.html#formatDateTimeValue)
+* [formatDateValue](modules.html#formatDateValue)
 
 ### Components
 
-* [Canvas Form](docs/classes/_CanvasForm.html)
-* [Dashboard](docs/classes/Dashboard.html)
-* [Installation Required](docs/classes/_InstallationRequired.html)
-* [Item Form](docs/classes/_ItemForm.html)
-* [Loading Dialog](docs/classes/_LoadingDialog.html)
-* [Modal](docs/classes/_Modal.html)
+* [Canvas Form](classes/_CanvasForm.html)
+* [Dashboard](classes/Dashboard.html)
+* [Installation Required](classes/_InstallationRequired.html)
+* [Item Form](classes/_ItemForm.html)
+* [Loading Dialog](classes/_LoadingDialog.html)
+* [Modal](classes/_Modal.html)
 
 ### Dashboard Components
 
-* [DataTable](docs/classes/DataTable.html)
-* [FilterSlideout](docs/classes/FilterSlideout.html)
-* [Footer](docs/classes/Footer.html)
-* [Header](docs/classes/Header.html)
-* [Navigation](docs/classes/Navigation.html)
+* [DataTable](classes/DataTable.html)
+* [FilterSlideout](classes/FilterSlideout.html)
+* [Footer](classes/Footer.html)
+* [Header](classes/Header.html)
+* [Navigation](classes/Navigation.html)
