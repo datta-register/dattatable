@@ -6,7 +6,7 @@ This is a basic solution displaying data stored in a SharePoint list in a table 
 
 [Click here](https://github.com/gunjandatta/sp-dashboard/wiki) to build a basic example of this solution.
 
-## Documentation
+## [Documentation](https://datta-framework.github.io/dattatable/)
 
 ### Common Methods
 
