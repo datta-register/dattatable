@@ -18,6 +18,15 @@ if (fs.existsSync("./dist")) {
     console.log("Deleted the dist directory.");
 }
 
+// See if the docs directory exists
+if (fs.existsSync("./docs")) {
+    // Delete the file
+    fs.rmdirSync("./docs", { recursive: true });
+
+    // Log
+    console.log("Deleted the docs directory.");
+}
+
 // See if the icons directory exists
 if (fs.existsSync("./icons")) {
     // Delete the file
