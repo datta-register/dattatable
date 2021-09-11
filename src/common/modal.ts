@@ -3,7 +3,7 @@ import { Components } from "gd-sprest-bs";
 /**
  * Modal
  */
-class _Modal {
+export class _Modal {
     private _modal: Components.IModal = null;
     private _onCloseEvent: Function = null;
 

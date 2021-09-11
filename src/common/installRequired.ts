@@ -6,7 +6,7 @@ import { Modal } from "./modal";
  * Installation Required
  * Checks the SharePoint configuration file to see if an install is required.
  */
-class _InstallationRequired {
+export class _InstallationRequired {
     private _cfg: Helper.ISPConfig = null;
     private _report: string[] = null;
 

@@ -4,7 +4,7 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 /**
  * Item Form
  */
-class _ItemForm {
+export class _ItemForm {
     private _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
     private _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
     private _onFormButtonsRendering: (buttons: Components.IButtonProps[]) => Components.IButtonProps[] = null;

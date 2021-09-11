@@ -3,7 +3,7 @@ import { Components } from "gd-sprest-bs";
 /**
  * Canvas Form
  */
-class _CanvasForm {
+export class _CanvasForm {
     private _canvas: Components.IOffcanvas = null;
 
     // Modal Body

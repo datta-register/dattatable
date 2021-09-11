@@ -8,7 +8,7 @@
         "all": "npm run clean && tsc && npm run styles && npm run build && npm run prod && npm run docs",
         "build": "webpack --mode=development",
         "clean": "node ./clean.js",
-        "docs": "typedoc --out docs ./src",
+        "docs": "typedoc --out docs ./src --darkHighlightTheme dark-plus",
         "prod": "webpack --mode=production",
         "styles": "webpack --mode=production --config=webpack.styles.js"
     },
