@@ -1,6 +1,6 @@
 # DattaTable Library
 
-This library will help generate a dashboard or an interactive (datatables.net)[https://datatables.net/] table referencing data from a SharePoint list.
+This library will help generate a dashboard or an interactive [datatables.net](https://datatables.net/) table referencing data from a SharePoint list.
 
 ## Supported Environments
 
