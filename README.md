@@ -10,22 +10,22 @@ This is a basic solution displaying data stored in a SharePoint list in a table 
 
 ### Common Methods
 
-* [formatDateTimeValue](modules.html#formatDateTimeValue)
-* [formatDateValue](modules.html#formatDateValue)
+* [formatDateTimeValue](https://datta-framework.github.io/dattatable/modules.html#formatDateTimeValue)
+* [formatDateValue](https://datta-framework.github.io/dattatable/modules.html#formatDateValue)
 
 ### Components
 
-* [Canvas Form](classes/CanvasForm.html)
-* [Dashboard](classes/Dashboard.html)
-* [Installation Required](classes/InstallationRequired.html)
-* [Item Form](classes/ItemForm.html)
-* [Loading Dialog](classes/LoadingDialog.html)
-* [Modal](classes/Modal.html)
+* [Canvas Form](https://datta-framework.github.io/dattatable/classes/CanvasForm.html)
+* [Dashboard](https://datta-framework.github.io/dattatable/classes/Dashboard.html)
+* [Installation Required](https://datta-framework.github.io/dattatable/classes/InstallationRequired.html)
+* [Item Form](https://datta-framework.github.io/dattatable/classes/ItemForm.html)
+* [Loading Dialog](https://datta-framework.github.io/dattatable/classes/LoadingDialog.html)
+* [Modal](https://datta-framework.github.io/dattatable/classes/Modal.html)
 
 ### Dashboard Components
 
-* [DataTable](classes/DataTable.html)
-* [FilterSlideout](classes/FilterSlideout.html)
-* [Footer](classes/Footer.html)
-* [Header](classes/Header.html)
-* [Navigation](classes/Navigation.html)
+* [DataTable](https://datta-framework.github.io/dattatable/classes/DataTable.html)
+* [FilterSlideout](https://datta-framework.github.io/dattatable/classes/FilterSlideout.html)
+* [Footer](https://datta-framework.github.io/dattatable/classes/Footer.html)
+* [Header](https://datta-framework.github.io/dattatable/classes/Header.html)
+* [Navigation](https://datta-framework.github.io/dattatable/classes/Navigation.html)
