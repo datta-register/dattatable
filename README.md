@@ -15,12 +15,12 @@ This is a basic solution displaying data stored in a SharePoint list in a table 
 
 ### Components
 
-* [Canvas Form](classes/_CanvasForm.html)
+* [Canvas Form](classes/CanvasForm.html)
 * [Dashboard](classes/Dashboard.html)
-* [Installation Required](classes/_InstallationRequired.html)
-* [Item Form](classes/_ItemForm.html)
-* [Loading Dialog](classes/_LoadingDialog.html)
-* [Modal](classes/_Modal.html)
+* [Installation Required](classes/InstallationRequired.html)
+* [Item Form](classes/ItemForm.html)
+* [Loading Dialog](classes/LoadingDialog.html)
+* [Modal](classes/Modal.html)
 
 ### Dashboard Components
 
