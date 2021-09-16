@@ -1,6 +1,6 @@
 import * as Common from "./common";
 export * from "./common";
-import * as Dashboard from "./dashboard";
+import { Dashboard } from "./dashboard";
 export * from "./dashboard";
 import { ItemForm } from "./itemForm";
 export * from "./itemForm";
