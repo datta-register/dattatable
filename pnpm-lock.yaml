@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.2.0_webpack@5.52.1
   datatables.net: 1.11.2
   datatables.net-bs5: 1.11.2
-  gd-sprest-bs: 8.4.7
+  gd-sprest-bs: 8.5.1
   html-loader: 2.1.2_webpack@5.52.1
   jquery: 3.6.0
   moment: 2.29.1
@@ -2127,7 +2127,7 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-BRdNm8hbWzFzWHERTrejLqwHDfS4GibPoq5wjTPIoJHoBtKGPg3xAFfxmM+9ztbXelxcf2hwQcaz1PtmFeue8g==
-  /gd-bs/5.1.2:
+  /gd-bs/5.1.3:
     dependencies:
       bootstrap: 5.1.1
       bootstrap-icons: 1.5.0
@@ -2135,26 +2135,26 @@ packages:
       tippy.js: 6.3.1
     dev: true
     resolution:
-      integrity: sha512-WXLOKnN6xoDwnfd12+3aoZ1yMKqQ5E5oPynzMdMEWafjA0vSKu2R0v5p48NuF3gQ/vPeZynTOMHNEgiPGEH59g==
-  /gd-sprest-bs/8.4.7:
+      integrity: sha512-hy6qGro4Dyf3uLLciwDMpyGjrXxSJ2+y2SW1om+5CMDnL5Ik1fEolB5RGBhScJjv7juKQCX4XSvEwGKK5S4fwA==
+  /gd-sprest-bs/8.5.1:
     dependencies:
       flatpickr: 4.6.9
-      gd-bs: 5.1.2
-      gd-sprest: 6.5.9
-      gd-sprest-def: 1.0.4
+      gd-bs: 5.1.3
+      gd-sprest: 6.6.1
+      gd-sprest-def: 1.0.6
     dev: true
     resolution:
-      integrity: sha512-5FXPALDkKwlYM1U0nvJTZ7Z3OTOkYVu0wJAZuRi5Gd8TPflOqyfz+pvmt7aHPVbS5YFNj5p3fapFHKmHJD9Pew==
-  /gd-sprest-def/1.0.4:
+      integrity: sha512-GcB9el43kSlR49mKY90cbGnYu/3OUjsW3z2ZbPkGa6fS20trJh+QfXarDpunPjCZ3+S2Yy/A1UEmnISmUciu8g==
+  /gd-sprest-def/1.0.6:
     dev: true
     resolution:
-      integrity: sha512-0rSox4SEB610Q42iRXhn0XLuqAzLC2f63QSfcPx9pRDRHlIpLBm2XnHm1mzmrcrE5x0Ag1oeond2c+b2ybuqHg==
-  /gd-sprest/6.5.9:
+      integrity: sha512-IA9MwBmX3Sa6kQhEy3emX3WFzV8noQnE1TNB58qJ300ZQssq2FUnISveq3BqrTgehlRAS6u4/DmCTGcpIqM1kQ==
+  /gd-sprest/6.6.1:
     dependencies:
-      gd-sprest-def: 1.0.4
+      gd-sprest-def: 1.0.6
     dev: true
     resolution:
-      integrity: sha512-Ov1P8L71cJeK1RLSHD9HmZIbiruGt5kQL8g6cQMw2RuMPivKDGxkfc9PkE5V3MuGP8tp4MTbfe615MI2j1RsEw==
+      integrity: sha512-lKU/EaD93LOv4+oJ2UWTktLJs8QZZAoOPN0HdcCR81CmE5KqLfmjtCDiZV8edP4E804v+Bo6SKXe8IwQZbDBnA==
   /gensync/1.0.0-beta.2:
     dev: true
     engines:
@@ -4093,7 +4093,7 @@ specifiers:
   css-loader: ^6.2.0
   datatables.net: ^1.11.2
   datatables.net-bs5: ^1.11.2
-  gd-sprest-bs: ^8.4.7
+  gd-sprest-bs: ^8.5.1
   html-loader: ^2.1.2
   jquery: ^3.6.0
   moment: ^2.29.1

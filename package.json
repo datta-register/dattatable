@@ -37,7 +37,7 @@
         "css-loader": "^6.2.0",
         "datatables.net": "^1.11.2",
         "datatables.net-bs5": "^1.11.2",
-        "gd-sprest-bs": "^8.4.7",
+        "gd-sprest-bs": "^8.5.1",
         "html-loader": "^2.1.2",
         "jquery": "^3.6.0",
         "moment": "^2.29.1",
