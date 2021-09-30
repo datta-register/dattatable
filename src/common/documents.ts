@@ -35,15 +35,19 @@ import { x } from "gd-sprest-bs/build/icons/svgs/x";
  * Properties
  */
 export interface IDocumentsProps {
+    canDelete?: boolean;
+    canEdit?: boolean;
+    canView?: boolean;
     docSetId?: number;
     el: HTMLElement;
     enableSearch?: boolean;
     listName: string;
     query?: Types.IODataQuery;
-    onItemFormEditing: IItemFormEditProps;
-    onItemFormViewing: IItemFormViewProps;
+    onItemFormEditing?: IItemFormEditProps;
+    onItemFormViewing?: IItemFormViewProps;
     onNavigationRendering?: (props: Components.INavbarProps) => void;
     onNavigationRendered?: (nav: Components.INavbar) => void;
+    onRefresh?: () => void;
     table?: {
         columns: Components.ITableColumn[];
         dtProps?: any;
@@ -65,6 +69,11 @@ export class Documents {
         // Save the properties
         this._props = props;
 
+        // Default the permissions
+        this._canDelete = typeof (this._props.canDelete) === "boolean" ? this._props.canDelete : true;
+        this._canEdit = typeof (this._props.canEdit) === "boolean" ? this._props.canEdit : true;
+        this._canView = typeof (this._props.canView) === "boolean" ? this._props.canView : true;
+
         // Create the element
         this._el = document.createElement("div");
         this._props.el ? this._props.el.appendChild(this._el) : null;
@@ -80,17 +89,14 @@ export class Documents {
     // Can delete documents
     private _canDelete = true;
     get CanDelete(): boolean { return this._canDelete; }
-    set CanDelete(value: boolean) { this._canDelete = value; }
 
     // Can edit documents
     private _canEdit = true;
     get CanEdit(): boolean { return this._canEdit; }
-    set CanEdit(value: boolean) { this._canEdit = value; }
 
     // Can view documents
     private _canView = true;
     get CanView(): boolean { return this._canView; }
-    set CanView(value: boolean) { this._canView = value; }
 
     // The navigation component
     private _navbar: Components.INavbar = null;
@@ -1012,6 +1018,9 @@ export class Documents {
 
         // Render the component
         this.render().then(() => {
+            // Call the event
+            this._props.onRefresh ? this._props.onRefresh() : null;
+
             // Hide the dialog
             LoadingDialog.hide();
         });
