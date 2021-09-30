@@ -409,87 +409,91 @@ export class Documents {
                     // Ensure the user can edit the item
                     if (this.CanEdit) {
                         // Define the properties
-                        let editProps: IItemFormEditProps = this._props.onItemFormEditing || {} as any;
+                        let editProps: IItemFormEditProps = {
+                            ...(this._props.onItemFormEditing || {}),
+                            ...{
+                                // Set the item id
+                                itemId: file.ListItemAllFields["Id"],
 
-                        // Set the item id
-                        editProps.itemId = file.ListItemAllFields["Id"];
+                                // Set the edit form properties
+                                onCreateEditForm: props => {
+                                    // Set the rendering event
+                                    props.onControlRendering = (ctrl, field) => {
+                                        if (field.InternalName == "FileLeafRef") {
+                                            // Validate the name of the file
+                                            ctrl.onValidate = (ctrl, results) => {
+                                                // Ensure the value is less than 128 characters
+                                                if (results.value?.length > 128) {
+                                                    // Return an error message
+                                                    results.invalidMessage = "The file name must be less than 128 characters.";
+                                                    results.isValid = false;
+                                                }
 
-                        // Set the edit form properties
-                        editProps.onCreateEditForm = props => {
-                            // Set the rendering event
-                            props.onControlRendering = (ctrl, field) => {
-                                if (field.InternalName == "FileLeafRef") {
-                                    // Validate the name of the file
-                                    ctrl.onValidate = (ctrl, results) => {
-                                        // Ensure the value is less than 128 characters
-                                        if (results.value?.length > 128) {
-                                            // Return an error message
-                                            results.invalidMessage = "The file name must be less than 128 characters.";
-                                            results.isValid = false;
+                                                // Return the results
+                                                return results;
+                                            }
                                         }
+                                    }
 
-                                        // Return the results
-                                        return results;
+                                    // See if a custom event exists
+                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onCreateEditForm) {
+                                        // Return the properties
+                                        return this._props.onItemFormEditing.onCreateEditForm(props);
+                                    }
+
+                                    // Return the properties
+                                    return props;
+                                },
+
+                                // Update the footer
+                                onSetFooter: (el) => {
+                                    let updateBtn = el.querySelector('[role="group"]').firstChild as HTMLButtonElement;
+                                    updateBtn.classList.remove("btn-outline-primary");
+                                    updateBtn.classList.add("btn-primary");
+
+                                    // See if a custom event exists
+                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetFooter) {
+                                        // Execute the event
+                                        this._props.onItemFormEditing.onSetFooter(el);
+                                    }
+                                },
+
+                                // Update the header
+                                onSetHeader: (el) => {
+                                    // Update the header
+                                    el.querySelector("h5").innerHTML = "Properties";
+
+                                    // See if a custom event exists
+                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetHeader) {
+                                        // Execute the event
+                                        this._props.onItemFormEditing.onSetHeader(el);
+                                    }
+                                },
+
+                                // Refresh the view when updates occur
+                                onUpdate: () => {
+                                    // See if a custom event exists
+                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onUpdate) {
+                                        // Execute the event
+                                        this._props.onItemFormEditing.onUpdate(el);
+                                    } else {
+                                        // Refresh the data table
+                                        this.refresh();
                                     }
                                 }
-                            }
-
-                            // See if a custom event exists
-                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onCreateEditForm) {
-                                // Return the properties
-                                return this._props.onItemFormEditing.onCreateEditForm(props);
-                            }
-
-                            // Return the properties
-                            return props;
-                        };
-
-                        // Update the footer
-                        editProps.onSetFooter = (el) => {
-                            let updateBtn = el.querySelector('[role="group"]').firstChild as HTMLButtonElement;
-                            updateBtn.classList.remove("btn-outline-primary");
-                            updateBtn.classList.add("btn-primary");
-
-                            // See if a custom event exists
-                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetFooter) {
-                                // Execute the event
-                                this._props.onItemFormEditing.onSetFooter(el);
-                            }
-                        };
-
-                        // Update the header
-                        editProps.onSetHeader = (el) => {
-                            // Update the header
-                            el.querySelector("h5").innerHTML = "Properties";
-
-                            // See if a custom event exists
-                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetHeader) {
-                                // Execute the event
-                                this._props.onItemFormEditing.onSetHeader(el);
-                            }
-                        };
-
-                        // Refresh the view when updates occur
-                        editProps.onUpdate = () => {
-                            // See if a custom event exists
-                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onUpdate) {
-                                // Execute the event
-                                this._props.onItemFormEditing.onUpdate(el);
-                            } else {
-                                // Refresh the data table
-                                this.refresh();
                             }
                         };
 
                         // Show the edit form
                         ItemForm.edit(editProps);
                     } else {
-                        // Set the view properties
-                        let viewProps: IItemFormViewProps = this._props.onItemFormViewing || {} as any;
-                        viewProps.itemId = file.ListItemAllFields["Id"];
-
                         // View the form
-                        ItemForm.view(viewProps);
+                        ItemForm.view({
+                            ...(this._props.onItemFormViewing || {}),
+                            ...{
+                                itemId: file.ListItemAllFields["Id"]
+                            }
+                        });
                     }
                 }
             }
@@ -903,7 +907,7 @@ export class Documents {
             },
             columns: this._props.table && this._props.table.columns ? this._props.table.columns : [
                 {
-                    name: "",
+                    name: "Type",
                     title: "Type",
                 },
                 {
