@@ -35,8 +35,10 @@ import { x } from "gd-sprest-bs/build/icons/svgs/x";
  * Properties
  */
 export interface IDocumentsProps {
+    docSetId?: number;
     el: HTMLElement;
     enableSearch?: boolean;
+    listName: string;
     query?: Types.IODataQuery;
     onItemFormEditing: IItemFormEditProps;
     onItemFormViewing: IItemFormViewProps;
@@ -47,6 +49,7 @@ export interface IDocumentsProps {
         dtProps?: any;
         onRendered?: (el?: HTMLElement, dt?: any) => void;
     }
+    templatesUrl?: string;
 }
 
 /**
@@ -57,21 +60,22 @@ export class Documents {
     private _el: HTMLElement = null;
     private _props: IDocumentsProps = null;
 
+    // Constructor
+    constructor(props: IDocumentsProps) {
+        // Save the properties
+        this._props = props;
+
+        // Create the element
+        this._el = document.createElement("div");
+        this._props.el ? this._props.el.appendChild(this._el) : null;
+
+        // Render the component
+        this.render();
+    }
+
     /** The data table. */
     private _dt: DataTable = null;
     get DataTable(): DataTable { return this._dt; }
-
-    /** The document set item id. */
-
-    private _docSetId: number = null;
-    get DocSetId(): number { return this._docSetId; }
-    set DocSetId(value: number) { this._docSetId = value; }
-
-    /** The library name. */
-
-    private _listName: string = null;
-    get ListName(): string { return this._listName; }
-    set ListName(value: string) { this._listName = value; }
 
     // Can delete documents
     private _canDelete = true;
@@ -110,11 +114,6 @@ export class Documents {
     private _templateFolders: Types.SP.Folder[] = null;
     get TemplateFolders(): Types.SP.Folder[] { return this._templateFolders; }
 
-    /** Templates Library (Optional) */
-    private _templatesUrl: string = null;
-    get TemplatesUrl(): string { return this._templatesUrl; }
-    set TemplatesUrl(value: string) { this._templatesUrl = value; }
-
     /**
      * Copies a file to a folder to the library
      * @param item The dropdown item containing the file/folder to copy.
@@ -135,7 +134,7 @@ export class Documents {
                     // Get the file contents
                     Web().getFileByServerRelativeUrl(file.ServerRelativeUrl).content().execute(data => {
                         // Copy the file
-                        List(this.ListName).RootFolder().Files().add(file.Name, true, data).execute(resolve, resolve);
+                        List(this._props.listName).RootFolder().Files().add(file.Name, true, data).execute(resolve, resolve);
                     });
                 });
             }).then(() => {
@@ -150,7 +149,7 @@ export class Documents {
             let file = item.data as Types.SP.File;
             file.content().execute(data => {
                 // Copy the file
-                List(this.ListName).RootFolder().Files().add(file.Name, true, data).execute(() => {
+                List(this._props.listName).RootFolder().Files().add(file.Name, true, data).execute(() => {
                     // Close the dialog
                     LoadingDialog.hide();
 
@@ -243,9 +242,9 @@ export class Documents {
             this._templatesFiles = null;
 
             // See if the templates library was set
-            if (this.TemplatesUrl) {
+            if (this._props.templatesUrl) {
                 // Load the files and folders
-                web.getFolderByServerRelativeUrl(this.TemplatesUrl).query({
+                web.getFolderByServerRelativeUrl(this._props.templatesUrl).query({
                     Expand: ["Folders/Files", "Files"]
                 }).execute(folder => {
                     // Set the template files
@@ -257,8 +256,8 @@ export class Documents {
             }
 
             // See if we are targeting a document set folder
-            if (this.DocSetId) {
-                web.Lists(this.ListName).Items(this.DocSetId).Folder().query({
+            if (this._props.docSetId) {
+                web.Lists(this._props.listName).Items(this._props.docSetId).Folder().query({
                     Expand: [
                         "Folders/Files", "Folders/Files/Author",
                         "Folders/Files/ListItemAllFields", "Folders/Files/ModifiedBy",
@@ -270,7 +269,7 @@ export class Documents {
                 }, reject);
             } else {
                 // Load library information
-                web.Lists(this.ListName).RootFolder().query({
+                web.Lists(this._props.listName).RootFolder().query({
                     Expand: [
                         "Folders/Files", "Folders/Files/Author",
                         "Folders/Files/ListItemAllFields", "Folders/Files/ModifiedBy",
@@ -287,6 +286,24 @@ export class Documents {
                 // Resolve the request
                 resolve();
             });
+        });
+    }
+
+    // Renders the component
+    private render(): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Load the data
+            this.load().then(() => {
+                // Render the navigation
+                this.renderNavigation();
+
+                // Render the table
+                this.renderTable();
+
+                // Resolve the promise
+                resolve();
+            }, reject);
         });
     }
 
@@ -363,7 +380,7 @@ export class Documents {
                 type: Components.ButtonTypes.OutlineSecondary,
                 onClick: () => {
                     // Set the item form properties
-                    ItemForm.ListName = this.ListName;
+                    ItemForm.ListName = this._props.listName;
                     ItemForm.UseModal = false;
 
                     // Ensure the user can edit the item
@@ -693,7 +710,7 @@ export class Documents {
         let itemsEnd: Components.INavbarItem[] = [];
 
         // See if templates exist
-        if (this.TemplatesUrl) {
+        if (this._props.templatesUrl) {
             // Add the item
             itemsEnd.push({
                 text: "Templates",
@@ -745,7 +762,7 @@ export class Documents {
                                 LoadingDialog.setBody("Saving the file you selected. Please wait...");
                                 LoadingDialog.show();
                                 // Upload the file to the objective folder
-                                List(this.ListName).RootFolder().Files().add(fileInfo.name, true, fileInfo.data).execute(
+                                List(this._props.listName).RootFolder().Files().add(fileInfo.name, true, fileInfo.data).execute(
                                     // Success
                                     file => {
                                         // Hide the dialog
@@ -993,32 +1010,10 @@ export class Documents {
         // Clear the element
         while (this._el.firstChild) { this._el.removeChild(this._el.firstChild); }
 
-        // Load the workspace item
-        this.load().then(() => {
-            // Render the component
-            this.render(this._props);
-
+        // Render the component
+        this.render().then(() => {
             // Hide the dialog
             LoadingDialog.hide();
-        });
-    }
-
-    // Renders the component
-    render(props: IDocumentsProps) {
-        // Save the properties
-        this._props = props;
-
-        // Create the element
-        this._el = document.createElement("div");
-        this._props.el ? this._props.el.appendChild(this._el) : null;
-
-        // Load the data
-        this.load().then(() => {
-            // Render the navigation
-            this.renderNavigation();
-
-            // Render the table
-            this.renderTable();
         });
     }
 
