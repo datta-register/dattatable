@@ -36,6 +36,7 @@ import { x } from "gd-sprest-bs/build/icons/svgs/x";
  * Properties
  */
 export interface IDocumentsProps {
+    el: HTMLElement;
     enableSearch?: boolean;
     query?: Types.IODataQuery;
     table?: {
@@ -650,9 +651,9 @@ export class Documents {
     }
 
     // Renders the navigation
-    private static renderNavigation(el: HTMLElement) {
+    private static renderNavigation() {
         let nav = Components.Navbar({
-            el,
+            el: this._props.el,
             brand: "Documents View",
             itemsEnd: [
                 {
@@ -904,13 +905,13 @@ export class Documents {
         LoadingDialog.show();
 
         // Clear the element
-        this._elTable.parentElement.removeChild(this._elTable);
+        this._props.el.removeChild(this._elTable);
         this._elTable = null;
 
         // Load the workspace item
         this.load().then(() => {
             // Render the component
-            this.render(this._elTable.parentElement);
+            this.render(this._props);
 
             // Hide the dialog
             LoadingDialog.hide();
@@ -918,15 +919,18 @@ export class Documents {
     }
 
     // Renders the component
-    static render(el: HTMLElement) {
+    static render(props: IDocumentsProps) {
+        // Save the properties
+        this._props = props;
+
         // Load the data
         this.load().then(() => {
             // Render the navigation
-            this.renderNavigation(el);
+            this.renderNavigation();
 
             // Create the element to render the table to
             this._elTable = document.createElement("div");
-            el.appendChild(this._elTable);
+            this._props.el.appendChild(this._elTable);
 
             // Render the table
             this.renderTable();
