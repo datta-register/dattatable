@@ -66,7 +66,7 @@ export interface IDocumentsProps {
     onNavigationRendered?: (nav: Components.INavbar) => void;
     onRefresh?: () => void;
     table?: {
-        columns: Components.ITableColumn[];
+        columns?: Components.ITableColumn[];
         dtProps?: any;
         onRendered?: (el?: HTMLElement, dt?: any) => void;
     }
