@@ -1,7 +1,7 @@
-import { Components, ContextInfo, Helper, List, SPTypes, Types, Web } from "gd-sprest-bs";
+import { Components, ContextInfo, Helper, List, Types, Web } from "gd-sprest-bs";
 import * as jQuery from "jquery";
 import * as moment from "moment";
-import { DataTable } from "../dashboard/table";
+import { DataTable, IDataTableProps } from "../dashboard/table";
 import { ItemForm } from "../itemForm";
 import { LoadingDialog } from "./loadingDialog";
 import { formatBytes, formatTimeValue } from "./methods";
@@ -29,7 +29,6 @@ import { fileEarmarkZip } from "gd-sprest-bs/build/icons/svgs/fileEarmarkZip";
 import { front } from "gd-sprest-bs/build/icons/svgs/front";
 import { inputCursorText } from "gd-sprest-bs/build/icons/svgs/inputCursorText";
 import { layoutTextSidebar } from "gd-sprest-bs/build/icons/svgs/layoutTextSidebar";
-import { threeDots } from "gd-sprest-bs/build/icons/svgs/threeDots";
 import { x } from "gd-sprest-bs/build/icons/svgs/x";
 
 /**
@@ -39,11 +38,12 @@ export interface IDocumentsProps {
     el: HTMLElement;
     enableSearch?: boolean;
     query?: Types.IODataQuery;
+    onNavigationRendering?: (props: Components.INavbarProps) => void;
+    onNavigationRendered?: (nav: Components.INavbar) => void;
     table?: {
         columns: Components.ITableColumn[];
         dtProps?: any;
         onRendered?: (el?: HTMLElement, dt?: any) => void;
-        rows?: any[];
     }
 }
 
@@ -84,6 +84,10 @@ export class Documents {
     private static _canView = true;
     static get CanView(): boolean { return this._canView; }
     static set CanView(value: boolean) { this._canView = value; }
+
+    // The navigation component
+    private static _navbar: Components.INavbar = null;
+    static get Navigation(): Components.INavbar { return this._navbar; }
 
     // The root folder of the library
     private static _rootFolder: Types.SP.FolderOData = null;
@@ -228,6 +232,11 @@ export class Documents {
         return new Promise((resolve, reject) => {
             let web = Web();
 
+            // Clear the properties
+            this._rootFolder = null;
+            this._templateFolders = null;
+            this._templatesFiles = null;
+
             // See if the templates library was set
             if (this.TemplatesUrl) {
                 // Load the files and folders
@@ -272,7 +281,7 @@ export class Documents {
             web.done(() => {
                 // Resolve the request
                 resolve();
-            })
+            });
         });
     }
 
@@ -652,85 +661,104 @@ export class Documents {
 
     // Renders the navigation
     private static renderNavigation() {
-        let nav = Components.Navbar({
-            el: this._props.el,
-            brand: "Documents View",
-            itemsEnd: [
-                {
-                    text: "Templates",
-                    className: "btn btn-sm btn-outline-secondary",
-                    iconSize: 20,
-                    iconType: bookmarkPlus,
-                    isButton: true,
-                    items: this.generateItems(),
-                    onRender: (el) => {
-                        el.classList.add("bg-white");
-                        el.querySelector("svg").style.margin = "0 0.25rem 0.1rem -0.25rem";
-                    },
-                    onMenuRendering: props => {
-                        // Update the placement
-                        props.options.offset = [7, 0];
+        let itemsEnd: Components.INavbarItem[] = [];
 
-                        // Return the properties
-                        return props;
-                    }
+        // See if templates exist
+        if (this.TemplatesUrl) {
+            // Add the item
+            itemsEnd.push({
+                text: "Templates",
+                className: "btn btn-sm btn-outline-secondary",
+                iconSize: 20,
+                iconType: bookmarkPlus,
+                isButton: true,
+                items: this.generateItems(),
+                onRender: (el) => {
+                    el.classList.add("bg-white");
+                    el.querySelector("svg").style.margin = "0 0.25rem 0.1rem -0.25rem";
                 },
-                {
-                    text: "Upload",
-                    onRender: (el, item) => {
-                        // Clear the existing button
-                        el.innerHTML = "";
-                        // Create a span to wrap the icon in
-                        let span = document.createElement("span");
-                        span.className = "bg-white d-inline-flex ms-2 rounded";
-                        el.appendChild(span);
+                onMenuRendering: props => {
+                    // Update the placement
+                    props.options.offset = [7, 0];
 
-                        // Render a tooltip
-                        Components.Tooltip({
-                            el: span,
-                            content: item.text,
-                            btnProps: {
-                                // Render the icon button
-                                className: "p-1",
-                                iconType: fileEarmarkArrowUp,
-                                iconSize: 24,
-                                type: Components.ButtonTypes.OutlineSecondary,
-                                onClick: () => {
-                                    // Show the file upload dialog
-                                    Helper.ListForm.showFileDialog().then(fileInfo => {
-                                        // Show a loading dialog
-                                        LoadingDialog.setHeader("Uploading File");
-                                        LoadingDialog.setBody("Saving the file you selected. Please wait...");
-                                        LoadingDialog.show();
-                                        // Upload the file to the objective folder
-                                        List(this.ListName).RootFolder().Files().add(fileInfo.name, true, fileInfo.data).execute(
-                                            // Success
-                                            file => {
-                                                // Hide the dialog
-                                                LoadingDialog.hide();
-
-                                                // Refresh the page
-                                                this.refresh();
-                                            },
-
-                                            // Error
-                                            err => {
-                                                // Hide the dialog
-                                                LoadingDialog.hide();
-                                            }
-                                        )
-                                    });
-                                }
-                            },
-                        });
-                    }
+                    // Return the properties
+                    return props;
                 }
-            ]
+            });
+        }
+
+        // Add the upload button
+        itemsEnd.push({
+            text: "Upload",
+            onRender: (el, item) => {
+                // Clear the existing button
+                el.innerHTML = "";
+                // Create a span to wrap the icon in
+                let span = document.createElement("span");
+                span.className = "bg-white d-inline-flex ms-2 rounded";
+                el.appendChild(span);
+
+                // Render a tooltip
+                Components.Tooltip({
+                    el: span,
+                    content: item.text,
+                    btnProps: {
+                        // Render the icon button
+                        className: "p-1",
+                        iconType: fileEarmarkArrowUp,
+                        iconSize: 24,
+                        type: Components.ButtonTypes.OutlineSecondary,
+                        onClick: () => {
+                            // Show the file upload dialog
+                            Helper.ListForm.showFileDialog().then(fileInfo => {
+                                // Show a loading dialog
+                                LoadingDialog.setHeader("Uploading File");
+                                LoadingDialog.setBody("Saving the file you selected. Please wait...");
+                                LoadingDialog.show();
+                                // Upload the file to the objective folder
+                                List(this.ListName).RootFolder().Files().add(fileInfo.name, true, fileInfo.data).execute(
+                                    // Success
+                                    file => {
+                                        // Hide the dialog
+                                        LoadingDialog.hide();
+
+                                        // Refresh the page
+                                        this.refresh();
+                                    },
+
+                                    // Error
+                                    err => {
+                                        // Hide the dialog
+                                        LoadingDialog.hide();
+                                    }
+                                )
+                            });
+                        }
+                    },
+                });
+            }
         });
 
+        // Set the default properties
+        let navProps: Components.INavbarProps = {
+            el: this._props.el,
+            brand: "Documents View",
+            itemsEnd,
+            enableSearch: this._props.enableSearch
+        };
+
+        // Call the rendering event
+        this._props.onNavigationRendering ? this._props.onNavigationRendering(navProps) : null;
+
+        // Create the navbar
+        this._navbar = Components.Navbar(navProps);
+
         /* Fix the padding on the left & right of the nav */
-        nav.el.querySelector("div.container-fluid").classList.add("ps-75");
-        nav.el.querySelector("div.container-fluid").classList.add("pe-2");
+        this._navbar.el.querySelector("div.container-fluid").classList.add("ps-75");
+        this._navbar.el.querySelector("div.container-fluid").classList.add("pe-2");
+
+        // Call the rendered event
+        this._props.onNavigationRendered ? this._props.onNavigationRendered(this.Navigation) : null;
     }
 
     // Renders the datatable with the file information
@@ -749,11 +777,11 @@ export class Documents {
             files = files.concat(folder.Files.results);
         }
 
-        // Render the table
-        this._dt = new DataTable({
+        // Create the table properties
+        let tblProps: IDataTableProps = {
             el: this._elTable,
             rows: files,
-            dtProps: {
+            dtProps: this._props.table && this._props.table.dtProps ? this._props.table.dtProps : {
                 dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
                 columnDefs: [
                     { targets: 0, searchable: false },
@@ -803,96 +831,124 @@ export class Documents {
                 // Order by the 1st column by default; ascending
                 order: [[1, "asc"]]
             },
-            columns: [
+            columns: this._props.table && this._props.table.columns ? this._props.table.columns : [
                 {
                     name: "",
                     title: "Type",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the file
-                        this.renderFileIcon(el, file);
-
-                        // Set the sort value
-                        el.setAttribute("data-sort", this.getFileExt(file.Name));
-                    }
                 },
                 {
-                    name: "",
-                    title: "Name",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the file name
-                        el.innerHTML = file.Name;
-                    }
+                    name: "Name",
+                    title: "Name"
                 },
                 {
-                    name: "",
-                    title: "Description",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the file description
-                        el.innerHTML = file.Title;
-                    }
+                    name: "Title",
+                    title: "Description"
                 },
                 {
-                    name: "",
-                    title: "File Size",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the file size value
-                        el.innerHTML = formatBytes(file.Length);
-
-                        // Set the sort value
-                        el.setAttribute("data-sort", file.Length.toString());
-                    }
+                    name: "FileSize",
+                    title: "File Size"
                 },
                 {
-                    name: "",
-                    title: "Created",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the date/time value
-                        el.innerHTML = formatTimeValue(file.TimeCreated);
-
-                        // Set the date/time filter/sort values
-                        el.setAttribute("data-filter", moment(file.TimeCreated).format("dddd MMMM DD YYYY"));
-                        el.setAttribute("data-sort", file.TimeCreated);
-                    }
+                    name: "Created",
+                    title: "Created"
                 },
                 {
-                    name: "",
-                    title: "Created By",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the Person field Title
-                        el.innerHTML = file.Author["Title"];
-                    }
+                    name: "Author",
+                    title: "Created By"
                 },
                 {
-                    name: "",
-                    title: "Modified",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the date/time value
-                        el.innerHTML = formatTimeValue(file.TimeLastModified);
-
-                        // Set the date/time filter/sort values
-                        el.setAttribute("data-filter", moment(file.TimeLastModified).format("dddd MMMM DD YYYY"));
-                        el.setAttribute("data-sort", file.TimeLastModified);
-                    }
+                    name: "Modified",
+                    title: "Modified"
                 },
                 {
-                    name: "",
-                    title: "Modified By",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the Person field Title
-                        el.innerHTML = file.ModifiedBy["Title"];
-                    }
+                    name: "ModifiedBy",
+                    title: "Modified By"
                 },
                 {
                     className: "text-end text-nowrap",
-                    name: "",
-                    title: "",
-                    onRenderCell: (el, col, file: Types.SP.File) => {
-                        // Render the action buttons
-                        this.renderActionButtons(el, file);
-                    }
+                    name: "Actions",
+                    title: ""
                 }
             ]
+        };
+
+        // Parse the columns
+        Helper.Executor(tblProps.columns, col => {
+            let customEvent = col.onRenderCell;
+
+            // See if this is the type column
+            if (col.name == "Type") {
+                // Set the event to render an icon
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the file
+                    this.renderFileIcon(el, file);
+
+                    // Set the sort value
+                    el.setAttribute("data-sort", this.getFileExt(file.Name));
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                };
+            }
+            // Else, see if this is the file size
+            else if (col.name == "FileSize") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the file size value
+                    el.innerHTML = formatBytes(file.Length);
+
+                    // Set the sort value
+                    el.setAttribute("data-sort", file.Length.toString());
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
+            // Else, see if this is a date/time field
+            else if (col.name == "Created" || col.name == "Modified") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the date/time value
+                    let value = col.name == "Created" ? file.TimeCreated : file.TimeLastModified;
+                    el.innerHTML = formatTimeValue(value);
+
+                    // Set the date/time filter/sort values
+                    el.setAttribute("data-filter", moment(value).format("dddd MMMM DD YYYY"));
+                    el.setAttribute("data-sort", value);
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
+            // Else, see if this is a user field
+            else if (col.name == "Author" || col.name == "ModifiedBy") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the Person field Title
+                    el.innerHTML = (file[col.name] ? file[col.name]["Title"] : null) || "";
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
+            // Else, see if this is the "actions" buttons
+            else if (col.name == "Actions") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the action buttons
+                    this.renderActionButtons(el, file);
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
         });
+
+        // Render the table
+        this._dt = new DataTable(tblProps);
+
+        // Call the rendered event
+        this._props.table && this._props.table.onRendered ? this._props.table.onRendered(this._elTable, this._dt.datatable) : null;
     }
 
     /** Public Methods */
