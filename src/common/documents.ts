@@ -2,7 +2,7 @@ import { Components, ContextInfo, Helper, List, Types, Web } from "gd-sprest-bs"
 import * as jQuery from "jquery";
 import * as moment from "moment";
 import { DataTable, IDataTableProps } from "../dashboard/table";
-import { ItemForm } from "../itemForm";
+import { ItemForm, IItemFormEditProps, IItemFormViewProps } from "../itemForm";
 import { LoadingDialog } from "./loadingDialog";
 import { formatBytes, formatTimeValue } from "./methods";
 
@@ -38,6 +38,8 @@ export interface IDocumentsProps {
     el: HTMLElement;
     enableSearch?: boolean;
     query?: Types.IODataQuery;
+    onItemFormEditing: IItemFormEditProps;
+    onItemFormViewing: IItemFormViewProps;
     onNavigationRendering?: (props: Components.INavbarProps) => void;
     onNavigationRendered?: (nav: Components.INavbar) => void;
     table?: {
@@ -52,69 +54,72 @@ export interface IDocumentsProps {
  * Renders a data table containing the contents of a document library.
  */
 export class Documents {
-    private static _props: IDocumentsProps = null;
+    private _el: HTMLElement = null;
+    private _props: IDocumentsProps = null;
 
     /** The data table. */
-    private static _dt: DataTable = null;
-    static get DataTable(): DataTable { return this._dt; }
+    private _dt: DataTable = null;
+    get DataTable(): DataTable { return this._dt; }
 
     /** The document set item id. */
 
-    private static _docSetId: number = null;
-    static get DocSetId(): number { return this._docSetId; }
-    static set DocSetId(value: number) { this._docSetId = value; }
+    private _docSetId: number = null;
+    get DocSetId(): number { return this._docSetId; }
+    set DocSetId(value: number) { this._docSetId = value; }
 
     /** The library name. */
 
-    private static _listName: string = null;
-    static get ListName(): string { return this._listName; }
-    static set ListName(value: string) { this._listName = value; }
+    private _listName: string = null;
+    get ListName(): string { return this._listName; }
+    set ListName(value: string) { this._listName = value; }
 
     // Can delete documents
-    private static _canDelete = true;
-    static get CanDelete(): boolean { return this._canDelete; }
-    static set CanDelete(value: boolean) { this._canDelete = value; }
+    private _canDelete = true;
+    get CanDelete(): boolean { return this._canDelete; }
+    set CanDelete(value: boolean) { this._canDelete = value; }
 
     // Can edit documents
-    private static _canEdit = true;
-    static get CanEdit(): boolean { return this._canEdit; }
-    static set CanEdit(value: boolean) { this._canEdit = value; }
+    private _canEdit = true;
+    get CanEdit(): boolean { return this._canEdit; }
+    set CanEdit(value: boolean) { this._canEdit = value; }
 
     // Can view documents
-    private static _canView = true;
-    static get CanView(): boolean { return this._canView; }
-    static set CanView(value: boolean) { this._canView = value; }
+    private _canView = true;
+    get CanView(): boolean { return this._canView; }
+    set CanView(value: boolean) { this._canView = value; }
 
     // The navigation component
-    private static _navbar: Components.INavbar = null;
-    static get Navigation(): Components.INavbar { return this._navbar; }
+    private _navbar: Components.INavbar = null;
+    get Navigation(): Components.INavbar { return this._navbar; }
+
+    // The navigation element
+    get NavigationElement(): HTMLElement { return this.Navigation.el; }
 
     // The root folder of the library
-    private static _rootFolder: Types.SP.FolderOData = null;
-    static get RootFolder(): Types.SP.FolderOData { return this._rootFolder; }
+    private _rootFolder: Types.SP.FolderOData = null;
+    get RootFolder(): Types.SP.FolderOData { return this._rootFolder; }
 
     // The table element
-    private static _elTable: HTMLElement = null;
-    static get TableElement(): HTMLElement { return this._elTable; }
+    get TableElement(): HTMLElement { return this.DataTable.el; }
 
     // The template files
-    private static _templatesFiles: Types.SP.File[] = null;
-    static get TemplateFiles(): Types.SP.File[] { return this._templatesFiles; }
+    private _templatesFiles: Types.SP.File[] = null;
+    get TemplateFiles(): Types.SP.File[] { return this._templatesFiles; }
 
     // The template folders
-    private static _templateFolders: Types.SP.Folder[] = null;
-    static get TemplateFolders(): Types.SP.Folder[] { return this._templateFolders; }
+    private _templateFolders: Types.SP.Folder[] = null;
+    get TemplateFolders(): Types.SP.Folder[] { return this._templateFolders; }
 
     /** Templates Library (Optional) */
-    private static _templatesUrl: string = null;
-    static get TemplatesUrl(): string { return this._templatesUrl; }
-    static set TemplatesUrl(value: string) { this._templatesUrl = value; }
+    private _templatesUrl: string = null;
+    get TemplatesUrl(): string { return this._templatesUrl; }
+    set TemplatesUrl(value: string) { this._templatesUrl = value; }
 
     /**
      * Copies a file to a folder to the library
      * @param item The dropdown item containing the file/folder to copy.
      */
-    private static copyFile(item: Components.IDropdownItem) {
+    private copyFile(item: Components.IDropdownItem) {
         // Show a loading dialog
         LoadingDialog.setHeader("Initializing the Transfer");
         LoadingDialog.setBody("Copying the file(s) to the workspace...");
@@ -157,7 +162,7 @@ export class Documents {
     }
 
     // Generates the template files/folders dropdown items
-    private static generateItems() {
+    private generateItems() {
         let items: Components.IDropdownItem[] = [];
 
         // Parse the template folders
@@ -194,13 +199,13 @@ export class Documents {
     }
 
     // Returns the extension of a file name
-    private static getFileExt(fileName: string) {
+    private getFileExt(fileName: string) {
         let extension = fileName.split('.');
         return extension[extension.length - 1].toLowerCase();
     }
 
     // Determines if the document can be viewed in office online servers
-    private static isWopi(file: Types.SP.File) {
+    private isWopi(file: Types.SP.File) {
         switch (this.getFileExt(file.Name)) {
             // Excel
             case "csv":
@@ -227,7 +232,7 @@ export class Documents {
     }
 
     // Loads the data
-    private static load(): PromiseLike<void> {
+    private load(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let web = Web();
@@ -286,7 +291,7 @@ export class Documents {
     }
 
     // Renders the file actions
-    private static renderActionButtons(el: HTMLElement, file: Types.SP.File) {
+    private renderActionButtons(el: HTMLElement, file: Types.SP.File) {
         let isWopi = this.isWopi(file);
 
         // Create a span to wrap the icons in
@@ -354,76 +359,100 @@ export class Documents {
                 className: "p-1",
                 iconType: layoutTextSidebar,
                 iconSize: 24,
-                isDisabled: !this.CanEdit,
+                isDisabled: !this.CanEdit && !this.CanView,
                 type: Components.ButtonTypes.OutlineSecondary,
                 onClick: () => {
+                    // Set the item form properties
+                    ItemForm.ListName = this.ListName;
+                    ItemForm.UseModal = false;
+
+                    // Ensure the user can edit the item
                     if (this.CanEdit) {
-                        // Set the item form properties
-                        ItemForm.ListName = this.ListName;
-                        ItemForm.UseModal = false;
+                        // Define the properties
+                        let editProps: IItemFormEditProps = this._props.onItemFormEditing || {} as any;
 
-                        // Show the edit form
-                        ItemForm.edit({
-                            itemId: file.ListItemAllFields["Id"],
-                            onCreateEditForm: props => {
-                                // Set the fields to display
-                                props.includeFields = ["FileLeafRef", "Title"];
+                        // Set the item id
+                        editProps.itemId = file.ListItemAllFields["Id"];
 
-                                // Set the rendering event
-                                props.onControlRendering = (ctrl, field) => {
-                                    if (field.InternalName == "FileLeafRef") {
-                                        // Validate the name of the file
-                                        ctrl.onValidate = (ctrl, results) => {
-                                            // Ensure the value is less than 128 characters
-                                            if (results.value?.length > 128) {
-                                                // Return an error message
-                                                results.invalidMessage = "The file name must be less than 128 characters.";
-                                                results.isValid = false;
-                                            }
-
-                                            // Return the results
-                                            return results;
+                        // Set the edit form properties
+                        editProps.onCreateEditForm = props => {
+                            // Set the rendering event
+                            props.onControlRendering = (ctrl, field) => {
+                                if (field.InternalName == "FileLeafRef") {
+                                    // Validate the name of the file
+                                    ctrl.onValidate = (ctrl, results) => {
+                                        // Ensure the value is less than 128 characters
+                                        if (results.value?.length > 128) {
+                                            // Return an error message
+                                            results.invalidMessage = "The file name must be less than 128 characters.";
+                                            results.isValid = false;
                                         }
-                                    }
-                                    // See if this is the title field
-                                    else if (field.InternalName == "Title") {
-                                        // Update the label
-                                        ctrl.label = "Description";
 
-                                        // Validate the length of the description
-                                        ctrl.onValidate = (ctrl, result) => {
-                                            // Ensure the value is less than 255 characters
-                                            if (result.value?.length > 255) {
-                                                // Return an error message
-                                                result.invalidMessage = "The description must be less than 255 characters.";
-                                                result.isValid = false;
-                                            }
-                                            // Valid
-                                            else result.isValid = true;
-                                            return result;
-                                        }
+                                        // Return the results
+                                        return results;
                                     }
                                 }
+                            }
 
+                            // See if a custom event exists
+                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onCreateEditForm) {
                                 // Return the properties
-                                return props;
-                            },
-                            onSetFooter: (el) => {
-                                let updateBtn = el.querySelector('[role="group"]').firstChild as HTMLButtonElement;
-                                updateBtn.classList.remove("btn-outline-primary");
-                                updateBtn.classList.add("btn-primary");
-                            },
-                            onSetHeader: (el) => {
-                                // Update the header
-                                el.querySelector("h5").innerHTML = "Properties";
-                            },
-                            onUpdate: () => {
+                                return this._props.onItemFormEditing.onCreateEditForm(props);
+                            }
+
+                            // Return the properties
+                            return props;
+                        };
+
+                        // Update the footer
+                        editProps.onSetFooter = (el) => {
+                            let updateBtn = el.querySelector('[role="group"]').firstChild as HTMLButtonElement;
+                            updateBtn.classList.remove("btn-outline-primary");
+                            updateBtn.classList.add("btn-primary");
+
+                            // See if a custom event exists
+                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetFooter) {
+                                // Execute the event
+                                this._props.onItemFormEditing.onSetFooter(el);
+                            }
+                        };
+
+                        // Update the header
+                        editProps.onSetHeader = (el) => {
+                            // Update the header
+                            el.querySelector("h5").innerHTML = "Properties";
+
+                            // See if a custom event exists
+                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetHeader) {
+                                // Execute the event
+                                this._props.onItemFormEditing.onSetHeader(el);
+                            }
+                        };
+
+                        // Refresh the view when updates occur
+                        editProps.onUpdate = () => {
+                            // See if a custom event exists
+                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onUpdate) {
+                                // Execute the event
+                                this._props.onItemFormEditing.onUpdate(el);
+                            } else {
+                                // Refresh the data table
                                 this.refresh();
                             }
-                        });
+                        };
+
+                        // Show the edit form
+                        ItemForm.edit(editProps);
+                    } else {
+                        // Set the view properties
+                        let viewProps: IItemFormViewProps = this._props.onItemFormViewing || {} as any;
+                        viewProps.itemId = file.ListItemAllFields["Id"];
+
+                        // View the form
+                        ItemForm.view(viewProps);
                     }
                 }
-            },
+            }
         });
 
         // Render a Download tooltip
@@ -488,7 +517,7 @@ export class Documents {
     }
 
     // Renders the file icon
-    private static renderFileIcon(el: HTMLElement, file: Types.SP.File) {
+    private renderFileIcon(el: HTMLElement, file: Types.SP.File) {
         // Render the icon wrapper
         let span = document.createElement("span");
         span.className = "text-muted";
@@ -660,7 +689,7 @@ export class Documents {
     }
 
     // Renders the navigation
-    private static renderNavigation() {
+    private renderNavigation() {
         let itemsEnd: Components.INavbarItem[] = [];
 
         // See if templates exist
@@ -741,7 +770,7 @@ export class Documents {
 
         // Set the default properties
         let navProps: Components.INavbarProps = {
-            el: this._props.el,
+            el: this._el,
             brand: "Documents View",
             itemsEnd,
             enableSearch: this._props.enableSearch
@@ -762,10 +791,7 @@ export class Documents {
     }
 
     // Renders the datatable with the file information
-    private static renderTable() {
-        // Clear the table element
-        while (this._elTable.firstChild) { this._elTable.removeChild(this._elTable.firstChild); }
-
+    private renderTable() {
         // Create an array containing the file information
         let files: Types.SP.File[] = this.RootFolder.Files.results;
 
@@ -777,9 +803,13 @@ export class Documents {
             files = files.concat(folder.Files.results);
         }
 
+        // Create the element
+        let el = document.createElement("div");
+        this._el.appendChild(el);
+
         // Create the table properties
         let tblProps: IDataTableProps = {
-            el: this._elTable,
+            el,
             rows: files,
             dtProps: this._props.table && this._props.table.dtProps ? this._props.table.dtProps : {
                 dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
@@ -948,21 +978,20 @@ export class Documents {
         this._dt = new DataTable(tblProps);
 
         // Call the rendered event
-        this._props.table && this._props.table.onRendered ? this._props.table.onRendered(this._elTable, this._dt.datatable) : null;
+        this._props.table && this._props.table.onRendered ? this._props.table.onRendered(el, this._dt.datatable) : null;
     }
 
     /** Public Methods */
 
     // Refreshes the documents
-    static refresh() {
+    refresh() {
         // Show a loading dialog
         LoadingDialog.setHeader("Reloading Workspace");
         LoadingDialog.setBody("Reloading the workspace data. This will close afterwards.");
         LoadingDialog.show();
 
         // Clear the element
-        this._props.el.removeChild(this._elTable);
-        this._elTable = null;
+        while (this._el.firstChild) { this._el.removeChild(this._el.firstChild); }
 
         // Load the workspace item
         this.load().then(() => {
@@ -975,18 +1004,18 @@ export class Documents {
     }
 
     // Renders the component
-    static render(props: IDocumentsProps) {
+    render(props: IDocumentsProps) {
         // Save the properties
         this._props = props;
+
+        // Create the element
+        this._el = document.createElement("div");
+        this._props.el ? this._props.el.appendChild(this._el) : null;
 
         // Load the data
         this.load().then(() => {
             // Render the navigation
             this.renderNavigation();
-
-            // Create the element to render the table to
-            this._elTable = document.createElement("div");
-            this._props.el.appendChild(this._elTable);
 
             // Render the table
             this.renderTable();
@@ -994,7 +1023,7 @@ export class Documents {
     }
 
     // Searches the data table
-    static search(value: string) {
+    search(value: string) {
         // Search the table data
         this._dt.search(value);
     }

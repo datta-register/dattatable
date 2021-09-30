@@ -1,6 +1,44 @@
 import { Components, Helper, SPTypes } from "gd-sprest-bs";
 import { CanvasForm, LoadingDialog, Modal } from "./common";
 
+/** Create Item Properties */
+export interface IItemFormCreateProps {
+    onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
+    onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+    onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+    onSave?: (values: any) => any | PromiseLike<any>;
+    onSetFooter?: (el: HTMLElement) => void;
+    onSetHeader?: (el: HTMLElement) => void;
+    onUpdate?: (item?: any) => void;
+    onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
+    useModal?: boolean;
+}
+
+/** Edit Item Properties */
+export interface IItemFormEditProps {
+    itemId: number;
+    onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
+    onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+    onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+    onSave?: (values: any) => any | PromiseLike<any>;
+    onSetFooter?: (el: HTMLElement) => void;
+    onSetHeader?: (el: HTMLElement) => void;
+    onUpdate?: (item?: any) => void;
+    onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
+    useModal?: boolean;
+}
+
+/** View Item Properties */
+export interface IItemFormViewProps {
+    itemId: number;
+    onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
+    onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+    onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+    onSetFooter?: (el: HTMLElement) => void;
+    onSetHeader?: (el: HTMLElement) => void;
+    useModal?: boolean;
+}
+
 /**
  * Item Form
  */
@@ -57,17 +95,7 @@ export class ItemForm {
     }
 
     // Creates a new task
-    static create(props: {
-        onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
-        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
-        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
-        onSave?: (values: any) => any | PromiseLike<any>;
-        onSetFooter?: (el: HTMLElement) => void;
-        onSetHeader?: (el: HTMLElement) => void;
-        onUpdate?: (item?: any) => void;
-        onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
-        useModal?: boolean;
-    } = {}) {
+    static create(props: IItemFormCreateProps = {}) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
         this._onCreateEditForm = props.onCreateEditForm;
@@ -85,18 +113,7 @@ export class ItemForm {
     }
 
     // Edits a task
-    static edit(props: {
-        itemId: number;
-        onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
-        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
-        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
-        onSave?: (values: any) => any | PromiseLike<any>;
-        onSetFooter?: (el: HTMLElement) => void;
-        onSetHeader?: (el: HTMLElement) => void;
-        onUpdate?: (item?: any) => void;
-        onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
-        useModal?: boolean;
-    }) {
+    static edit(props: IItemFormEditProps) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Edit;
         this._onCreateEditForm = props.onCreateEditForm;
@@ -114,15 +131,7 @@ export class ItemForm {
     }
 
     // Views the task
-    static view(props: {
-        itemId: number;
-        onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
-        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
-        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
-        onSetFooter?: (el: HTMLElement) => void;
-        onSetHeader?: (el: HTMLElement) => void;
-        useModal?: boolean;
-    }) {
+    static view(props: IItemFormViewProps) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
         this._onCreateViewForm = props.onCreateViewForm;

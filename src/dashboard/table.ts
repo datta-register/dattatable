@@ -57,6 +57,9 @@ export class DataTable implements IDataTable {
     // Datatables.net object
     get datatable(): any { return this._datatable; }
 
+    // The data table element
+    get el(): HTMLElement { return this._props.el; }
+
     // Filters the status
     filter(idx: number, value: string = "") {
         // Set the filter
