@@ -43,8 +43,25 @@ export interface IDocumentsProps {
     enableSearch?: boolean;
     listName: string;
     query?: Types.IODataQuery;
-    onItemFormEditing?: IItemFormEditProps;
-    onItemFormViewing?: IItemFormViewProps;
+    onItemFormEditing?: {
+        onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
+        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+        onSave?: (values: any) => any | PromiseLike<any>;
+        onSetFooter?: (el: HTMLElement) => void;
+        onSetHeader?: (el: HTMLElement) => void;
+        onUpdate?: (item?: any) => void;
+        onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
+        useModal?: boolean;
+    };
+    onItemFormViewing?: {
+        onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
+        onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+        onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+        onSetFooter?: (el: HTMLElement) => void;
+        onSetHeader?: (el: HTMLElement) => void;
+        useModal?: boolean;
+    };
     onNavigationRendering?: (props: Components.INavbarProps) => void;
     onNavigationRendered?: (nav: Components.INavbar) => void;
     onRefresh?: () => void;
