@@ -6,7 +6,7 @@ import { ItemForm, IItemFormEditProps, IItemFormViewProps } from "../itemForm";
 import { LoadingDialog } from "./loadingDialog";
 import { formatBytes, formatTimeValue } from "./methods";
 
-/** Icons  */
+/** Icons */
 
 import { bookmarkPlus } from "gd-sprest-bs/build/icons/svgs/bookmarkPlus";
 import { fileEarmark } from "gd-sprest-bs/build/icons/svgs/fileEarmark";
@@ -30,6 +30,16 @@ import { front } from "gd-sprest-bs/build/icons/svgs/front";
 import { inputCursorText } from "gd-sprest-bs/build/icons/svgs/inputCursorText";
 import { layoutTextSidebar } from "gd-sprest-bs/build/icons/svgs/layoutTextSidebar";
 import { x } from "gd-sprest-bs/build/icons/svgs/x";
+
+/** Action Button Types */
+
+export enum ActionButtonTypes {
+    Delete = 1,
+    Download = 2,
+    Edit = 3,
+    Properties = 4,
+    View = 5
+}
 
 /**
  * Properties
@@ -332,8 +342,6 @@ export class Documents {
 
     // Renders the file actions
     private renderActionButtons(el: HTMLElement, file: Types.SP.File) {
-        let isWopi = this.isWopi(file);
-
         // Create a span to wrap the icons in
         let span = document.createElement("span");
         span.className = "bg-white d-inline-flex ms-2 rounded";
@@ -350,214 +358,223 @@ export class Documents {
         el.appendChild(spanDownload);
         el.appendChild(spanDel);
 
-        // Render a View tooltip
-        Components.Tooltip({
-            el: span,
-            content: "View",
-            btnProps: {
-                // Render the icon button
-                className: "img-flip-x p-1",
-                iconType: front,
-                iconSize: 24,
-                isDisabled: !this.CanView,
-                type: Components.ButtonTypes.OutlineSecondary,
-                onClick: () => {
-                    if (this.CanView) {
-                        // Open the file in a new tab
-                        window.open(isWopi ? ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + file.ServerRelativeUrl + "&action=view" : file.ServerRelativeUrl, "_blank");
-                    }
-                }
-            },
-        });
+        // Render the buttons
+        span.appendChild(this.generateButton(ActionButtonTypes.View, file));
+        spanEdit.appendChild(this.generateButton(ActionButtonTypes.Edit, file));
+        spanProps.appendChild(this.generateButton(ActionButtonTypes.Properties, file));
+        spanDownload.appendChild(this.generateButton(ActionButtonTypes.Download, file));
+        spanDel.appendChild(this.generateButton(ActionButtonTypes.Delete, file));
+    }
 
-        // Render an Edit tooltip
-        Components.Tooltip({
-            el: spanEdit,
-            content: "Edit",
-            btnProps: {
-                // Render the icon button
-                className: "p-1",
-                iconType: inputCursorText,
-                iconSize: 24,
-                isDisabled: (!isWopi || !this.CanEdit),
-                type: Components.ButtonTypes.OutlineSecondary,
-                onClick: () => {
-                    if (isWopi && this.CanEdit) {
-                        // Open the file in a new tab
-                        window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + file.ServerRelativeUrl + "&action=edit");
-                    }
-                }
-            },
-        });
+    private generateButton(btnType: number, file: Types.SP.File): HTMLElement {
+        let isWopi = this.isWopi(file);
 
-        // Render a Properties tooltip
-        Components.Tooltip({
-            el: spanProps,
-            content: "Properties",
-            btnProps: {
-                // Render the icon button
-                className: "p-1",
-                iconType: layoutTextSidebar,
-                iconSize: 24,
-                isDisabled: !this.CanEdit && !this.CanView,
-                type: Components.ButtonTypes.OutlineSecondary,
-                onClick: () => {
-                    // Set the item form properties
-                    ItemForm.ListName = this._props.listName;
-                    ItemForm.UseModal = false;
+        // Render the button based on the type
+        switch (btnType) {
+            case ActionButtonTypes.Delete:
+                return Components.Tooltip({
+                    content: "Delete",
+                    btnProps: {
+                        // Render the icon button
+                        className: "p-1",
+                        iconType: x,
+                        iconSize: 24,
+                        isDisabled: !this.CanDelete,
+                        type: Components.ButtonTypes.OutlineSecondary,
+                        onClick: () => {
+                            if (this.CanDelete) {
+                                // Confirm we want to delete the item
+                                if (confirm("Are you sure you want to delete this document?")) {
+                                    // Display a loading dialog
 
-                    // Ensure the user can edit the item
-                    if (this.CanEdit) {
-                        // Define the properties
-                        let editProps: IItemFormEditProps = {
-                            ...(this._props.onItemFormEditing || {}),
-                            ...{
-                                // Set the item id
-                                itemId: file.ListItemAllFields["Id"],
+                                    LoadingDialog.setHeader("Deleting Document");
+                                    LoadingDialog.setBody("Deleting Document: " + file.Name + ". This will close afterwards.");
+                                    LoadingDialog.show();
+                                    // Delete the document
 
-                                // Set the edit form properties
-                                onCreateEditForm: props => {
-                                    // Set the rendering event
-                                    props.onControlRendering = (ctrl, field) => {
-                                        if (field.InternalName == "FileLeafRef") {
-                                            // Validate the name of the file
-                                            ctrl.onValidate = (ctrl, results) => {
-                                                // Ensure the value is less than 128 characters
-                                                if (results.value?.length > 128) {
-                                                    // Return an error message
-                                                    results.invalidMessage = "The file name must be less than 128 characters.";
-                                                    results.isValid = false;
+                                    Web().getFileByServerRelativeUrl(file.ServerRelativeUrl).delete().execute(
+                                        // Success
+                                        () => {
+                                            // close dialog
+                                            LoadingDialog.hide();
+                                            // Refresh the page                         
+                                            this.refresh();
+                                        },
+                                        // Error
+                                        err => {
+                                            // TODO
+                                        }
+                                    );
+                                }
+                            }
+                        }
+                    },
+                }).el;
+
+            case ActionButtonTypes.Download:
+                return Components.Tooltip({
+                    content: "Download",
+                    btnProps: {
+                        // Render the icon button
+                        className: "p-1",
+                        iconType: fileEarmarkArrowDown,
+                        iconSize: 24,
+                        isDisabled: !this.CanView,
+                        type: Components.ButtonTypes.OutlineSecondary,
+                        onClick: () => {
+                            if (this.CanView) {
+                                window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/download.aspx?SourceUrl=" + file.ServerRelativeUrl, "_blank");
+                            }
+                        }
+                    },
+                }).el;
+
+            case ActionButtonTypes.Edit:
+                return Components.Tooltip({
+                    content: "Edit",
+                    btnProps: {
+                        // Render the icon button
+                        className: "p-1",
+                        iconType: inputCursorText,
+                        iconSize: 24,
+                        isDisabled: (!isWopi || !this.CanEdit),
+                        type: Components.ButtonTypes.OutlineSecondary,
+                        onClick: () => {
+                            if (isWopi && this.CanEdit) {
+                                // Open the file in a new tab
+                                window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + file.ServerRelativeUrl + "&action=edit");
+                            }
+                        }
+                    },
+                }).el;
+
+            case ActionButtonTypes.Properties:
+                return Components.Tooltip({
+                    content: "Properties",
+                    btnProps: {
+                        // Render the icon button
+                        className: "p-1",
+                        iconType: layoutTextSidebar,
+                        iconSize: 24,
+                        isDisabled: !this.CanEdit && !this.CanView,
+                        type: Components.ButtonTypes.OutlineSecondary,
+                        onClick: () => {
+                            // Set the item form properties
+                            ItemForm.ListName = this._props.listName;
+                            ItemForm.UseModal = false;
+
+                            // Ensure the user can edit the item
+                            if (this.CanEdit) {
+                                // Define the properties
+                                let editProps: IItemFormEditProps = {
+                                    ...(this._props.onItemFormEditing || {}),
+                                    ...{
+                                        // Set the item id
+                                        itemId: file.ListItemAllFields["Id"],
+
+                                        // Set the edit form properties
+                                        onCreateEditForm: props => {
+                                            // Set the rendering event
+                                            props.onControlRendering = (ctrl, field) => {
+                                                if (field.InternalName == "FileLeafRef") {
+                                                    // Validate the name of the file
+                                                    ctrl.onValidate = (ctrl, results) => {
+                                                        // Ensure the value is less than 128 characters
+                                                        if (results.value?.length > 128) {
+                                                            // Return an error message
+                                                            results.invalidMessage = "The file name must be less than 128 characters.";
+                                                            results.isValid = false;
+                                                        }
+
+                                                        // Return the results
+                                                        return results;
+                                                    }
                                                 }
+                                            }
 
-                                                // Return the results
-                                                return results;
+                                            // See if a custom event exists
+                                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onCreateEditForm) {
+                                                // Return the properties
+                                                return this._props.onItemFormEditing.onCreateEditForm(props);
+                                            }
+
+                                            // Return the properties
+                                            return props;
+                                        },
+
+                                        // Update the footer
+                                        onSetFooter: (el) => {
+                                            let updateBtn = el.querySelector('[role="group"]').firstChild as HTMLButtonElement;
+                                            updateBtn.classList.remove("btn-outline-primary");
+                                            updateBtn.classList.add("btn-primary");
+
+                                            // See if a custom event exists
+                                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetFooter) {
+                                                // Execute the event
+                                                this._props.onItemFormEditing.onSetFooter(el);
+                                            }
+                                        },
+
+                                        // Update the header
+                                        onSetHeader: (el) => {
+                                            // Update the header
+                                            el.querySelector("h5").innerHTML = "Properties";
+
+                                            // See if a custom event exists
+                                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetHeader) {
+                                                // Execute the event
+                                                this._props.onItemFormEditing.onSetHeader(el);
+                                            }
+                                        },
+
+                                        // Refresh the view when updates occur
+                                        onUpdate: (item) => {
+                                            // See if a custom event exists
+                                            if (this._props.onItemFormEditing && this._props.onItemFormEditing.onUpdate) {
+                                                // Execute the event
+                                                this._props.onItemFormEditing.onUpdate(item);
+                                            } else {
+                                                // Refresh the data table
+                                                this.refresh();
                                             }
                                         }
                                     }
+                                };
 
-                                    // See if a custom event exists
-                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onCreateEditForm) {
-                                        // Return the properties
-                                        return this._props.onItemFormEditing.onCreateEditForm(props);
+                                // Show the edit form
+                                ItemForm.edit(editProps);
+                            } else {
+                                // View the form
+                                ItemForm.view({
+                                    ...(this._props.onItemFormViewing || {}),
+                                    ...{
+                                        itemId: file.ListItemAllFields["Id"]
                                     }
-
-                                    // Return the properties
-                                    return props;
-                                },
-
-                                // Update the footer
-                                onSetFooter: (el) => {
-                                    let updateBtn = el.querySelector('[role="group"]').firstChild as HTMLButtonElement;
-                                    updateBtn.classList.remove("btn-outline-primary");
-                                    updateBtn.classList.add("btn-primary");
-
-                                    // See if a custom event exists
-                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetFooter) {
-                                        // Execute the event
-                                        this._props.onItemFormEditing.onSetFooter(el);
-                                    }
-                                },
-
-                                // Update the header
-                                onSetHeader: (el) => {
-                                    // Update the header
-                                    el.querySelector("h5").innerHTML = "Properties";
-
-                                    // See if a custom event exists
-                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onSetHeader) {
-                                        // Execute the event
-                                        this._props.onItemFormEditing.onSetHeader(el);
-                                    }
-                                },
-
-                                // Refresh the view when updates occur
-                                onUpdate: () => {
-                                    // See if a custom event exists
-                                    if (this._props.onItemFormEditing && this._props.onItemFormEditing.onUpdate) {
-                                        // Execute the event
-                                        this._props.onItemFormEditing.onUpdate(el);
-                                    } else {
-                                        // Refresh the data table
-                                        this.refresh();
-                                    }
-                                }
+                                });
                             }
-                        };
-
-                        // Show the edit form
-                        ItemForm.edit(editProps);
-                    } else {
-                        // View the form
-                        ItemForm.view({
-                            ...(this._props.onItemFormViewing || {}),
-                            ...{
-                                itemId: file.ListItemAllFields["Id"]
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-        // Render a Download tooltip
-        Components.Tooltip({
-            el: spanDownload,
-            content: "Download",
-            btnProps: {
-                // Render the icon button
-                className: "p-1",
-                iconType: fileEarmarkArrowDown,
-                iconSize: 24,
-                isDisabled: !this.CanView,
-                type: Components.ButtonTypes.OutlineSecondary,
-                onClick: () => {
-                    if (this.CanView) {
-                        window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/download.aspx?SourceUrl=" + file.ServerRelativeUrl, "_blank");
-                    }
-                }
-            },
-        });
-
-        // Render a Delete tooltip
-        Components.Tooltip({
-            el: spanDel,
-            content: "Delete",
-            btnProps: {
-                // Render the icon button
-                className: "p-1",
-                iconType: x,
-                iconSize: 24,
-                isDisabled: !this.CanDelete,
-                type: Components.ButtonTypes.OutlineSecondary,
-                onClick: () => {
-                    if (this.CanDelete) {
-                        // Confirm we want to delete the item
-                        if (confirm("Are you sure you want to delete this document?")) {
-                            // Display a loading dialog
-
-                            LoadingDialog.setHeader("Deleting Document");
-                            LoadingDialog.setBody("Deleting Document: " + file.Name + ". This will close afterwards.");
-                            LoadingDialog.show();
-                            // Delete the document
-
-                            Web().getFileByServerRelativeUrl(file.ServerRelativeUrl).delete().execute(
-                                // Success
-                                () => {
-                                    // close dialog
-                                    LoadingDialog.hide();
-                                    // Refresh the page                         
-                                    this.refresh();
-                                },
-                                // Error
-                                err => {
-                                    // TODO
-                                }
-                            );
                         }
                     }
-                }
-            },
-        });
+                }).el;
+
+            case ActionButtonTypes.View:
+                return Components.Tooltip({
+                    content: "View",
+                    btnProps: {
+                        // Render the icon button
+                        className: "img-flip-x p-1",
+                        iconType: front,
+                        iconSize: 24,
+                        isDisabled: !this.CanView,
+                        type: Components.ButtonTypes.OutlineSecondary,
+                        onClick: () => {
+                            if (this.CanView) {
+                                // Open the file in a new tab
+                                window.open(isWopi ? ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + file.ServerRelativeUrl + "&action=view" : file.ServerRelativeUrl, "_blank");
+                            }
+                        }
+                    },
+                }).el;
+        }
     }
 
     // Renders the file icon
@@ -1026,6 +1043,12 @@ export class Documents {
     }
 
     /** Public Methods */
+
+    // Generates an action button
+    generateActionButton(btnType: number, file: Types.SP.File): HTMLElement {
+        // Return the button
+        return this.generateButton(btnType, file);
+    }
 
     // Refreshes the documents
     refresh() {
