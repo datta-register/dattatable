@@ -78,6 +78,7 @@ export interface IDocumentsProps {
     table?: {
         columns?: Components.ITableColumn[];
         dtProps?: any;
+        onRendering?: (props?: IDataTableProps) => void;
         onRendered?: (el?: HTMLElement, dt?: any) => void;
     }
     templatesUrl?: string;
@@ -1062,6 +1063,9 @@ export class Documents {
 
         // Set the data
         this._tblProps.rows = files;
+
+        // Call the rendering event
+        this._props.table && this._props.table.onRendering ? this._props.table.onRendering(this._tblProps) : null;
 
         // Render the table
         this._dt = new DataTable(this._tblProps);
