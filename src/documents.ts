@@ -381,7 +381,8 @@ export class Documents {
                     // Render the file
                     this.renderFileIcon(el, file);
 
-                    // Set the sort value
+                    // Set the filter/sort value
+                    el.setAttribute("data-filter", getFileExt(file.Name));
                     el.setAttribute("data-sort", getFileExt(file.Name));
 
                     // Call the custom event
