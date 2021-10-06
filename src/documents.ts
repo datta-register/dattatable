@@ -2,7 +2,7 @@ import { Components, ContextInfo, Helper, List, Types, Web } from "gd-sprest-bs"
 import * as jQuery from "jquery";
 import * as moment from "moment";
 import { LoadingDialog } from "./common/loadingDialog";
-import { formatBytes, formatTimeValue } from "./common/methods";
+import { formatBytes, formatTimeValue, getFileExt } from "./common/methods";
 import { DataTable, IDataTableProps } from "./dashboard/table";
 import { ItemForm, IItemFormEditProps, IItemFormViewProps } from "./itemForm";
 
@@ -378,7 +378,7 @@ export class Documents {
                     this.renderFileIcon(el, file);
 
                     // Set the sort value
-                    el.setAttribute("data-sort", this.getFileExt(file.Name));
+                    el.setAttribute("data-sort", getFileExt(file.Name));
 
                     // Call the custom event
                     customEvent ? customEvent(el, col, file) : null;
@@ -448,15 +448,9 @@ export class Documents {
         });
     }
 
-    // Returns the extension of a file name
-    private getFileExt(fileName: string) {
-        let extension = fileName.split('.');
-        return extension[extension.length - 1].toLowerCase();
-    }
-
     // Determines if the document can be viewed in office online servers
     private isWopi(file: Types.SP.File) {
-        switch (this.getFileExt(file.Name)) {
+        switch (getFileExt(file.Name)) {
             // Excel
             case "csv":
             case "doc":
@@ -801,7 +795,7 @@ export class Documents {
 
         // Render the icon
         let size = 28;
-        switch (this.getFileExt(file.Name)) {
+        switch (getFileExt(file.Name)) {
             // Power BI
             case "pbix":
                 span.appendChild(fileEarmarkBarGraph(size));

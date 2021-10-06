@@ -36,3 +36,9 @@ export const formatTimeValue = (value: string, format: string = "MM/DD/YYYY HH:m
     // Return nothing
     return "";
 }
+
+// Returns the extension of a file name
+export const getFileExt = (fileName: string = ""): string => {
+    let extension = fileName.split('.');
+    return extension[extension.length - 1].toLowerCase();
+}
