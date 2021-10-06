@@ -1032,6 +1032,15 @@ export class Documents {
                     // Call the custom event
                     customEvent ? customEvent(el, col, file) : null;
                 }
+            } else {
+                // Set the default render event
+                col.onRenderCell = (el, col, file: Types.SP.FileOData) => {
+                    // Set the value
+                    el.innerHTML = file[col.name] || file.ListItemAllFields.FieldValuesAsText[col.name] || "";
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
             }
         });
 
