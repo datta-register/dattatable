@@ -75,6 +75,7 @@ export interface IDocumentsProps {
     onNavigationRendering?: (props: Components.INavbarProps) => void;
     onNavigationRendered?: (nav: Components.INavbar) => void;
     onRefresh?: () => void;
+    onRendered?: () => void;
     table?: {
         columns?: Components.ITableColumn[];
         dtProps?: any;
@@ -129,6 +130,31 @@ export class Documents {
     // Can view documents
     private _canView = true;
     get CanView(): boolean { return this._canView; }
+
+    // The files
+    get Files(): Types.SP.File[] {
+        // Default the files to the root folder
+        let files = this.RootFolder.Files.results
+
+        // Parse the folders
+        let formsFl = false;
+        for (let i = 0; i < this.RootFolder.Folders.results.length; i++) {
+            let folder: Types.SP.FolderOData = this.RootFolder.Folders.results[i] as any;
+
+            // Skip the internal forms folder
+            if (!formsFl && folder.Name == "Forms") {
+                // Set the flag and skip this folder
+                formsFl = true;
+                continue;
+            }
+
+            // Append files
+            files = files.concat(folder.Files.results);
+        }
+
+        // Return the files
+        return files;
+    }
 
     // The navigation component
     private _navbar: Components.INavbar = null;
@@ -1042,27 +1068,13 @@ export class Documents {
 
     // Renders the datatable with the file information
     private renderTable() {
-        // Create an array containing the file information
-        let files: Types.SP.File[] = this.RootFolder.Files.results;
-
-        // Parse the folders
-        for (let i = 0; i < this.RootFolder.Folders.results.length; i++) {
-            let folder: Types.SP.FolderOData = this.RootFolder.Folders.results[i] as any;
-
-            // Skip the internal forms folder
-            if (folder.Name == "Forms") { continue; }
-
-            // Append files
-            files = files.concat(folder.Files.results);
-        }
-
         // Create the element
         let el = document.createElement("div");
         this._el.appendChild(el);
         this._tblProps.el = el;
 
         // Set the data
-        this._tblProps.rows = files;
+        this._tblProps.rows = this.Files;
 
         // Call the rendering event
         this._props.table && this._props.table.onRendering ? this._props.table.onRendering(this._tblProps) : null;
