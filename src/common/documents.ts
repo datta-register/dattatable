@@ -292,8 +292,9 @@ export class Documents {
             let query: Types.IODataQuery = this._props.query || {};
             query.Expand = (query.Expand ? query.Expand : []).concat([
                 "Folders/Files", "Folders/Files/Author",
-                "Folders/Files/ListItemAllFields", "Folders/Files/ModifiedBy",
-                "Files", "Files/Author", "Files/ListItemAllFields", "Files/ModifiedBy"
+                "Folders/Files/ListItemAllFields", "Folders/Files/ListItemAllFields/FieldValuesAsText",
+                "Folders/Files/ModifiedBy", "Files", "Files/Author", "Files/ListItemAllFields",
+                "Files/ListItemAllFields/FieldValuesAsText", "Files/ModifiedBy"
             ]);
 
             // See if we are targeting a document set folder
