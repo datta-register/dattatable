@@ -51,7 +51,6 @@ export interface IDocumentsProps {
     canView?: boolean;
     docSetId?: number;
     el: HTMLElement;
-    enableFilter?: boolean;
     enableSearch?: boolean;
     listName: string;
     query?: Types.IODataQuery;
@@ -1064,7 +1063,7 @@ export class Documents {
         this._navbar.el.querySelector("div.container-fluid").classList.add("pe-2");
 
         // See if we are showing the filter
-        if (this._props.enableFilter) {
+        if (this._props.onShowFilter) {
             // Render the filter icon
             let icon = document.createElement("div");
             icon.classList.add("filter-icon");
