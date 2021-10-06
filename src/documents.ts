@@ -4,7 +4,7 @@ import * as moment from "moment";
 import { LoadingDialog } from "./common/loadingDialog";
 import { formatBytes, formatTimeValue, getFileExt } from "./common/methods";
 import { DataTable, IDataTableProps } from "./dashboard/table";
-import { ItemForm, IItemFormEditProps, IItemFormViewProps } from "./itemForm";
+import { ItemForm, IItemFormEditProps } from "./itemForm";
 
 /** Icons */
 
@@ -26,6 +26,7 @@ import { fileEarmarkSpreadsheet } from "gd-sprest-bs/build/icons/svgs/fileEarmar
 import { fileEarmarkText } from "gd-sprest-bs/build/icons/svgs/fileEarmarkText";
 import { fileEarmarkWord } from "gd-sprest-bs/build/icons/svgs/fileEarmarkWord";
 import { fileEarmarkZip } from "gd-sprest-bs/build/icons/svgs/fileEarmarkZip";
+import { filterSquare } from "gd-sprest-bs/build/icons/svgs/filterSquare";
 import { front } from "gd-sprest-bs/build/icons/svgs/front";
 import { inputCursorText } from "gd-sprest-bs/build/icons/svgs/inputCursorText";
 import { layoutTextSidebar } from "gd-sprest-bs/build/icons/svgs/layoutTextSidebar";
@@ -50,9 +51,11 @@ export interface IDocumentsProps {
     canView?: boolean;
     docSetId?: number;
     el: HTMLElement;
+    enableFilter?: boolean;
     enableSearch?: boolean;
     listName: string;
     query?: Types.IODataQuery;
+    onFilterRendered?: (el: HTMLElement) => void;
     onItemFormEditing?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
         onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
@@ -76,6 +79,7 @@ export interface IDocumentsProps {
     onNavigationRendered?: (nav: Components.INavbar) => void;
     onRefresh?: () => void;
     onRendered?: () => void;
+    onShowFilter?: Function;
     table?: {
         columns?: Components.ITableColumn[];
         dtProps?: any;
@@ -542,6 +546,9 @@ export class Documents {
 
                 // Render the table
                 this.renderTable();
+
+                // Call the render event
+                this._props.onRendered ? this._props.onRendered() : null;
 
                 // Resolve the promise
                 resolve();
@@ -1055,6 +1062,22 @@ export class Documents {
         /* Fix the padding on the left & right of the nav */
         this._navbar.el.querySelector("div.container-fluid").classList.add("ps-75");
         this._navbar.el.querySelector("div.container-fluid").classList.add("pe-2");
+
+        // See if we are showing the filter
+        if (this._props.enableFilter) {
+            // Render the filter icon
+            let icon = document.createElement("div");
+            icon.classList.add("filter-icon");
+            icon.classList.add("nav-link");
+            icon.classList.add("text-light");
+            icon.style.cursor = "pointer";
+            icon.appendChild(filterSquare());
+            this._props.onShowFilter ? icon.addEventListener("click", this._props.onShowFilter as any) : null;
+            this._navbar.el.firstElementChild.appendChild(icon);
+
+            // Call the render event
+            this._props.onFilterRendered ? this._props.onFilterRendered(icon) : null;
+        }
 
         // Call the rendered event
         this._props.onNavigationRendered ? this._props.onNavigationRendered(this.Navigation) : null;
