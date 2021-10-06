@@ -78,6 +78,7 @@ export interface IDocumentsProps {
     onNavigationRendered?: (nav: Components.INavbar) => void;
     onRefresh?: () => void;
     onRendered?: () => void;
+    onSearchRendered?: (el: HTMLElement) => void;
     onShowFilter?: Function;
     table?: {
         columns?: Components.ITableColumn[];
@@ -1088,7 +1089,8 @@ export class Documents {
             this._props.onFilterRendered ? this._props.onFilterRendered(icon) : null;
         }
 
-        // Call the rendered event
+        // Call the render events
+        this._props.onSearchRendered ? this._props.onSearchRendered(this._navbar.el.querySelector("input[type='search']")) : null;
         this._props.onNavigationRendered ? this._props.onNavigationRendered(this.Navigation) : null;
     }
 
