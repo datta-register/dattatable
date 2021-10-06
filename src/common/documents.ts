@@ -860,6 +860,9 @@ export class Documents {
         for (let i = 0; i < this.RootFolder.Folders.results.length; i++) {
             let folder: Types.SP.FolderOData = this.RootFolder.Folders.results[i] as any;
 
+            // Skip the internal forms folder
+            if (folder.Name == "Forms") { continue; }
+
             // Append files
             files = files.concat(folder.Files.results);
         }
