@@ -268,14 +268,12 @@ export class Documents {
     // Generates the table properties
     private generateTableProps() {
         // Default the indexes for the type and action buttons
-        let idxType = 0;
         let idxActions = 8;
 
         // See if custom columns are defined
         if (this._props.table && this._props.table.columns) {
             // Clear the indexes
             idxActions = -1;
-            idxType = -1;
 
             // Parse the columns
             for (let i = 0; i < this._props.table.columns.length; i++) {
@@ -284,11 +282,6 @@ export class Documents {
                     // Actions
                     case "Actions":
                         idxActions = i;
-                        break;
-
-                    // Type
-                    case "Type":
-                        idxType = i;
                         break;
                 }
             }
@@ -301,7 +294,6 @@ export class Documents {
 
             // Add the default options for the Actions and Type
             idxActions >= 0 ? columnDefs.push({ targets: idxActions, orderable: false, searchable: false }) : null;
-            idxType >= 0 ? columnDefs.push({ targets: idxType, searchable: false }) : null;
         }
 
         // Create the table properties
