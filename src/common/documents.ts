@@ -288,27 +288,23 @@ export class Documents {
                 }, reject);
             }
 
+            // Set the query
+            let query: Types.IODataQuery = this._props.query || {};
+            query.Expand = (query.Expand ? query.Expand : []).concat([
+                "Folders/Files", "Folders/Files/Author",
+                "Folders/Files/ListItemAllFields", "Folders/Files/ModifiedBy",
+                "Files", "Files/Author", "Files/ListItemAllFields", "Files/ModifiedBy"
+            ]);
+
             // See if we are targeting a document set folder
             if (this._props.docSetId) {
-                web.Lists(this._props.listName).Items(this._props.docSetId).Folder().query({
-                    Expand: [
-                        "Folders/Files", "Folders/Files/Author",
-                        "Folders/Files/ListItemAllFields", "Folders/Files/ModifiedBy",
-                        "Files", "Files/Author", "Files/ListItemAllFields", "Files/ModifiedBy"
-                    ]
-                }).execute(folder => {
+                web.Lists(this._props.listName).Items(this._props.docSetId).Folder().query(query).execute(folder => {
                     // Set the root folder
                     this._rootFolder = folder;
                 }, reject);
             } else {
                 // Load library information
-                web.Lists(this._props.listName).RootFolder().query({
-                    Expand: [
-                        "Folders/Files", "Folders/Files/Author",
-                        "Folders/Files/ListItemAllFields", "Folders/Files/ModifiedBy",
-                        "Files", "Files/Author", "Files/ListItemAllFields", "Files/ModifiedBy"
-                    ]
-                }).execute(folder => {
+                web.Lists(this._props.listName).RootFolder().query(query).execute(folder => {
                     // Set the root folder
                     this._rootFolder = folder;
                 }, reject);
