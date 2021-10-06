@@ -1050,6 +1050,7 @@ export class Documents {
             brand: "Documents View",
             itemsEnd,
             searchBox: this._props.enableSearch ? {
+                hideButton: true,
                 onChange: value => {
                     // Search the data table
                     this._dt.search(value);
