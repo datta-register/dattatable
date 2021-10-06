@@ -266,6 +266,8 @@ export class Documents {
         // See if the column definitions are not defined
         let columnDefs = this._props.table ? this._props.table.dtProps : null;
         if (columnDefs == null) {
+            columnDefs = [];
+
             // Add the default options for the Actions and Type
             idxActions >= 0 ? columnDefs.push({ targets: idxActions, orderable: false, searchable: false }) : null;
             idxType >= 0 ? columnDefs.push({ targets: idxType, searchable: false }) : null;
