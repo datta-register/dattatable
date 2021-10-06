@@ -1,7 +1,6 @@
-/** Libraries */
+/** Common Components */
 
 export * from "./canvas";
-export * from "./documents";
 export * from "./installRequired";
 export * from "./loadingDialog";
 export * from "./methods";

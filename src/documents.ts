@@ -1,10 +1,10 @@
 import { Components, ContextInfo, Helper, List, Types, Web } from "gd-sprest-bs";
 import * as jQuery from "jquery";
 import * as moment from "moment";
-import { DataTable, IDataTableProps } from "../dashboard/table";
-import { ItemForm, IItemFormEditProps, IItemFormViewProps } from "../itemForm";
-import { LoadingDialog } from "./loadingDialog";
-import { formatBytes, formatTimeValue } from "./methods";
+import { LoadingDialog } from "./common/loadingDialog";
+import { formatBytes, formatTimeValue } from "./common/methods";
+import { DataTable, IDataTableProps } from "./dashboard/table";
+import { ItemForm, IItemFormEditProps, IItemFormViewProps } from "./itemForm";
 
 /** Icons */
 
@@ -236,40 +236,47 @@ export class Documents {
 
     // Generates the table properties
     private generateTableProps() {
+        // Default the indexes for the type and action buttons
+        let idxType = 0;
+        let idxActions = 8;
+
+        // See if custom columns are defined
+        if (this._props.table && this._props.table.columns) {
+            // Clear the indexes
+            idxActions = -1;
+            idxType = -1;
+
+            // Parse the columns
+            for (let i = 0; i < this._props.table.columns.length; i++) {
+                // Update the index based on the value
+                switch (this._props.table.columns[i].name) {
+                    // Actions
+                    case "Actions":
+                        idxActions = i;
+                        break;
+
+                    // Type
+                    case "Type":
+                        idxType = i;
+                        break;
+                }
+            }
+        }
+
+        // See if the column definitions are not defined
+        let columnDefs = this._props.table ? this._props.table.dtProps : null;
+        if (columnDefs == null) {
+            // Add the default options for the Actions and Type
+            idxActions >= 0 ? columnDefs.push({ targets: idxActions, orderable: false, searchable: false }) : null;
+            idxType >= 0 ? columnDefs.push({ targets: idxType, searchable: false }) : null;
+        }
+
         // Create the table properties
         this._tblProps = {
             el: null,
             dtProps: this._props.table && this._props.table.dtProps ? this._props.table.dtProps : {
                 dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
-                columnDefs: [
-                    { targets: 0, searchable: false },
-                    {
-                        targets: 2, render: function (data, type, row) {
-                            // Limit the length of the Description column to 50 chars
-                            let esc = function (t) {
-                                return t
-                                    .replace(/&/g, '&amp;')
-                                    .replace(/</g, '&lt;')
-                                    .replace(/>/g, '&gt;')
-                                    .replace(/"/g, '&quot;');
-                            };
-                            // Order, search and type get the original data
-                            if (type !== 'display') { return data; }
-                            if (typeof data !== 'number' && typeof data !== 'string') { return data; }
-                            data = data.toString(); // cast numbers
-                            if (data.length < 50) { return data; }
-
-                            // Find the last white space character in the string
-                            let trunc = esc(data.substr(0, 50).replace(/\s([^\s]*)$/, ''));
-                            return '<span title="' + esc(data) + '">' + trunc + '&#8230;</span>';
-                        }
-                    },
-                    {
-                        targets: 8,
-                        orderable: false,
-                        searchable: false
-                    }
-                ],
+                columnDefs,
                 createdRow: function (row, data, index) {
                     jQuery('td', row).addClass('align-middle');
                 },
@@ -1058,7 +1065,7 @@ export class Documents {
         this._dt = new DataTable(this._tblProps);
 
         // Call the rendered event
-        this._props.table && this._props.table.onRendered ? this._props.table.onRendered(el, this._dt.datatable) : null;
+        this._tblProps.onRendered ? this._tblProps.onRendered(el, this._dt.datatable) : null;
     }
 
     /** Public Methods */
