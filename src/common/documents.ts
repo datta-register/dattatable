@@ -90,6 +90,7 @@ export interface IDocumentsProps {
 export class Documents {
     private _el: HTMLElement = null;
     private _props: IDocumentsProps = null;
+    private _tblProps: IDataTableProps = null;
 
     // Constructor
     constructor(props: IDocumentsProps) {
@@ -104,6 +105,9 @@ export class Documents {
         // Create the element
         this._el = document.createElement("div");
         this._props.el ? this._props.el.appendChild(this._el) : null;
+
+        // Generate the table properties
+        this.generateTableProps();
 
         // Render the component
         this.render();
@@ -228,6 +232,184 @@ export class Documents {
 
         // Return the dropdown items
         return items;
+    }
+
+    // Generates the table properties
+    private generateTableProps() {
+        // Create the table properties
+        this._tblProps = {
+            el: null,
+            dtProps: this._props.table && this._props.table.dtProps ? this._props.table.dtProps : {
+                dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
+                columnDefs: [
+                    { targets: 0, searchable: false },
+                    {
+                        targets: 2, render: function (data, type, row) {
+                            // Limit the length of the Description column to 50 chars
+                            let esc = function (t) {
+                                return t
+                                    .replace(/&/g, '&amp;')
+                                    .replace(/</g, '&lt;')
+                                    .replace(/>/g, '&gt;')
+                                    .replace(/"/g, '&quot;');
+                            };
+                            // Order, search and type get the original data
+                            if (type !== 'display') { return data; }
+                            if (typeof data !== 'number' && typeof data !== 'string') { return data; }
+                            data = data.toString(); // cast numbers
+                            if (data.length < 50) { return data; }
+
+                            // Find the last white space character in the string
+                            let trunc = esc(data.substr(0, 50).replace(/\s([^\s]*)$/, ''));
+                            return '<span title="' + esc(data) + '">' + trunc + '&#8230;</span>';
+                        }
+                    },
+                    {
+                        targets: 8,
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                createdRow: function (row, data, index) {
+                    jQuery('td', row).addClass('align-middle');
+                },
+                // Add some classes to the dataTable elements
+                drawCallback: function (settings) {
+                    let api = new jQuery.fn.dataTable.Api(settings) as any;
+                    jQuery(api.context[0].nTable).removeClass('no-footer');
+                    jQuery(api.context[0].nTable).addClass('tbl-footer');
+                    jQuery(api.context[0].nTable).addClass('table-striped');
+                    jQuery(api.context[0].nTableWrapper).find('.dataTables_info').addClass('text-center');
+                    jQuery(api.context[0].nTableWrapper).find('.dataTables_length').addClass('pt-2');
+                    jQuery(api.context[0].nTableWrapper).find('.dataTables_paginate').addClass('pt-03');
+                },
+                headerCallback: function (thead, data, start, end, display) {
+                    jQuery('th', thead).addClass('align-middle');
+                },
+                // Order by the 1st column by default; ascending
+                order: [[1, "asc"]]
+            },
+            columns: this._props.table && this._props.table.columns ? this._props.table.columns : [
+                {
+                    name: "Type",
+                    title: "Type",
+                },
+                {
+                    name: "Name",
+                    title: "Name"
+                },
+                {
+                    name: "Title",
+                    title: "Description"
+                },
+                {
+                    name: "FileSize",
+                    title: "File Size"
+                },
+                {
+                    name: "Created",
+                    title: "Created"
+                },
+                {
+                    name: "Author",
+                    title: "Created By"
+                },
+                {
+                    name: "Modified",
+                    title: "Modified"
+                },
+                {
+                    name: "ModifiedBy",
+                    title: "Modified By"
+                },
+                {
+                    className: "text-end text-nowrap",
+                    name: "Actions",
+                    title: ""
+                }
+            ]
+        };
+
+        // Parse the columns
+        Helper.Executor(this._tblProps.columns, col => {
+            let customEvent = col.onRenderCell;
+
+            // See if this is the type column
+            if (col.name == "Type") {
+                // Set the event to render an icon
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the file
+                    this.renderFileIcon(el, file);
+
+                    // Set the sort value
+                    el.setAttribute("data-sort", this.getFileExt(file.Name));
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                };
+            }
+            // Else, see if this is the file size
+            else if (col.name == "FileSize") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the file size value
+                    el.innerHTML = formatBytes(file.Length);
+
+                    // Set the sort value
+                    el.setAttribute("data-sort", file.Length.toString());
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
+            // Else, see if this is a date/time field
+            else if (col.name == "Created" || col.name == "Modified") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the date/time value
+                    let value = col.name == "Created" ? file.TimeCreated : file.TimeLastModified;
+                    el.innerHTML = formatTimeValue(value);
+
+                    // Set the date/time filter/sort values
+                    el.setAttribute("data-filter", moment(value).format("dddd MMMM DD YYYY"));
+                    el.setAttribute("data-sort", value);
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
+            // Else, see if this is a user field
+            else if (col.name == "Author" || col.name == "ModifiedBy") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the Person field Title
+                    el.innerHTML = (file[col.name] ? file[col.name]["Title"] : null) || "";
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
+            // Else, see if this is the "actions" buttons
+            else if (col.name == "Actions") {
+                // Set the event to render the size
+                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                    // Render the action buttons
+                    this.renderActionButtons(el, file);
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            } else {
+                // Set the default render event
+                col.onRenderCell = (el, col, file: Types.SP.FileOData) => {
+                    // Set the value
+                    el.innerHTML = file[col.name] || file.ListItemAllFields.FieldValuesAsText[col.name] || "";
+
+                    // Call the custom event
+                    customEvent ? customEvent(el, col, file) : null;
+                }
+            }
+        });
     }
 
     // Returns the extension of a file name
@@ -867,185 +1049,13 @@ export class Documents {
         // Create the element
         let el = document.createElement("div");
         this._el.appendChild(el);
+        this._tblProps.el = el;
 
-        // Create the table properties
-        let tblProps: IDataTableProps = {
-            el,
-            rows: files,
-            dtProps: this._props.table && this._props.table.dtProps ? Object.create(this._props.table.dtProps) : {
-                dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
-                columnDefs: [
-                    { targets: 0, searchable: false },
-                    {
-                        targets: 2, render: function (data, type, row) {
-                            // Limit the length of the Description column to 50 chars
-                            let esc = function (t) {
-                                return t
-                                    .replace(/&/g, '&amp;')
-                                    .replace(/</g, '&lt;')
-                                    .replace(/>/g, '&gt;')
-                                    .replace(/"/g, '&quot;');
-                            };
-                            // Order, search and type get the original data
-                            if (type !== 'display') { return data; }
-                            if (typeof data !== 'number' && typeof data !== 'string') { return data; }
-                            data = data.toString(); // cast numbers
-                            if (data.length < 50) { return data; }
-
-                            // Find the last white space character in the string
-                            let trunc = esc(data.substr(0, 50).replace(/\s([^\s]*)$/, ''));
-                            return '<span title="' + esc(data) + '">' + trunc + '&#8230;</span>';
-                        }
-                    },
-                    {
-                        targets: 8,
-                        orderable: false,
-                        searchable: false
-                    }
-                ],
-                createdRow: function (row, data, index) {
-                    jQuery('td', row).addClass('align-middle');
-                },
-                // Add some classes to the dataTable elements
-                drawCallback: function (settings) {
-                    let api = new jQuery.fn.dataTable.Api(settings) as any;
-                    jQuery(api.context[0].nTable).removeClass('no-footer');
-                    jQuery(api.context[0].nTable).addClass('tbl-footer');
-                    jQuery(api.context[0].nTable).addClass('table-striped');
-                    jQuery(api.context[0].nTableWrapper).find('.dataTables_info').addClass('text-center');
-                    jQuery(api.context[0].nTableWrapper).find('.dataTables_length').addClass('pt-2');
-                    jQuery(api.context[0].nTableWrapper).find('.dataTables_paginate').addClass('pt-03');
-                },
-                headerCallback: function (thead, data, start, end, display) {
-                    jQuery('th', thead).addClass('align-middle');
-                },
-                // Order by the 1st column by default; ascending
-                order: [[1, "asc"]]
-            },
-            columns: this._props.table && this._props.table.columns ? Object.create(this._props.table.columns) : [
-                {
-                    name: "Type",
-                    title: "Type",
-                },
-                {
-                    name: "Name",
-                    title: "Name"
-                },
-                {
-                    name: "Title",
-                    title: "Description"
-                },
-                {
-                    name: "FileSize",
-                    title: "File Size"
-                },
-                {
-                    name: "Created",
-                    title: "Created"
-                },
-                {
-                    name: "Author",
-                    title: "Created By"
-                },
-                {
-                    name: "Modified",
-                    title: "Modified"
-                },
-                {
-                    name: "ModifiedBy",
-                    title: "Modified By"
-                },
-                {
-                    className: "text-end text-nowrap",
-                    name: "Actions",
-                    title: ""
-                }
-            ]
-        };
-
-        // Parse the columns
-        Helper.Executor(tblProps.columns, col => {
-            let customEvent = col.onRenderCell;
-
-            // See if this is the type column
-            if (col.name == "Type") {
-                // Set the event to render an icon
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the file
-                    this.renderFileIcon(el, file);
-
-                    // Set the sort value
-                    el.setAttribute("data-sort", this.getFileExt(file.Name));
-
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
-                };
-            }
-            // Else, see if this is the file size
-            else if (col.name == "FileSize") {
-                // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the file size value
-                    el.innerHTML = formatBytes(file.Length);
-
-                    // Set the sort value
-                    el.setAttribute("data-sort", file.Length.toString());
-
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
-                }
-            }
-            // Else, see if this is a date/time field
-            else if (col.name == "Created" || col.name == "Modified") {
-                // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the date/time value
-                    let value = col.name == "Created" ? file.TimeCreated : file.TimeLastModified;
-                    el.innerHTML = formatTimeValue(value);
-
-                    // Set the date/time filter/sort values
-                    el.setAttribute("data-filter", moment(value).format("dddd MMMM DD YYYY"));
-                    el.setAttribute("data-sort", value);
-
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
-                }
-            }
-            // Else, see if this is a user field
-            else if (col.name == "Author" || col.name == "ModifiedBy") {
-                // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the Person field Title
-                    el.innerHTML = (file[col.name] ? file[col.name]["Title"] : null) || "";
-
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
-                }
-            }
-            // Else, see if this is the "actions" buttons
-            else if (col.name == "Actions") {
-                // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the action buttons
-                    this.renderActionButtons(el, file);
-
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
-                }
-            } else {
-                // Set the default render event
-                col.onRenderCell = (el, col, file: Types.SP.FileOData) => {
-                    // Set the value
-                    el.innerHTML = file[col.name] || file.ListItemAllFields.FieldValuesAsText[col.name] || "";
-
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
-                }
-            }
-        });
+        // Set the data
+        this._tblProps.rows = files;
 
         // Render the table
-        this._dt = new DataTable(tblProps);
+        this._dt = new DataTable(this._tblProps);
 
         // Call the rendered event
         this._props.table && this._props.table.onRendered ? this._props.table.onRendered(el, this._dt.datatable) : null;
