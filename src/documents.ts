@@ -1049,7 +1049,16 @@ export class Documents {
             el: this._el,
             brand: "Documents View",
             itemsEnd,
-            enableSearch: this._props.enableSearch
+            searchBox: this._props.enableSearch ? {
+                onChange: value => {
+                    // Search the data table
+                    this._dt.search(value);
+                },
+                onSearch: value => {
+                    // Search the data table
+                    this._dt.search(value);
+                }
+            } : null
         };
 
         // Call the rendering event
@@ -1068,7 +1077,7 @@ export class Documents {
             let icon = document.createElement("div");
             icon.classList.add("filter-icon");
             icon.classList.add("nav-link");
-            icon.classList.add("text-light");
+            icon.classList.add("text-dark");
             icon.style.cursor = "pointer";
             icon.appendChild(filterSquare());
             this._props.onShowFilter ? icon.addEventListener("click", this._props.onShowFilter as any) : null;
