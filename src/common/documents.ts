@@ -872,7 +872,7 @@ export class Documents {
         let tblProps: IDataTableProps = {
             el,
             rows: files,
-            dtProps: this._props.table && this._props.table.dtProps ? this._props.table.dtProps : {
+            dtProps: this._props.table && this._props.table.dtProps ? Object.create(this._props.table.dtProps) : {
                 dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
                 columnDefs: [
                     { targets: 0, searchable: false },
@@ -922,7 +922,7 @@ export class Documents {
                 // Order by the 1st column by default; ascending
                 order: [[1, "asc"]]
             },
-            columns: this._props.table && this._props.table.columns ? this._props.table.columns : [
+            columns: this._props.table && this._props.table.columns ? Object.create(this._props.table.columns) : [
                 {
                     name: "Type",
                     title: "Type",
