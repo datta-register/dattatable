@@ -50,6 +50,7 @@ export interface IDocumentsProps {
     canEdit?: boolean;
     canView?: boolean;
     docSetId?: number;
+    itemId?: number;
     el: HTMLElement;
     enableSearch?: boolean;
     listName: string;
@@ -119,7 +120,11 @@ export class Documents {
         this.render();
     }
 
-    /** The data table. */
+    /** The list item attachments */
+    private _attachments: Types.SP.Attachment[] = null;
+    get Attachments(): Types.SP.Attachment[] { return this._attachments; }
+
+    /** The data table */
     private _dt: DataTable = null;
     get DataTable(): DataTable { return this._dt; }
 
@@ -159,6 +164,10 @@ export class Documents {
         // Return the files
         return files;
     }
+
+    // Type of object we are dealing with
+    get IsAttachment(): boolean { return this._props.itemId > 0; }
+    get IsDocSet(): boolean { return this._props.docSetId > 0; }
 
     // The navigation component
     private _navbar: Components.INavbar = null;
@@ -226,6 +235,73 @@ export class Documents {
                 });
             });
         }
+    }
+
+    // Generates the table columns
+    private generateColumns(): Components.ITableColumn[] {
+        // See if the columns were provided
+        if (this._props.table && this._props.table.columns) { return this._props.table.columns; }
+
+        // See if we are dealing w/ attachments
+        if (this.IsAttachment) {
+            // Return the default columns
+            return [
+                {
+                    name: "Type",
+                    title: "Type"
+                },
+                {
+                    name: "FileName",
+                    title: "Name"
+                },
+                {
+                    className: "text-end text-nowrap",
+                    name: "Actions",
+                    title: ""
+                }
+            ]
+        }
+
+        // Return the default columns
+        return [
+            {
+                name: "Type",
+                title: "Type",
+            },
+            {
+                name: "Name",
+                title: "Name"
+            },
+            {
+                name: "Title",
+                title: "Description"
+            },
+            {
+                name: "FileSize",
+                title: "File Size"
+            },
+            {
+                name: "Created",
+                title: "Created"
+            },
+            {
+                name: "Author",
+                title: "Created By"
+            },
+            {
+                name: "Modified",
+                title: "Modified"
+            },
+            {
+                name: "ModifiedBy",
+                title: "Modified By"
+            },
+            {
+                className: "text-end text-nowrap",
+                name: "Actions",
+                title: ""
+            }
+        ];
     }
 
     // Generates the template files/folders dropdown items
@@ -321,45 +397,7 @@ export class Documents {
                 // Order by the 1st column by default; ascending
                 order: [[1, "asc"]]
             },
-            columns: this._props.table && this._props.table.columns ? this._props.table.columns : [
-                {
-                    name: "Type",
-                    title: "Type",
-                },
-                {
-                    name: "Name",
-                    title: "Name"
-                },
-                {
-                    name: "Title",
-                    title: "Description"
-                },
-                {
-                    name: "FileSize",
-                    title: "File Size"
-                },
-                {
-                    name: "Created",
-                    title: "Created"
-                },
-                {
-                    name: "Author",
-                    title: "Created By"
-                },
-                {
-                    name: "Modified",
-                    title: "Modified"
-                },
-                {
-                    name: "ModifiedBy",
-                    title: "Modified By"
-                },
-                {
-                    className: "text-end text-nowrap",
-                    name: "Actions",
-                    title: ""
-                }
-            ]
+            columns: this.generateColumns()
         };
 
         // Parse the columns
@@ -369,13 +407,13 @@ export class Documents {
             // See if this is the type column
             if (col.name == "Type") {
                 // Set the event to render an icon
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                col.onRenderCell = (el, col, file: Types.SP.Attachment | Types.SP.File) => {
                     // Render the file
-                    this.renderFileIcon(el, file);
+                    this.renderFileIcon(el, this.getFileName(file));
 
                     // Set the filter/sort value
-                    el.setAttribute("data-filter", getFileExt(file.Name));
-                    el.setAttribute("data-sort", getFileExt(file.Name));
+                    el.setAttribute("data-filter", this.getFileName(file));
+                    el.setAttribute("data-sort", this.getFileName(file));
 
                     // Call the custom event
                     customEvent ? customEvent(el, col, file) : null;
@@ -425,7 +463,7 @@ export class Documents {
             // Else, see if this is the "actions" buttons
             else if (col.name == "Actions") {
                 // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
+                col.onRenderCell = (el, col, file: Types.SP.Attachment | Types.SP.File) => {
                     // Render the action buttons
                     this.renderActionButtons(el, file);
 
@@ -436,7 +474,8 @@ export class Documents {
                 // Set the default render event
                 col.onRenderCell = (el, col, file: Types.SP.FileOData) => {
                     // Set the value
-                    el.innerHTML = file[col.name] || file.ListItemAllFields.FieldValuesAsText[col.name] || "";
+                    el.innerHTML = file[col.name] ||
+                        (file.ListItemAllFields && file.ListItemAllFields.FieldValuesAsText[col.name]) || "";
 
                     // Call the custom event
                     customEvent ? customEvent(el, col, file) : null;
@@ -445,9 +484,15 @@ export class Documents {
         });
     }
 
+    // Gets the file name
+    private getFileName(file: Types.SP.File | Types.SP.Attachment) {
+        // Return the file name
+        return (file as Types.SP.File).Name || (file as Types.SP.Attachment).FileName;
+    }
+
     // Determines if the document can be viewed in office online servers
-    private isWopi(file: Types.SP.File) {
-        switch (getFileExt(file.Name)) {
+    private isWopi(file: Types.SP.Attachment | Types.SP.File) {
+        switch (getFileExt(this.getFileName(file))) {
             // Excel
             case "csv":
             case "doc":
@@ -507,12 +552,21 @@ export class Documents {
             ]);
 
             // See if we are targeting a document set folder
-            if (this._props.docSetId) {
+            if (this.IsDocSet) {
                 web.Lists(this._props.listName).Items(this._props.docSetId).Folder().query(query).execute(folder => {
                     // Set the root folder
                     this._rootFolder = folder;
                 }, reject);
-            } else {
+            }
+            // Else, see if we are targeting list item attachments
+            else if (this.IsAttachment) {
+                web.Lists(this._props.listName).Items(this._props.itemId).AttachmentFiles().execute(attachments => {
+                    // Set the attachments
+                    this._attachments = attachments.results;
+                }, reject);
+            }
+            // Else, it's a library
+            else {
                 // Load library information
                 web.Lists(this._props.listName).RootFolder().query(query).execute(folder => {
                     // Set the root folder
@@ -550,7 +604,7 @@ export class Documents {
     }
 
     // Renders the file actions
-    private renderActionButtons(el: HTMLElement, file: Types.SP.File) {
+    private renderActionButtons(el: HTMLElement, file: Types.SP.Attachment | Types.SP.File) {
         // Create a span to wrap the icons in
         let span = document.createElement("span");
         span.className = "bg-white d-inline-flex ms-2 rounded";
@@ -563,19 +617,19 @@ export class Documents {
         // Add the icons
         el.appendChild(span);
         el.appendChild(spanEdit);
-        el.appendChild(spanProps);
+        this.IsAttachment ? null : el.appendChild(spanProps);
         el.appendChild(spanDownload);
         el.appendChild(spanDel);
 
         // Render the buttons
         span.appendChild(this.generateButton(ActionButtonTypes.View, file));
         spanEdit.appendChild(this.generateButton(ActionButtonTypes.Edit, file));
-        spanProps.appendChild(this.generateButton(ActionButtonTypes.Properties, file));
+        this.IsAttachment ? null : spanProps.appendChild(this.generateButton(ActionButtonTypes.Properties, file));
         spanDownload.appendChild(this.generateButton(ActionButtonTypes.Download, file));
         spanDel.appendChild(this.generateButton(ActionButtonTypes.Delete, file));
     }
 
-    private generateButton(btnType: number, file: Types.SP.File): HTMLElement {
+    private generateButton(btnType: number, file: Types.SP.Attachment | Types.SP.File): HTMLElement {
         let isWopi = this.isWopi(file);
 
         // Render the button based on the type
@@ -597,7 +651,7 @@ export class Documents {
                                     // Display a loading dialog
 
                                     LoadingDialog.setHeader("Deleting Document");
-                                    LoadingDialog.setBody("Deleting Document: " + file.Name + ". This will close afterwards.");
+                                    LoadingDialog.setBody("Deleting Document: " + this.getFileName(file) + ". This will close afterwards.");
                                     LoadingDialog.show();
                                     // Delete the document
 
@@ -679,7 +733,7 @@ export class Documents {
                                     ...(this._props.onItemFormEditing || {}),
                                     ...{
                                         // Set the item id
-                                        itemId: file.ListItemAllFields["Id"],
+                                        itemId: (file as Types.SP.File).ListItemAllFields["Id"],
 
                                         // Set the edit form properties
                                         onCreateEditForm: props => {
@@ -757,7 +811,7 @@ export class Documents {
                                 ItemForm.view({
                                     ...(this._props.onItemFormViewing || {}),
                                     ...{
-                                        itemId: file.ListItemAllFields["Id"]
+                                        itemId: (file as Types.SP.File).ListItemAllFields["Id"]
                                     }
                                 });
                             }
@@ -787,7 +841,7 @@ export class Documents {
     }
 
     // Renders the file icon
-    private renderFileIcon(el: HTMLElement, file: Types.SP.File) {
+    private renderFileIcon(el: HTMLElement, fileName: string) {
         // Render the icon wrapper
         let span = document.createElement("span");
         span.className = "text-muted";
@@ -795,7 +849,7 @@ export class Documents {
 
         // Render the icon
         let size = 28;
-        switch (getFileExt(file.Name)) {
+        switch (getFileExt(fileName)) {
             // Power BI
             case "pbix":
                 span.appendChild(fileEarmarkBarGraph(size));
@@ -1014,23 +1068,23 @@ export class Documents {
                                 LoadingDialog.setHeader("Uploading File");
                                 LoadingDialog.setBody("Saving the file you selected. Please wait...");
                                 LoadingDialog.show();
-                                // Upload the file to the objective folder
-                                List(this._props.listName).RootFolder().Files().add(fileInfo.name, true, fileInfo.data).execute(
+
+                                // Upload the file
+                                this.uploadFile(fileInfo).then(
                                     // Success
-                                    file => {
+                                    () => {
                                         // Hide the dialog
                                         LoadingDialog.hide();
 
                                         // Refresh the page
                                         this.refresh();
                                     },
-
                                     // Error
-                                    err => {
+                                    () => {
                                         // Hide the dialog
                                         LoadingDialog.hide();
                                     }
-                                )
+                                );
                             });
                         }
                     },
@@ -1095,7 +1149,7 @@ export class Documents {
         this._tblProps.el = el;
 
         // Set the data
-        this._tblProps.rows = this.Files;
+        this._tblProps.rows = this.Attachments || this.Files;
 
         // Call the rendering event
         this._props.table && this._props.table.onRendering ? this._props.table.onRendering(this._tblProps) : null;
@@ -1105,6 +1159,23 @@ export class Documents {
 
         // Call the rendered event
         this._tblProps.onRendered ? this._tblProps.onRendered(el, this._dt.datatable) : null;
+    }
+
+    // Uploads a file
+    private uploadFile(fileInfo: Helper.IListFormAttachmentInfo) {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            let list = List(this._props.listName);
+
+            // See if this is an attachment
+            if (this.IsAttachment) {
+                // Upload the attachment
+                list.Items(this._props.itemId).AttachmentFiles().add(fileInfo.name, fileInfo.data).execute(resolve, reject);
+            } else {
+                // Upload the file to the objective folder
+                list.RootFolder().Files().add(fileInfo.name, true, fileInfo.data).execute(resolve, reject);
+            }
+        });
     }
 
     /** Public Methods */
