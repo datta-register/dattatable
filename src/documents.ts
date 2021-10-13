@@ -491,8 +491,8 @@ export class Documents {
     }
 
     // Determines if the document can be viewed in office online servers
-    private isWopi(file: Types.SP.Attachment | Types.SP.File) {
-        switch (getFileExt(this.getFileName(file))) {
+    static isWopi(filename: string) {
+        switch (getFileExt(filename)) {
             // Excel
             case "csv":
             case "doc":
@@ -630,7 +630,7 @@ export class Documents {
     }
 
     private generateButton(btnType: number, file: Types.SP.Attachment | Types.SP.File): HTMLElement {
-        let isWopi = this.isWopi(file);
+        let isWopi = Documents.isWopi(this.getFileName(file));
 
         // Render the button based on the type
         switch (btnType) {
