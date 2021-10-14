@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.4.0_webpack@5.58.2
   datatables.net: 1.11.3
   datatables.net-bs5: 1.11.3
-  gd-sprest-bs: 8.6.4
+  gd-sprest-bs: 8.6.7
   html-loader: 2.1.2_webpack@5.58.2
   jquery: 3.6.0
   moment: 2.29.1
@@ -1569,8 +1569,8 @@ packages:
       integrity: sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A==
   /browserslist/4.17.4:
     dependencies:
-      caniuse-lite: 1.0.30001265
-      electron-to-chromium: 1.3.867
+      caniuse-lite: 1.0.30001267
+      electron-to-chromium: 1.3.868
       escalade: 3.1.1
       node-releases: 2.0.0
       picocolors: 1.0.0
@@ -1614,10 +1614,10 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
-  /caniuse-lite/1.0.30001265:
+  /caniuse-lite/1.0.30001267:
     dev: true
     resolution:
-      integrity: sha512-YzBnspggWV5hep1m9Z6sZVLOt7vrju8xWooFAgN6BA5qvy98qPAPb7vNUzypFaoh2pb3vlfzbDO8tB57UPGbtw==
+      integrity: sha512-r1mjTzAuJ9W8cPBGbbus8E0SKcUP7gn03R14Wk8FlAlqhH9hroy9nLqmpuXlfKEw/oILW+FGz47ipXV2O7x8lg==
   /caseless/0.12.0:
     dev: true
     resolution:
@@ -1901,10 +1901,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-OoOpBOVDUyh4dMVkt1SThoSamMk=
-  /electron-to-chromium/1.3.867:
+  /electron-to-chromium/1.3.868:
     dev: true
     resolution:
-      integrity: sha512-WbTXOv7hsLhjJyl7jBfDkioaY++iVVZomZ4dU6TMe/SzucV6mUAs2VZn/AehBwuZMiNEQDaPuTGn22YK5o+aDw==
+      integrity: sha512-kZYCHqwJ1ctGrYDlOcWQH+/AftAm/KD4lEnLDNwS0kKwx1x6dU4zv+GuDjsPPOGn/2TjnKBaZjDyjXaoix0q/A==
   /emoji-regex/7.0.3:
     dev: true
     resolution:
@@ -2128,7 +2128,7 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-BRdNm8hbWzFzWHERTrejLqwHDfS4GibPoq5wjTPIoJHoBtKGPg3xAFfxmM+9ztbXelxcf2hwQcaz1PtmFeue8g==
-  /gd-bs/5.1.4:
+  /gd-bs/5.1.5:
     dependencies:
       bootstrap: 5.1.3
       bootstrap-icons: 1.6.0
@@ -2136,26 +2136,26 @@ packages:
       tippy.js: 6.3.2
     dev: true
     resolution:
-      integrity: sha512-Gl0Wop0iIBfRSxYpioqC47bRMl/mjLh2ALbIyUiB2fD2jr5AsUkOvI59oLAhlEu9c4KGmAO8f6r600tN8pePMQ==
-  /gd-sprest-bs/8.6.4:
+      integrity: sha512-NnGuFV5oI5GhYzKh9AK/uqpWPrns+MvF3/JW2W92kf/HAqPMxTwfKqE/0WbSP/h1eXRZvE8x8RtHTiEubTFH4Q==
+  /gd-sprest-bs/8.6.7:
     dependencies:
       flatpickr: 4.6.9
-      gd-bs: 5.1.4
-      gd-sprest: 6.6.7
+      gd-bs: 5.1.5
+      gd-sprest: 6.6.9
       gd-sprest-def: 1.0.7
     dev: true
     resolution:
-      integrity: sha512-XW8se9YfpncQJUGy4PRo6LW0Xx8NmFZkBep1bCBt/H17fuckQ5gOwq+Jgt9lsKJmSsDdTN6BDMc5M1KlXXzrhA==
+      integrity: sha512-FXZ6uiF+dalTCYStx103vpkkzFTItURdLyDp66xZBiYpQBGuK2ob+k6l8CYmVvR0c9LyNkISWJqBPx95UY7jyw==
   /gd-sprest-def/1.0.7:
     dev: true
     resolution:
       integrity: sha512-IoUDoAO+9A+x1w8qfhF3XuzOtq3vWo9iXEGDSpJvPN5HBPMeHaY+fVIDzEPHKTXC2Imq0Oz8CvIYGmGj1VDxLA==
-  /gd-sprest/6.6.7:
+  /gd-sprest/6.6.9:
     dependencies:
       gd-sprest-def: 1.0.7
     dev: true
     resolution:
-      integrity: sha512-/qFaD6mVnlzAfhmm6DzW0ILEWrVPjG2GGIPXEDR57OJz0Mu529mRuhEjugZXuBGAJRYp4Dhay/oEcuxphxZJbg==
+      integrity: sha512-8G62/i8BO/xzG3HGgFhUVb+tnGwq+eL+Dw+ESE3TTcciSDQgtngI/DELkDAgbVs5dnQMinEg2lHhTpw7WIivvg==
   /gensync/1.0.0-beta.2:
     dev: true
     engines:
@@ -2797,13 +2797,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
-  /nanoid/3.1.29:
+  /nanoid/3.1.30:
     dev: true
     engines:
       node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1
     hasBin: true
     resolution:
-      integrity: sha512-dW2pUSGZ8ZnCFIlBIA31SV8huOGCHb6OwzVCc7A69rb/a+SgPBwfmLvK5TKQ3INPbRkcI8a/Owo0XbiTNH19wg==
+      integrity: sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==
   /neo-async/2.6.2:
     dev: true
     resolution:
@@ -3141,7 +3141,7 @@ packages:
       integrity: sha512-97DXOFbQJhk71ne5/Mt6cOu6yxsSfM0QGQyl0L25Gca4yGWEGJaig7l7gbCX623VqTBNGLRLaVUCnNkcedlRSQ==
   /postcss/8.3.9:
     dependencies:
-      nanoid: 3.1.29
+      nanoid: 3.1.30
       picocolors: 0.2.1
       source-map-js: 0.6.2
     dev: true
@@ -4122,7 +4122,7 @@ specifiers:
   css-loader: ^6.4.0
   datatables.net: ^1.11.3
   datatables.net-bs5: ^1.11.3
-  gd-sprest-bs: ^8.6.4
+  gd-sprest-bs: ^8.6.7
   html-loader: ^2.1.2
   jquery: ^3.6.0
   moment: ^2.29.1

@@ -1,6 +1,6 @@
 {
     "name": "dattatable",
-    "version": "1.2.7",
+    "version": "1.2.8",
     "description": "",
     "main": "build/index.js",
     "typings": "build/index.d.ts",
@@ -37,7 +37,7 @@
         "css-loader": "^6.4.0",
         "datatables.net": "^1.11.3",
         "datatables.net-bs5": "^1.11.3",
-        "gd-sprest-bs": "^8.6.4",
+        "gd-sprest-bs": "^8.6.7",
         "html-loader": "^2.1.2",
         "jquery": "^3.6.0",
         "moment": "^2.29.1",

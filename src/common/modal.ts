@@ -57,11 +57,11 @@ export class Modal {
         // Render the canvas
         this._modal = Components.Modal({
             el,
-            isCentered: true,
             type: Components.ModalTypes.Large,
             options: {
                 autoClose: false,
                 backdrop: true,
+                centered: true,
                 keyboard: true
             },
             onRenderBody: el => { this._elBody = el; },
@@ -76,6 +76,9 @@ export class Modal {
 
     // Sets the auto close flag
     static setAutoClose(value: boolean) { this._modal.setAutoClose(value); }
+
+    // Sets the backdrop option
+    static setBackdrop(value: boolean) { this._modal.setBackdrop(value); }
 
     // Sets the body
     static setBody(content) {
@@ -97,6 +100,9 @@ export class Modal {
 
     // Sets the close event
     static setCloseEvent(event) { this._onCloseEvent = event; }
+
+    // Sets the focus option
+    static setFocus(value: boolean) { this._modal.setFocus(value); }
 
     // Sets the footer
     static setFooter(content) {
@@ -133,6 +139,15 @@ export class Modal {
             }
         }
     }
+
+    // Sets the center option
+    static setIsCentered(value: boolean) { this._modal.setIsCentered(value); }
+
+    // Sets the keyboard option
+    static setKeyboard(value: boolean) { this._modal.setKeyboard(value); }
+
+    // Sets the scrollable option
+    static setScrollable(value: boolean) { this._modal.setScrollable(value); }
 
     // Sets the modal type
     static setType(type) { this._modal.setType(type); }
