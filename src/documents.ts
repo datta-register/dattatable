@@ -344,7 +344,7 @@ export class Documents {
     // Generates the table properties
     private generateTableProps() {
         // Default the indexes for the type and action buttons
-        let idxActions = 8;
+        let idxActions = this.IsAttachment ? 2 : 8;
 
         // See if custom columns are defined
         if (this._props.table && this._props.table.columns) {
