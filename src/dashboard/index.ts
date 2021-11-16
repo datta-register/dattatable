@@ -93,8 +93,8 @@ export class Dashboard {
         <div class="row">
             <div id="navigation" class="col"></div>
         </div>
-        <div class="row px-2">
-            <div id="header" class="col mx-1 rounded-bottom"></div>
+        <div class="row">
+            <div id="header" class="col mx-75 rounded-bottom"></div>
         </div>
         <div class="row">
             <div id="datatable" class="col"></div>
