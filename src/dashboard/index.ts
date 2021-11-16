@@ -117,9 +117,6 @@ export class Dashboard {
                 onRendered: this._props.header ? this._props.header.onRendered : null,
                 title: header.title
             });
-            // Update the navigation rounded corners
-            this._props.el.querySelector("#navigation nav").classList.remove("rounded");
-            this._props.el.querySelector("#navigation nav").classList.add("rounded-top");
         }
 
         // See if we are hiding the navigation
@@ -147,6 +144,13 @@ export class Dashboard {
                     this._filters.show();
                 },
             });
+
+            // See if the header is visible
+            if (this._props.hideHeader != null && !this._props.hideHeader) {
+                // Update the navigation rounded corners
+                this._props.el.querySelector("#navigation nav").classList.remove("rounded");
+                this._props.el.querySelector("#navigation nav").classList.add("rounded-top");
+            }
         }
 
         // Render the data table
