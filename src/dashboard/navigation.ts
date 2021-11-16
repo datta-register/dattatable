@@ -79,10 +79,10 @@ export class Navigation {
                     type: Components.ButtonTypes.OutlineSecondary
                 },
             });
+
+            // Call the events
             this._props.onShowFilter ? ttp.el.addEventListener("click", this._props.onShowFilter as any) : null;
-            
-            // Call the render event
-            this._props.onFilterRendered ? this._props.onFilterRendered(icon) : null;
+            this._props.onFilterRendered ? this._props.onFilterRendered(this._props.el) : null;
         }
     }
 }
