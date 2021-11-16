@@ -1,5 +1,5 @@
 import { Components } from "gd-sprest-bs";
-import { filterSquare } from "gd-sprest-bs/build/icons/svgs/filterSquare";
+import { filter } from "gd-sprest-bs/build/icons/svgs/filter";
 
 /**
  * Navigation
@@ -47,8 +47,10 @@ export class Navigation {
             searchBox: {
                 hideButton: true,
                 onChange: this._props.onSearch,
-                onSearch: this._props.onSearch
-            }
+                onSearch: this._props.onSearch,
+                placeholder: "Search this app",
+            },
+            type: Components.NavbarTypes.Dark
         };
 
         // Call the rendering event
@@ -57,22 +59,28 @@ export class Navigation {
         // Render a navbar
         let nav = Components.Navbar(props);
 
-        // Update the navbar color palate
-        nav.el.classList.remove("navbar-light");
-        nav.el.classList.add("navbar-dark");
-
         // See if we are showing the filter
         if (this._props.hideFilter != true) {
             // Render the filter icon
-            let icon = document.createElement("div");
-            icon.classList.add("filter-icon");
-            icon.classList.add("nav-link");
-            icon.classList.add("text-light");
-            icon.style.cursor = "pointer";
-            icon.appendChild(filterSquare());
-            this._props.onShowFilter ? icon.addEventListener("click", this._props.onShowFilter as any) : null;
-            nav.el.firstElementChild.appendChild(icon);
+            // Create a span to wrap the icon in
+            let span = document.createElement("span");
+            span.className = "bg-white d-inline-flex filter-icon ms-2 nav-link rounded";
+            nav.el.firstElementChild.appendChild(span);
 
+            // Render a tooltip
+            let ttp = Components.Tooltip({
+                el: span,
+                content: "Filters",
+                type: Components.TooltipTypes.LightBorder,
+                btnProps: {
+                    // Render the filter button
+                    iconType: filter,
+                    iconSize: 32,
+                    type: Components.ButtonTypes.OutlineSecondary
+                },
+            });
+            this._props.onShowFilter ? ttp.el.addEventListener("click", this._props.onShowFilter as any) : null;
+            
             // Call the render event
             this._props.onFilterRendered ? this._props.onFilterRendered(icon) : null;
         }

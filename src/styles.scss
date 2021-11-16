@@ -142,9 +142,18 @@
         -webkit-transform: scaleY(-1);
         transform: scaleY(-1);
     }
+    /* Define a custom margin-end value */
+    .me-75 {
+        margin-right: 0.75rem !important;
+    }
     /* Define a custom margin-start value */
     .ms-75 {
         margin-left: 0.75rem !important;
+    }
+    /* Define a custom margin-x value */
+    .mx-75 {
+        margin-left: 0.75rem !important;
+        margin-right: 0.75rem !important;
     }
     /* Set max-width to fit content */
     .mw-fit {
@@ -183,9 +192,18 @@
     .pe-06 {
         padding-right: 0.6rem !important;
     }
+    /* Define a custom padding-end value */
+    .pe-75 {
+        padding-right: 0.75rem !important;
+    }
     /* Define a custom padding-start value */
     .ps-75 {
         padding-left: 0.75rem !important;
+    }
+    /* Define a custom padding-x value */
+    .px-75 {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
     }
     /* Define a custom padding-top value */
     .pt-03 {
@@ -287,14 +305,8 @@
 }
 
 /* Customize navigation alignment */
-#navigation {
-    margin-top: 1.25rem;
-    nav {
-        border-radius: 0.25rem 0.25rem 0 0;
-        div.container-fluid {
-            padding-right: 0.75rem;
-        }
-    }
+#navigation nav div.container-fluid {
+    padding-right: 0.75rem;
 }
 
 /* Color match colReorder line */

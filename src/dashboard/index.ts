@@ -94,7 +94,7 @@ export class Dashboard {
             <div id="navigation" class="col"></div>
         </div>
         <div class="row">
-            <div id="header" class="col"></div>
+            <div id="header" class="col mx-75 rounded-bottom"></div>
         </div>
         <div class="row">
             <div id="datatable" class="col"></div>
@@ -117,6 +117,9 @@ export class Dashboard {
                 onRendered: this._props.header ? this._props.header.onRendered : null,
                 title: header.title
             });
+            // Update the navigation rounded corners
+            this._props.el.querySelector("#navigation nav").classList.remove("rounded");
+            this._props.el.querySelector("#navigation nav").classList.add("rounded-top");
         }
 
         // See if we are hiding the navigation
