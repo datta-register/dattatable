@@ -47,7 +47,8 @@ export class Navigation {
             searchBox: {
                 hideButton: true,
                 onChange: this._props.onSearch,
-                onSearch: this._props.onSearch
+                onSearch: this._props.onSearch,
+                placeholder: "Search this app",
             },
             type: Components.NavbarTypes.Dark
         };
@@ -74,7 +75,7 @@ export class Navigation {
                 btnProps: {
                     // Render the filter button
                     iconType: filter,
-                    iconSize: 28,
+                    iconSize: 32,
                     type: Components.ButtonTypes.OutlineSecondary
                 },
             });
