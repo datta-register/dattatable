@@ -120,7 +120,8 @@ export class Dashboard {
         this._props.el.appendChild(elTemplate);
 
         // See if we are hiding the header
-        if (this._props.hideHeader) {
+        let headerIsVisible = this._props.hideHeader != null && !this._props.hideHeader;
+        if (!headerIsVisible) {
             // Hide the element
             this._props.el.querySelector("#header").classList.add("d-none");
         } else {
@@ -135,10 +136,14 @@ export class Dashboard {
         }
 
         // See if we are hiding the navigation
+        let navIsVisible = false;
         if (this._props.hideNavigation) {
             // Hide the element
             this._props.el.querySelector("#navigation").classList.add("d-none");
         } else {
+            // Set the flag
+            navIsVisible = true;
+
             // Render the navigation
             let navProps = this._props.navigation || {};
             new Navigation({
@@ -149,7 +154,13 @@ export class Dashboard {
                 itemsEnd: navProps.itemsEnd,
                 title: navProps.title,
                 onFilterRendered: navProps.onFilterRendered,
-                onRendering: navProps.onRendering,
+                onRendering: props => {
+                    // Set the default classname
+                    props.className = props.className || ("bg-sharepoint rounded" + headerIsVisible ? "-top" : "");
+
+                    // Call the rendering event if it exists
+                    navProps.onRendering ? navProps.onRendering(props) : null;
+                },
                 onRendered: navProps.onRendered,
                 onSearch: value => {
                     // Search the data table
@@ -160,13 +171,6 @@ export class Dashboard {
                     this._filters.show();
                 },
             });
-
-            // See if the header is visible
-            if (this._props.hideHeader != null && !this._props.hideHeader) {
-                // Update the navigation rounded corners
-                this._props.el.querySelector("#navigation nav").classList.remove("rounded");
-                this._props.el.querySelector("#navigation nav").classList.add("rounded-top");
-            }
         }
 
         // See if we are hiding the sub-navigation
@@ -184,7 +188,17 @@ export class Dashboard {
                 itemsEnd: navProps.itemsEnd,
                 title: navProps.title,
                 onFilterRendered: navProps.onFilterRendered,
-                onRendering: navProps.onRendering,
+                onRendering: props => {
+                    // Set the default classname
+                    props.className = props.className || ("rounded" + (!headerIsVisible && !navIsVisible ? "" : "-bottom"));
+                    props.className = "sub-nav " + props.className;
+
+                    // Set the default type
+                    props.type = typeof (props.type) === "number" ? props.type : Components.NavbarTypes.Light;
+
+                    // Call the rendering event if it exists
+                    navProps.onRendering ? navProps.onRendering(props) : null;
+                },
                 onRendered: navProps.onRendered,
                 onSearch: value => {
                     // Search the data table
@@ -195,13 +209,6 @@ export class Dashboard {
                     this._filters.show();
                 },
             });
-
-            // See if the header is visible
-            if (this._props.hideHeader != null && !this._props.hideHeader) {
-                // Update the navigation rounded corners
-                this._props.el.querySelector("#sub-navigation nav").classList.remove("rounded");
-                this._props.el.querySelector("#sub-navigation nav").classList.add("rounded-bottom");
-            }
         }
 
         // Render the data table
