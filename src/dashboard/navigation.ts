@@ -13,6 +13,7 @@ interface INavProps {
     onFilterRendered?: (el: HTMLElement) => void;
     onRendering?: (props: Components.INavbarProps) => void;
     onRendered?: (el: HTMLElement) => void;
+    onSearchRendered?: (el: HTMLElement) => void;
     onShowFilter?: Function;
     onSearch?: (value: string) => void;
     title: string | HTMLElement;
@@ -81,6 +82,7 @@ export class Navigation {
             });
 
             // Call the events
+            this._props.onSearchRendered ? this._props.onSearchRendered(this._props.el.querySelector("input[type='search']")) : null;
             this._props.onShowFilter ? ttp.el.addEventListener("click", this._props.onShowFilter as any) : null;
             this._props.onFilterRendered ? this._props.onFilterRendered(this._props.el) : null;
         }
