@@ -57,6 +57,8 @@ export interface IDashboardProps {
         onFilterRendered?: (el: HTMLElement) => void;
         onRendering?: (props: Components.INavbarProps) => void;
         onRendered?: (el?: HTMLElement) => void;
+        onSearchRendered?: (el: HTMLElement) => void;
+        onShowFilter?: () => void;
     };
     table?: {
         columns: Components.ITableColumn[];
