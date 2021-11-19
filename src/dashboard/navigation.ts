@@ -65,18 +65,18 @@ export class Navigation {
             // Render the filter icon
             // Create a span to wrap the icon in
             let span = document.createElement("span");
-            span.className = "bg-white d-inline-flex filter-icon ms-2 nav-link rounded";
+            span.className = "bg-white d-inline-flex filter-icon ms-2 rounded";
             nav.el.firstElementChild.appendChild(span);
 
             // Render a tooltip
             let ttp = Components.Tooltip({
                 el: span,
                 content: "Filters",
-                type: Components.TooltipTypes.LightBorder,
+                type: Components.TooltipTypes.Secondary,
                 btnProps: {
                     // Render the filter button
                     iconType: filter,
-                    iconSize: 32,
+                    iconSize: 28,
                     type: Components.ButtonTypes.OutlineSecondary
                 },
             });
