@@ -144,7 +144,7 @@ export class Dashboard {
             new Navigation({
                 el: this._props.el.querySelector("#navigation"),
                 hideFilter: navProps.showFilter != null ? !navProps.showFilter : false,
-                hideSearch: navProps.showSearch != null ? !navProps.showSearch : true,
+                hideSearch: navProps.showSearch != null ? !navProps.showSearch : false,
                 items: navProps.items,
                 itemsEnd: navProps.itemsEnd,
                 title: navProps.title,
@@ -170,7 +170,7 @@ export class Dashboard {
         }
 
         // See if we are hiding the sub-navigation
-        if (this._props.hideSubNavigation) {
+        if (this._props.hideSubNavigation == null || this._props.hideSubNavigation) {
             // Hide the element
             this._props.el.querySelector("#sub-navigation").classList.add("d-none");
         } else {
