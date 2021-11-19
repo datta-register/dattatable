@@ -81,10 +81,12 @@ export class Navigation {
                 },
             });
 
-            // Call the events
-            this._props.onSearchRendered ? this._props.onSearchRendered(this._props.el.querySelector("input[type='search']")) : null;
+            // Call the event
             this._props.onShowFilter ? ttp.el.addEventListener("click", this._props.onShowFilter as any) : null;
             this._props.onFilterRendered ? this._props.onFilterRendered(this._props.el) : null;
         }
+
+        // Call the event
+        this._props.onSearchRendered ? this._props.onSearchRendered(this._props.el.querySelector("input[type='search']")) : null;
     }
 }
