@@ -50,8 +50,7 @@ export class Navigation {
                 onChange: this._props.onSearch,
                 onSearch: this._props.onSearch,
                 placeholder: "Search this app",
-            },
-            type: Components.NavbarTypes.Dark
+            }
         };
 
         // Call the rendering event
