@@ -14,7 +14,7 @@ interface INavProps {
     onRendering?: (props: Components.INavbarProps) => void;
     onRendered?: (el: HTMLElement) => void;
     onSearchRendered?: (el: HTMLElement) => void;
-    onShowFilter?: Function;
+    onShowFilter?: () => void;
     onSearch?: (value: string) => void;
     title: string | HTMLElement;
 }

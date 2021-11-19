@@ -45,6 +45,8 @@ export interface IDashboardProps {
         onFilterRendered?: (el: HTMLElement) => void;
         onRendering?: (props: Components.INavbarProps) => void;
         onRendered?: (el?: HTMLElement) => void;
+        onSearchRendered?: (el: HTMLElement) => void;
+        onShowFilter?: () => void;
     };
     subNavigation?: {
         showFilter?: boolean;
@@ -158,9 +160,13 @@ export class Dashboard {
                     // Search the data table
                     this._dt.search(value);
                 },
+                onSearchRendered: navProps.onSearchRendered,
                 onShowFilter: () => {
                     // Show the filter
                     this._filters.show();
+
+                    // Call the event
+                    navProps.onShowFilter ? navProps.onShowFilter() : null;
                 },
             });
         }
