@@ -199,8 +199,8 @@ export class Dashboard {
             // See if the header is visible
             if (this._props.hideHeader != null && !this._props.hideHeader) {
                 // Update the navigation rounded corners
-                this._props.el.querySelector("#navigation nav").classList.remove("rounded");
-                this._props.el.querySelector("#navigation nav").classList.add("rounded-top");
+                this._props.el.querySelector("#sub-navigation nav").classList.remove("rounded");
+                this._props.el.querySelector("#sub-navigation nav").classList.add("rounded-bottom");
             }
         }
 
