@@ -7,6 +7,7 @@ import { filter } from "gd-sprest-bs/build/icons/svgs/filter";
 interface INavProps {
     el: HTMLElement;
     hideFilter?: boolean;
+    hideSearch?: boolean;
     items?: Components.INavbarItem[];
     itemsEnd?: Components.INavbarItem[];
     onFilterRendered?: (el: HTMLElement) => void;
@@ -42,6 +43,7 @@ export class Navigation {
             el: this._props.el,
             brand: this._props.title,
             className: "bg-sharepoint header rounded",
+            enableSearch: this._props.hideSearch != null ? !this._props.hideSearch : null,
             items: this._props.items,
             itemsEnd: this._props.itemsEnd,
             searchBox: {

@@ -32,11 +32,23 @@ export interface IDashboardProps {
         onRendered?: (el?: HTMLElement) => void;
         title?: string;
     },
-    hideFilter?: boolean;
     hideFooter?: boolean;
     hideHeader?: boolean;
     hideNavigation?: boolean;
+    hideSubNavigation?: boolean;
     navigation?: {
+        showFilter?: boolean;
+        showSearch?: boolean;
+        title?: string | HTMLElement;
+        items?: Components.INavbarItem[];
+        itemsEnd?: Components.INavbarItem[];
+        onFilterRendered?: (el: HTMLElement) => void;
+        onRendering?: (props: Components.INavbarProps) => void;
+        onRendered?: (el?: HTMLElement) => void;
+    };
+    subNavigation?: {
+        showFilter?: boolean;
+        showSearch?: boolean;
         title?: string | HTMLElement;
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
@@ -97,6 +109,9 @@ export class Dashboard {
             <div id="header" class="col mx-75 rounded-bottom"></div>
         </div>
         <div class="row">
+            <div id="sub-navigation" class="col"></div>
+        </div>
+        <div class="row">
             <div id="datatable" class="col"></div>
         </div>
         <div class="row">
@@ -125,16 +140,52 @@ export class Dashboard {
             this._props.el.querySelector("#navigation").classList.add("d-none");
         } else {
             // Render the navigation
-            let navigation = this._props.navigation || {};
+            let navProps = this._props.navigation || {};
             new Navigation({
                 el: this._props.el.querySelector("#navigation"),
-                hideFilter: this._props.hideFilter,
-                items: navigation.items,
-                itemsEnd: navigation.itemsEnd,
-                title: navigation.title,
-                onFilterRendered: navigation.onFilterRendered,
-                onRendering: navigation.onRendering,
-                onRendered: navigation.onRendered,
+                hideFilter: navProps.showFilter != null ? !navProps.showFilter : false,
+                hideSearch: navProps.showSearch != null ? !navProps.showSearch : true,
+                items: navProps.items,
+                itemsEnd: navProps.itemsEnd,
+                title: navProps.title,
+                onFilterRendered: navProps.onFilterRendered,
+                onRendering: navProps.onRendering,
+                onRendered: navProps.onRendered,
+                onSearch: value => {
+                    // Search the data table
+                    this._dt.search(value);
+                },
+                onShowFilter: () => {
+                    // Show the filter
+                    this._filters.show();
+                },
+            });
+
+            // See if the header is visible
+            if (this._props.hideHeader != null && !this._props.hideHeader) {
+                // Update the navigation rounded corners
+                this._props.el.querySelector("#navigation nav").classList.remove("rounded");
+                this._props.el.querySelector("#navigation nav").classList.add("rounded-top");
+            }
+        }
+
+        // See if we are hiding the sub-navigation
+        if (this._props.hideSubNavigation) {
+            // Hide the element
+            this._props.el.querySelector("#sub-navigation").classList.add("d-none");
+        } else {
+            // Render the navigation
+            let navProps = this._props.subNavigation || {};
+            new Navigation({
+                el: this._props.el.querySelector("#sub-navigation"),
+                hideFilter: navProps.showFilter != null ? !navProps.showFilter : true,
+                hideSearch: navProps.showSearch != null ? !navProps.showSearch : true,
+                items: navProps.items,
+                itemsEnd: navProps.itemsEnd,
+                title: navProps.title,
+                onFilterRendered: navProps.onFilterRendered,
+                onRendering: navProps.onRendering,
+                onRendered: navProps.onRendered,
                 onSearch: value => {
                     // Search the data table
                     this._dt.search(value);
