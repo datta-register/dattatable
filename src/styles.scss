@@ -264,9 +264,6 @@
 #footer nav {
     background-color: #fff !important;
     padding: 0 !important;
-    div.container-fluid {
-        padding-right: 0.75rem;
-    }
 }
 
 /* Assign styling to the loading-dialog */
@@ -305,8 +302,17 @@
 }
 
 /* Customize navigation alignment */
-#navigation nav div.container-fluid {
-    padding-right: 0.75rem;
+#footer, #navigation, #sub-navigation {
+    nav div.container-fluid {
+        padding-right: 0.75rem;
+    }
+}
+
+/* Customize sub-navigation element */
+#sub-navigation nav.sub-nav {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    border: 3px solid #dee2e6;
+    border-top: 0;
 }
 
 /* Color match colReorder line */
