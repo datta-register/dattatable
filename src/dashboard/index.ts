@@ -170,7 +170,7 @@ export class Dashboard {
         }
 
         // See if we are hiding the sub-navigation
-        if (this._props.hideSubNavigation == null || this._props.hideSubNavigation) {
+        if ((this._props.hideSubNavigation == null || this._props.hideSubNavigation == true) && this._props.subNavigation == null) {
             // Hide the element
             this._props.el.querySelector("#sub-navigation").classList.add("d-none");
         } else {
