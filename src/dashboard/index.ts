@@ -119,8 +119,13 @@ export class Dashboard {
         </div>`.trim();
         this._props.el.appendChild(elTemplate);
 
-        // See if we are hiding the navigation
+        // Set/Default the visibility flags
+        let headerIsVisible = this._props.hideHeader != null && !this._props.hideHeader;
         let navIsVisible = false;
+        let subNavIsVisible = false;
+
+
+        // See if we are hiding the navigation
         if (this._props.hideNavigation) {
             // Hide the element
             this._props.el.querySelector("#navigation").classList.add("d-none");
@@ -161,7 +166,6 @@ export class Dashboard {
         }
 
         // See if we are hiding the sub-navigation
-        let subNavIsVisible = false;
         if ((this._props.hideSubNavigation == null || this._props.hideSubNavigation == true) && this._props.subNavigation == null) {
             // Hide the element
             this._props.el.querySelector("#sub-navigation").classList.add("d-none");
@@ -203,7 +207,6 @@ export class Dashboard {
         }
 
         // See if we are hiding the header
-        let headerIsVisible = this._props.hideHeader != null && !this._props.hideHeader;
         if (!headerIsVisible) {
             // Hide the element
             this._props.el.querySelector("#header").classList.add("d-none");
