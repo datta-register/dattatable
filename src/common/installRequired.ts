@@ -4,7 +4,7 @@ import { Modal } from "./modal";
 
 // Show Dialog Properties
 export interface IShowDialogProps {
-    errors?: Components.IListGroupItem;
+    errors?: Components.IListGroupItem[];
     onHeaderRendered?(el: HTMLElement);
     onBodyRendered?(el: HTMLElement);
     onFooterRendered?(el: HTMLElement);
@@ -104,7 +104,7 @@ export class InstallationRequired {
                 },
                 {
                     onRender: el => {
-                        let items: Components.IListGroupItem[] = [];
+                        let items: Components.IListGroupItem[] = props.errors || [];
 
                         // Parse the report
                         for (let i = 0; i < this._report.length; i++) {
