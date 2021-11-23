@@ -119,58 +119,54 @@ export class InstallationRequired {
                         });
                     }
                 }
-            ],
-            footer: {
-                onRender: el => {
-                    let btnInstall: Components.IButton = null;
-                    let btnRefresh: Components.IButton = null;
+            ]
+        }).el);
 
-                    // Render the install button
-                    Components.Tooltip({
-                        el,
-                        content: "Installs the SharePoint Assets",
-                        btnProps: {
-                            assignTo: btn => { btnInstall = btn; },
-                            text: "Install",
-                            type: Components.ButtonTypes.OutlineSuccess,
-                            onClick: () => {
-                                // Show a loading dialog
-                                LoadingDialog.setHeader("Installing the Solution");
-                                LoadingDialog.setBody("This will close after the assets are installed.");
-                                LoadingDialog.show();
+        // Render the install button
+        let btnInstall: Components.IButton = null;
+        Components.Tooltip({
+            el: Modal.FooterElement,
+            content: "Installs the SharePoint Assets",
+            btnProps: {
+                assignTo: btn => { btnInstall = btn; },
+                text: "Install",
+                type: Components.ButtonTypes.OutlineSuccess,
+                onClick: () => {
+                    // Show a loading dialog
+                    LoadingDialog.setHeader("Installing the Solution");
+                    LoadingDialog.setBody("This will close after the assets are installed.");
+                    LoadingDialog.show();
 
-                                this._cfg.install().then(() => {
-                                    // Hide the button
-                                    btnInstall.hide();
+                    this._cfg.install().then(() => {
+                        // Hide the button
+                        btnInstall.hide();
 
-                                    // Show the refresh button
-                                    btnRefresh.show();
+                        // Show the refresh button
+                        btnRefresh.show();
 
-                                    // Close the dialog
-                                    LoadingDialog.hide();
-                                });
-                            }
-                        }
-                    });
-
-                    // Render the refresh button
-                    Components.Tooltip({
-                        el,
-                        content: "Refresh the Page",
-                        btnProps: {
-                            assignTo: btn => { btnRefresh = btn; },
-                            className: "d-none",
-                            text: "Refresh",
-                            type: Components.ButtonTypes.OutlinePrimary,
-                            onClick: () => {
-                                // Refresh the page
-                                window.location.reload();
-                            }
-                        }
+                        // Close the dialog
+                        LoadingDialog.hide();
                     });
                 }
             }
-        }).el);
+        });
+
+        // Render the refresh button
+        let btnRefresh: Components.IButton = null;
+        Components.Tooltip({
+            el: Modal.FooterElement,
+            content: "Refresh the Page",
+            btnProps: {
+                assignTo: btn => { btnRefresh = btn; },
+                className: "d-none",
+                text: "Refresh",
+                type: Components.ButtonTypes.OutlinePrimary,
+                onClick: () => {
+                    // Refresh the page
+                    window.location.reload();
+                }
+            }
+        });
 
         // Call the events
         props.onHeaderRendered ? props.onHeaderRendered(Modal.HeaderElement) : null;
