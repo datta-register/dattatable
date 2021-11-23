@@ -2,6 +2,14 @@ import { Components, Helper, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
+// Show Dialog Properties
+export interface IShowDialogProps {
+    errors?: Components.IListGroupItem;
+    onHeaderRendered?(el: HTMLElement);
+    onBodyRendered?(el: HTMLElement);
+    onFooterRendered?(el: HTMLElement);
+}
+
 /**
  * Installation Required
  * Checks the SharePoint configuration file to see if an install is required.
@@ -84,7 +92,7 @@ export class InstallationRequired {
         });
     }
 
-    static showDialog() {
+    static showDialog(props: IShowDialogProps = {}) {
         // Set the header
         Modal.setHeader("Installation Required");
 
@@ -163,6 +171,11 @@ export class InstallationRequired {
                 }
             }
         }).el);
+
+        // Call the events
+        props.onHeaderRendered ? props.onHeaderRendered(Modal.HeaderElement) : null;
+        props.onBodyRendered ? props.onBodyRendered(Modal.BodyElement) : null;
+        props.onFooterRendered ? props.onFooterRendered(Modal.FooterElement) : null;
 
         // Show the modal
         Modal.show();
