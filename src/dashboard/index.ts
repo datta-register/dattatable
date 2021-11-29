@@ -125,18 +125,14 @@ export class Dashboard {
 
         // Set/Default the visibility flags
         let headerIsVisible = this._props.hideHeader != null && !this._props.hideHeader;
-        let navIsVisible = false;
-        let subNavIsVisible = false;
-
+        let navIsVisible = this._props.hideNavigation ? false : true;
+        let subNavIsVisible = (this._props.hideSubNavigation == null || this._props.hideSubNavigation == true) && this._props.subNavigation == null ? false : true;
 
         // See if we are hiding the navigation
-        if (this._props.hideNavigation) {
+        if (!navIsVisible) {
             // Hide the element
             this._props.el.querySelector("#navigation").classList.add("d-none");
         } else {
-            // Set the flag
-            navIsVisible = true;
-
             // Render the navigation
             let navProps = this._props.navigation || {};
             new Navigation({
@@ -173,14 +169,40 @@ export class Dashboard {
             });
         }
 
+        // See if we are hiding the header
+        if (!headerIsVisible) {
+            // Hide the element
+            this._props.el.querySelector("#header").classList.add("d-none");
+        } else {
+            let elHeader = this._props.el.querySelector("#header") as HTMLElement;
+
+            // Render the header
+            let header = this._props.header || {};
+            new Header({
+                el: elHeader,
+                onRendering: this._props.header ? this._props.header.onRendering : null,
+                onRendered: this._props.header ? this._props.header.onRendered : null,
+                title: header.title
+            });
+
+            // See if the sub-nav is not visible
+            if (!navIsVisible && !subNavIsVisible) {
+                // Set the class name
+                elHeader.classList.add("rounded");
+            } else if (navIsVisible && !subNavIsVisible) {
+                // Set the class name
+                elHeader.classList.add("rounded-bottom");
+            } else if (!navIsVisible && subNavIsVisible) {
+                // Set the class name
+                elHeader.classList.add("rounded-top");
+            }
+        }
+
         // See if we are hiding the sub-navigation
-        if ((this._props.hideSubNavigation == null || this._props.hideSubNavigation == true) && this._props.subNavigation == null) {
+        if (!subNavIsVisible) {
             // Hide the element
             this._props.el.querySelector("#sub-navigation").classList.add("d-none");
         } else {
-            // Set the flag
-            subNavIsVisible = true;
-
             // Render the navigation
             let navProps = this._props.subNavigation || {};
             new Navigation({
@@ -212,35 +234,6 @@ export class Dashboard {
                     this._filters.show();
                 },
             });
-        }
-
-        // See if we are hiding the header
-        if (!headerIsVisible) {
-            // Hide the element
-            this._props.el.querySelector("#header").classList.add("d-none");
-        } else {
-            let elHeader = this._props.el.querySelector("#header") as HTMLElement;
-
-            // Render the header
-            let header = this._props.header || {};
-            new Header({
-                el: elHeader,
-                onRendering: this._props.header ? this._props.header.onRendering : null,
-                onRendered: this._props.header ? this._props.header.onRendered : null,
-                title: header.title
-            });
-
-            // See if the sub-nav is not visible
-            if (!navIsVisible && !subNavIsVisible) {
-                // Set the class name
-                elHeader.classList.add("rounded");
-            } else if (navIsVisible && !subNavIsVisible) {
-                // Set the class name
-                elHeader.classList.add("rounded-bottom");
-            } else if (!navIsVisible && subNavIsVisible) {
-                // Set the class name
-                elHeader.classList.add("rounded-top");
-            }
         }
 
         // Render the data table
