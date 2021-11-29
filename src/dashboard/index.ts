@@ -149,7 +149,7 @@ export class Dashboard {
                 onFilterRendered: navProps.onFilterRendered,
                 onRendering: props => {
                     // Set the default classname
-                    props.className = props.className || ("bg-sharepoint rounded" + (headerIsVisible ? "-top" : ""));
+                    props.className = props.className || ("bg-sharepoint rounded" + (headerIsVisible || subNavIsVisible ? "-top" : ""));
 
                     // Set the default type
                     props.type = typeof (props.type) === "number" ? props.type : Components.NavbarTypes.Dark;
