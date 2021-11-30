@@ -93,6 +93,9 @@ export class InstallationRequired {
     }
 
     static showDialog(props: IShowDialogProps = {}) {
+        // Clear the modal
+        Modal.clear();
+
         // Set the header
         Modal.setHeader("Installation Required");
 

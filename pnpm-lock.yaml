@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.5.1_webpack@5.64.4
   datatables.net: 1.11.3
   datatables.net-bs5: 1.11.3
-  gd-sprest-bs: 8.8.5
+  gd-sprest-bs: 8.8.6
   html-loader: 2.1.2_webpack@5.64.4
   jquery: 3.6.0
   moment: 2.29.1
@@ -1212,10 +1212,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==
-  /@types/node/16.11.10:
+  /@types/node/16.11.11:
     dev: true
     resolution:
-      integrity: sha512-3aRnHa1KlOEEhJ6+CvyHKK5vE9BcLGjtUpwvqYLRvYNQKMfabu3BwfJaA/SLW8dxe28LsNDjtHwePTuzn3gmOA==
+      integrity: sha512-KB0sixD67CeecHC33MYn+eYARkqTheIRNuu97y2XMjR7Wu3XibO1vaY6VBV6O/a89SPI81cEUIYT87UqUWlZNw==
   /@types/normalize-package-data/2.4.1:
     dev: true
     resolution:
@@ -2140,7 +2140,7 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-BRdNm8hbWzFzWHERTrejLqwHDfS4GibPoq5wjTPIoJHoBtKGPg3xAFfxmM+9ztbXelxcf2hwQcaz1PtmFeue8g==
-  /gd-bs/5.2.3:
+  /gd-bs/5.2.5:
     dependencies:
       bootstrap: 5.1.3
       bootstrap-icons: 1.7.1
@@ -2148,16 +2148,16 @@ packages:
       tippy.js: 6.3.7
     dev: true
     resolution:
-      integrity: sha512-I1ThtreBDRJ98MBXTJzX4TMMoVexzsW04A8qQ1hmM2Rp69zRttXfmq/cFC68qrbsM4KisO/z2+/lzhztzK8gKg==
-  /gd-sprest-bs/8.8.5:
+      integrity: sha512-i073bED/0OOM2u2GSARTDdrNMSkW95+FnmKFd+IFYWGQZm/MkCkKjWZixauZ78WSBr/NQ2pmpEq7bbdLLQ42mA==
+  /gd-sprest-bs/8.8.6:
     dependencies:
       flatpickr: 4.6.9
-      gd-bs: 5.2.3
+      gd-bs: 5.2.5
       gd-sprest: 6.7.4
       gd-sprest-def: 1.0.7
     dev: true
     resolution:
-      integrity: sha512-kWcG+n50YFPetp/EBIApZTKFDCsj2lpLlce1XUkyRlNlbxGzll0j0oA6or/765bgyp5pfe+80X1ffdAxIhQTww==
+      integrity: sha512-2W4tWRKP0nGvK2Vp6mNvHLiLiV+pjIPA1sIwHZ7p7MuL5bMcJZBxb3juEhl2ieeakrDMNTxkb7QnTLvT/eod2A==
   /gd-sprest-def/1.0.7:
     dev: true
     resolution:
@@ -2488,16 +2488,16 @@ packages:
     dev: true
     resolution:
       integrity: sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
-  /jest-worker/27.4.0:
+  /jest-worker/27.4.2:
     dependencies:
-      '@types/node': 16.11.10
+      '@types/node': 16.11.11
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
     engines:
       node: '>= 10.13.0'
     resolution:
-      integrity: sha512-4WuKcUxtzxBoKOUFbt1MtTY9fJwPVD4aN/4Cgxee7OLetPZn5as2bjfZz98XSf2Zq1JFfhqPZpS+43BmWXKgCA==
+      integrity: sha512-0QMy/zPovLfUPyHuOuuU4E+kGACXXE84nRnq6lBVI9GJg5DCBiA97SATi+ZP8CpiJwEQy1oCPjRBf8AnLjN+Ag==
   /jquery/3.6.0:
     dev: true
     resolution:
@@ -3678,7 +3678,7 @@ packages:
       integrity: sha512-an/KZQzQUkZCkuoAA64hM92X0Urb6VpRhAFllDzz44U2mcD5scmT3zBc4VgVpkugF580+DQn8eAFSyoQt0tznA==
   /terser-webpack-plugin/5.2.5_acorn@8.6.0+webpack@5.64.4:
     dependencies:
-      jest-worker: 27.4.0
+      jest-worker: 27.4.2
       schema-utils: 3.1.1
       serialize-javascript: 6.0.0
       source-map: 0.6.1
@@ -3704,7 +3704,7 @@ packages:
       integrity: sha512-3luOVHku5l0QBeYS8r4CdHYWEGMmIj3H1U64jgkdZzECcSOJAyJ9TjuqcQZvw1Y+4AOBN9SeYJPJmFn2cM4/2g==
   /terser-webpack-plugin/5.2.5_webpack@5.64.4:
     dependencies:
-      jest-worker: 27.4.0
+      jest-worker: 27.4.2
       schema-utils: 3.1.1
       serialize-javascript: 6.0.0
       source-map: 0.6.1
@@ -4146,7 +4146,7 @@ specifiers:
   css-loader: ^6.5.1
   datatables.net: ^1.11.3
   datatables.net-bs5: ^1.11.3
-  gd-sprest-bs: ^8.8.5
+  gd-sprest-bs: ^8.8.6
   html-loader: ^2.1.2
   jquery: ^3.6.0
   moment: ^2.29.1
