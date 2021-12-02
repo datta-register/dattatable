@@ -413,8 +413,8 @@ export class Documents {
                     this.renderFileIcon(el, this.getFileName(file));
 
                     // Set the filter/sort value
-                    el.setAttribute("data-filter", this.getFileName(file));
-                    el.setAttribute("data-sort", this.getFileName(file));
+                    el.setAttribute("data-filter", getFileExt(this.getFileName(file)));
+                    el.setAttribute("data-sort", getFileExt(this.getFileName(file)));
 
                     // Call the custom event
                     customEvent ? customEvent(el, col, file) : null;
