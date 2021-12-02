@@ -869,6 +869,7 @@ export class Documents {
                 span.title = "Binary File";
                 break;
             // Code
+            case "app":
             case "asp":
             case "aspx":
             case "css":
@@ -880,6 +881,8 @@ export class Documents {
             case "mht":
             case "mhtml":
             case "scss":
+            case "sppkg":
+            case "wsp":
             case "xml":
             case "yaml":
                 span.appendChild(fileEarmarkCode(size));
