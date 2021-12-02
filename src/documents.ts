@@ -55,6 +55,7 @@ export interface IDocumentsProps {
     enableSearch?: boolean;
     listName: string;
     query?: Types.IODataQuery;
+    onActionsRendered?: (el: HTMLElement, col: Components.ITableColumn, file: Types.SP.Attachment | Types.SP.File) => void;
     onFilterRendered?: (el: HTMLElement) => void;
     onItemFormEditing?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
@@ -469,6 +470,7 @@ export class Documents {
 
                     // Call the custom event
                     customEvent ? customEvent(el, col, file) : null;
+                    this._props.onActionsRendered ? this._props.onActionsRendered(el, col, file) : null;
                 }
             } else {
                 // Set the default render event
@@ -639,7 +641,7 @@ export class Documents {
                     content: "Delete",
                     btnProps: {
                         // Render the icon button
-                        className: "p-1",
+                        className: "p-1 btn-actions-delete",
                         iconType: x,
                         iconSize: 24,
                         isDisabled: !this.CanDelete,
@@ -679,7 +681,7 @@ export class Documents {
                     content: "Download",
                     btnProps: {
                         // Render the icon button
-                        className: "p-1",
+                        className: "p-1 btn-actions-download",
                         iconType: fileEarmarkArrowDown,
                         iconSize: 24,
                         isDisabled: !this.CanView,
@@ -697,7 +699,7 @@ export class Documents {
                     content: "Edit",
                     btnProps: {
                         // Render the icon button
-                        className: "p-1",
+                        className: "p-1 btn-actions-edit",
                         iconType: inputCursorText,
                         iconSize: 24,
                         isDisabled: (!isWopi || !this.CanEdit),
@@ -716,7 +718,7 @@ export class Documents {
                     content: "Properties",
                     btnProps: {
                         // Render the icon button
-                        className: "p-1",
+                        className: "p-1 btn-actions-properties",
                         iconType: layoutTextSidebar,
                         iconSize: 24,
                         isDisabled: !this.CanEdit && !this.CanView,
@@ -824,7 +826,7 @@ export class Documents {
                     content: "View",
                     btnProps: {
                         // Render the icon button
-                        className: "img-flip-x p-1",
+                        className: "img-flip-x p-1 btn-actions-view",
                         iconType: front,
                         iconSize: 24,
                         isDisabled: !this.CanView,

@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.5.1_webpack@5.64.4
   datatables.net: 1.11.3
   datatables.net-bs5: 1.11.3
-  gd-sprest-bs: 8.8.6
+  gd-sprest-bs: 8.9.7
   html-loader: 2.1.2_webpack@5.64.4
   jquery: 3.6.0
   moment: 2.29.1
@@ -1176,12 +1176,12 @@ packages:
       node: '>=6.9.0'
     resolution:
       integrity: sha512-PJgg/k3SdLsGb3hhisFvtLOw5ts113klrpLuIPtCJIU+BB24fqq6lf8RWqKJEjzqXR9AEH1rIb5XTqwBHB+kQg==
-  /@discoveryjs/json-ext/0.5.5:
+  /@discoveryjs/json-ext/0.5.6:
     dev: true
     engines:
       node: '>=10.0.0'
     resolution:
-      integrity: sha512-6nFkfkmSeV/rqSaS4oWHgmpnYw194f6hmWF5is6b0J1naJZoiD0NTc9AiUwPHvWsowkjuHErCZT1wa0jg+BLIA==
+      integrity: sha512-ws57AidsDvREKrZKYffXddNkyaF14iHNHm8VQnZH6t99E8gczjNN0GpvcGny0imC80yQ0tHz1xVUKk/KFQSUyA==
   /@popperjs/core/2.11.0:
     dev: true
     resolution:
@@ -1582,7 +1582,7 @@ packages:
   /browserslist/4.18.1:
     dependencies:
       caniuse-lite: 1.0.30001283
-      electron-to-chromium: 1.4.5
+      electron-to-chromium: 1.4.8
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -1913,10 +1913,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-OoOpBOVDUyh4dMVkt1SThoSamMk=
-  /electron-to-chromium/1.4.5:
+  /electron-to-chromium/1.4.8:
     dev: true
     resolution:
-      integrity: sha512-YKaB+t8ul5crdh6OeqT2qXdxJGI0fAYb6/X8pDIyye+c3a7ndOCk5gVeKX+ABwivCGNS56vOAif3TN0qJMpEHw==
+      integrity: sha512-Cu5+dbg55+1E3ohlsa8HT0s4b8D0gBewXEGG8s5wBl8ynWv60VuvYW25GpsOeTVXpulhyU/U8JYZH+yxASSJBQ==
   /emoji-regex/7.0.3:
     dev: true
     resolution:
@@ -2140,7 +2140,7 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-BRdNm8hbWzFzWHERTrejLqwHDfS4GibPoq5wjTPIoJHoBtKGPg3xAFfxmM+9ztbXelxcf2hwQcaz1PtmFeue8g==
-  /gd-bs/5.2.5:
+  /gd-bs/5.2.8:
     dependencies:
       bootstrap: 5.1.3
       bootstrap-icons: 1.7.1
@@ -2148,26 +2148,26 @@ packages:
       tippy.js: 6.3.7
     dev: true
     resolution:
-      integrity: sha512-i073bED/0OOM2u2GSARTDdrNMSkW95+FnmKFd+IFYWGQZm/MkCkKjWZixauZ78WSBr/NQ2pmpEq7bbdLLQ42mA==
-  /gd-sprest-bs/8.8.6:
+      integrity: sha512-gnE2PYUmfQQPh6guBHMl4IRSBV4/ZFRjotNsYhKKvnqrkeYplWLQDFPfInYJOlwQ4zy7DIw80+FLjfjgJJ1/QA==
+  /gd-sprest-bs/8.9.7:
     dependencies:
       flatpickr: 4.6.9
-      gd-bs: 5.2.5
-      gd-sprest: 6.7.4
+      gd-bs: 5.2.8
+      gd-sprest: 6.7.9
       gd-sprest-def: 1.0.7
     dev: true
     resolution:
-      integrity: sha512-2W4tWRKP0nGvK2Vp6mNvHLiLiV+pjIPA1sIwHZ7p7MuL5bMcJZBxb3juEhl2ieeakrDMNTxkb7QnTLvT/eod2A==
+      integrity: sha512-2E1K3bIUk2BIAlvUgM+vT5GmO4NGZ2r2S/yxiUFX/9901Gvh0x90YVKgKglDZogla2iYFKPvT8fOX3MS/ZzdHQ==
   /gd-sprest-def/1.0.7:
     dev: true
     resolution:
       integrity: sha512-IoUDoAO+9A+x1w8qfhF3XuzOtq3vWo9iXEGDSpJvPN5HBPMeHaY+fVIDzEPHKTXC2Imq0Oz8CvIYGmGj1VDxLA==
-  /gd-sprest/6.7.4:
+  /gd-sprest/6.7.9:
     dependencies:
       gd-sprest-def: 1.0.7
     dev: true
     resolution:
-      integrity: sha512-5OQc9Gds7EkLH5jqClnP5utBiKxfzo+2viZRo/w0Jh39Bv2l4ZpgfSNgBNnXdMpnECrcZOVhFHyqnw98qxU1RA==
+      integrity: sha512-kII1xd6iRGCOZf9zqGGbrvtkMkE+v8Gr2oy4O2pZ+4O4bQ0t7++KSLduSRAjuKjK32eAb9s5cXK5NM0wrHzoVg==
   /gensync/1.0.0-beta.2:
     dev: true
     engines:
@@ -3979,7 +3979,7 @@ packages:
       integrity: sha512-MnN0Q1OsvB/GGHETrFeZPQaOelWh/7O+EiFlj8sM9GPjtQkis7k01aAxrg/18kTfoIVcLL+haEVFlXDaSRwKRw==
   /webpack-cli/4.9.1_webpack@5.64.4:
     dependencies:
-      '@discoveryjs/json-ext': 0.5.5
+      '@discoveryjs/json-ext': 0.5.6
       '@webpack-cli/configtest': 1.1.0_webpack-cli@4.9.1+webpack@5.64.4
       '@webpack-cli/info': 1.4.0_webpack-cli@4.9.1
       '@webpack-cli/serve': 1.6.0_webpack-cli@4.9.1
@@ -4146,7 +4146,7 @@ specifiers:
   css-loader: ^6.5.1
   datatables.net: ^1.11.3
   datatables.net-bs5: ^1.11.3
-  gd-sprest-bs: ^8.8.6
+  gd-sprest-bs: ^8.9.7
   html-loader: ^2.1.2
   jquery: ^3.6.0
   moment: ^2.29.1
