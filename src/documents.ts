@@ -79,8 +79,8 @@ export interface IDocumentsProps {
     onNavigationRendering?: (props: Components.INavbarProps) => void;
     onNavigationRendered?: (nav: Components.INavbar) => void;
     onRefresh?: () => void;
-    onRendered?: () => void;
-    onSearchRendered?: (el: HTMLElement) => void;
+    onRendered?: (el?: HTMLElement) => void;
+    onSearchRendered?: (el?: HTMLElement) => void;
     onShowFilter?: Function;
     table?: {
         columns?: Components.ITableColumn[];
@@ -597,7 +597,7 @@ export class Documents {
                 this.renderTable();
 
                 // Call the render event
-                this._props.onRendered ? this._props.onRendered() : null;
+                this._props.onRendered ? this._props.onRendered(this._el) : null;
 
                 // Resolve the promise
                 resolve();
