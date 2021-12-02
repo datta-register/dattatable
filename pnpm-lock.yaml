@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.5.1_webpack@5.64.4
   datatables.net: 1.11.3
   datatables.net-bs5: 1.11.3
-  gd-sprest-bs: 8.9.8
+  gd-sprest-bs: 8.9.9
   html-loader: 2.1.2_webpack@5.64.4
   jquery: 3.6.0
   moment: 2.29.1
@@ -1582,7 +1582,7 @@ packages:
   /browserslist/4.18.1:
     dependencies:
       caniuse-lite: 1.0.30001283
-      electron-to-chromium: 1.4.8
+      electron-to-chromium: 1.4.9
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -1913,10 +1913,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-OoOpBOVDUyh4dMVkt1SThoSamMk=
-  /electron-to-chromium/1.4.8:
+  /electron-to-chromium/1.4.9:
     dev: true
     resolution:
-      integrity: sha512-Cu5+dbg55+1E3ohlsa8HT0s4b8D0gBewXEGG8s5wBl8ynWv60VuvYW25GpsOeTVXpulhyU/U8JYZH+yxASSJBQ==
+      integrity: sha512-7AyB4SiLtGJbLACXezs8BDjDbZizuoiyHTQxbcvzfi5LYWRXVSFdmPvuDjtlWQmsVSONRicZfSBj3xgft0Wvrg==
   /emoji-regex/7.0.3:
     dev: true
     resolution:
@@ -2140,7 +2140,7 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-BRdNm8hbWzFzWHERTrejLqwHDfS4GibPoq5wjTPIoJHoBtKGPg3xAFfxmM+9ztbXelxcf2hwQcaz1PtmFeue8g==
-  /gd-bs/5.2.9:
+  /gd-bs/5.3.0:
     dependencies:
       bootstrap: 5.1.3
       bootstrap-icons: 1.7.1
@@ -2148,16 +2148,16 @@ packages:
       tippy.js: 6.3.7
     dev: true
     resolution:
-      integrity: sha512-2Lqm9FiNP7BjsfpdYgvP33Gag+kYqNv67LJYRhUyStBgCEx7USfjMjnFC2wuK4rHBJ7+tPS9iyutf45P8PNwMw==
-  /gd-sprest-bs/8.9.8:
+      integrity: sha512-vBgK5F8GXbg60muFdNShosQtkGkJ5b5MkbXoQJvva0tssMX7kegYyQWA3B5scUzuEC1DM7WDLIl1xw/1B8Ohog==
+  /gd-sprest-bs/8.9.9:
     dependencies:
       flatpickr: 4.6.9
-      gd-bs: 5.2.9
+      gd-bs: 5.3.0
       gd-sprest: 6.7.9
       gd-sprest-def: 1.0.7
     dev: true
     resolution:
-      integrity: sha512-M/x5gKVyv7wRVvH06ROKOEwHEtJrqI63J9nS8QRJ3onvHyg7xpZzj3PFxO3a6OUEG1Pu2v3Atgl4WUh5xEb0Hg==
+      integrity: sha512-nkPA5s8I+BQXjfYwPIqrycIu4n6aL8pT+aOl0zrwNxu2PHxVLhoqBvxR5m+kbE5hTgDswr9WrG191QOrUBe9fw==
   /gd-sprest-def/1.0.7:
     dev: true
     resolution:
@@ -3465,14 +3465,14 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
-  /shiki/0.9.13:
+  /shiki/0.9.14:
     dependencies:
       jsonc-parser: 3.0.0
       vscode-oniguruma: 1.6.1
       vscode-textmate: 5.2.0
     dev: true
     resolution:
-      integrity: sha512-WATIHzLg91SpTj6mLq5i/0NJ94/Rg1t3n9ylC8vgiJ2f5LVandqBi2vS/410SnEd6sNgPdrHLmdcCHML27pTMg==
+      integrity: sha512-uLHjjyJdNsMzF9GOF8vlOuZ8BwigiYPraMN5yjC826k8K7Xu90JQcC5GUNrzRibLgT2EOk9597I1IX+jRdA8nw==
   /signal-exit/3.0.6:
     dev: true
     resolution:
@@ -3866,7 +3866,7 @@ packages:
       lunr: 2.3.9
       marked: 3.0.8
       minimatch: 3.0.4
-      shiki: 0.9.13
+      shiki: 0.9.14
       typescript: 4.5.2
     dev: true
     engines:
@@ -4146,7 +4146,7 @@ specifiers:
   css-loader: ^6.5.1
   datatables.net: ^1.11.3
   datatables.net-bs5: ^1.11.3
-  gd-sprest-bs: ^8.9.8
+  gd-sprest-bs: ^8.9.9
   html-loader: ^2.1.2
   jquery: ^3.6.0
   moment: ^2.29.1

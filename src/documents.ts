@@ -212,7 +212,7 @@ export class Documents {
                     // Get the file contents
                     Web().getFileByServerRelativeUrl(file.ServerRelativeUrl).content().execute(data => {
                         // Copy the file
-                        List(this._props.listName).RootFolder().Files().add(file.Name, true, data).execute(resolve, resolve);
+                        Web().getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(file.Name, true, data).execute(resolve, resolve);
                     });
                 });
             }).then(() => {
@@ -227,7 +227,7 @@ export class Documents {
             let file = item.data as Types.SP.File;
             file.content().execute(data => {
                 // Copy the file
-                List(this._props.listName).RootFolder().Files().add(file.Name, true, data).execute(() => {
+                Web().getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(file.Name, true, data).execute(() => {
                     // Close the dialog
                     LoadingDialog.hide();
 
@@ -1178,7 +1178,7 @@ export class Documents {
                 list.Items(this._props.itemId).AttachmentFiles().add(fileInfo.name, fileInfo.data).execute(resolve, reject);
             } else {
                 // Upload the file to the objective folder
-                list.RootFolder().Files().add(fileInfo.name, true, fileInfo.data).execute(resolve, reject);
+                Web().getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(fileInfo.name, true, fileInfo.data).execute(resolve, reject);
             }
         });
     }
