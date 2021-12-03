@@ -8,7 +8,6 @@ import { ItemForm, IItemFormEditProps } from "./itemForm";
 
 /** Icons */
 
-import { bookmarkPlus } from "gd-sprest-bs/build/icons/svgs/bookmarkPlus";
 import { fileEarmark } from "gd-sprest-bs/build/icons/svgs/fileEarmark";
 import { fileEarmarkArrowDown } from "gd-sprest-bs/build/icons/svgs/fileEarmarkArrowDown";
 import { fileEarmarkArrowUp } from "gd-sprest-bs/build/icons/svgs/fileEarmarkArrowUp";
@@ -19,6 +18,7 @@ import { fileEarmarkExcel } from "gd-sprest-bs/build/icons/svgs/fileEarmarkExcel
 import { fileEarmarkImage } from "gd-sprest-bs/build/icons/svgs/fileEarmarkImage";
 import { fileEarmarkMusic } from "gd-sprest-bs/build/icons/svgs/fileEarmarkMusic";
 import { fileEarmarkPdf } from "gd-sprest-bs/build/icons/svgs/fileEarmarkPdf";
+import { fileEarmarkPlus } from "gd-sprest-bs/build/icons/svgs/fileEarmarkPlus";
 import { fileEarmarkPpt } from "gd-sprest-bs/build/icons/svgs/fileEarmarkPpt";
 import { fileEarmarkPlay } from "gd-sprest-bs/build/icons/svgs/fileEarmarkPlay";
 import { fileEarmarkRichtext } from "gd-sprest-bs/build/icons/svgs/fileEarmarkRichtext";
@@ -389,12 +389,14 @@ export class Documents {
                 // Add some classes to the dataTable elements
                 drawCallback: function (settings) {
                     let api = new jQuery.fn.dataTable.Api(settings) as any;
-                    jQuery(api.context[0].nTable).removeClass('no-footer');
-                    jQuery(api.context[0].nTable).addClass('tbl-footer');
-                    jQuery(api.context[0].nTable).addClass('table-striped');
-                    jQuery(api.context[0].nTableWrapper).find('.dataTables_info').addClass('text-center');
-                    jQuery(api.context[0].nTableWrapper).find('.dataTables_length').addClass('pt-2');
-                    jQuery(api.context[0].nTableWrapper).find('.dataTables_paginate').addClass('pt-03');
+                        let div = api.table().container() as HTMLDivElement;
+                        let table = api.table().node() as HTMLTableElement;
+                        div.querySelector(".dataTables_info").classList.add("text-center");
+                        div.querySelector(".dataTables_length").classList.add("pt-2");
+                        div.querySelector(".dataTables_paginate").classList.add("pt-03");
+                        table.classList.remove("no-footer");
+                        table.classList.add("tbl-footer");
+                        table.classList.add("table-striped");
                 },
                 headerCallback: function (thead, data, start, end, display) {
                     jQuery('th', thead).addClass('align-middle');
@@ -1031,21 +1033,12 @@ export class Documents {
             itemsEnd.push({
                 text: "Templates",
                 className: "btn btn-sm btn-outline-secondary",
+                classNameItem: "bg-white",
+                iconClassName: "btn-icon-sm",
                 iconSize: 20,
-                iconType: bookmarkPlus,
+                iconType: fileEarmarkPlus,
                 isButton: true,
-                items: this.generateItems(),
-                onRender: (el) => {
-                    el.classList.add("bg-white");
-                    el.querySelector("svg").style.margin = "0 0.25rem 0.1rem -0.25rem";
-                },
-                onMenuRendering: props => {
-                    // Update the placement
-                    props.options.offset = [7, 0];
-
-                    // Return the properties
-                    return props;
-                }
+                items: this.generateItems()
             });
         }
 
@@ -1104,7 +1097,7 @@ export class Documents {
         // Set the default properties
         let navProps: Components.INavbarProps = {
             el: this._el,
-            brand: "Documents View",
+            brand: "Documents",
             itemsEnd,
             searchBox: this._props.enableSearch ? {
                 hideButton: true,
