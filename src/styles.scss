@@ -31,6 +31,10 @@
     .bg-sharepoint {
         background-color: #0078d4 !important;
     }
+    /* Align icon properly when using btn-sm */
+    .btn-icon-sm {
+        margin: 0 0.25rem 0.14rem -0.25rem;
+    }
     /* Color match the primary button to 'SharePoint Blue' */
     /* Don't reorder the btn-primary classes. It breaks active colors. */
     .btn-primary,
