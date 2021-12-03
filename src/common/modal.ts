@@ -98,6 +98,9 @@ export class Modal {
         }
     }
 
+    // Sets the close button visibility
+    static setCloseButtonVisibility(showFl: boolean) { this._modal.setCloseButtonVisibility(showFl); }
+
     // Sets the close event
     static setCloseEvent(event) { this._onCloseEvent = event; }
 
