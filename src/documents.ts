@@ -339,7 +339,11 @@ export class Documents {
         }
 
         // Return the dropdown items
-        return items;
+        return items.sort((a, b) => {
+            if (a.text < b.text) { return -1; }
+            if (a.text > b.text) { return 1; }
+            return 0;
+        });
     }
 
     // Generates the table properties
