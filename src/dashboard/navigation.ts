@@ -43,6 +43,7 @@ export class Navigation {
         let props: Components.INavbarProps = {
             el: this._props.el,
             brand: this._props.title,
+            className: "nav-expand",
             enableSearch: this._props.hideSearch != null ? !this._props.hideSearch : null,
             items: this._props.items,
             itemsEnd: this._props.itemsEnd,
