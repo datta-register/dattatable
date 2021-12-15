@@ -12,6 +12,7 @@ export interface IItemFormCreateProps {
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
     useModal?: boolean;
+    webUrl?: string;
 }
 
 /** Edit Item Properties */
@@ -26,6 +27,7 @@ export interface IItemFormEditProps {
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
     useModal?: boolean;
+    webUrl?: string;
 }
 
 /** View Item Properties */
@@ -37,6 +39,7 @@ export interface IItemFormViewProps {
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
     useModal?: boolean;
+    webUrl?: string;
 }
 
 /**
@@ -109,7 +112,7 @@ export class ItemForm {
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the item
-        this.load();
+        this.load(props.webUrl);
     }
 
     // Edits a task
@@ -127,7 +130,7 @@ export class ItemForm {
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
-        this.load(props.itemId);
+        this.load(props.webUrl, props.itemId);
     }
 
     // Views the task
@@ -142,13 +145,13 @@ export class ItemForm {
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
-        this.load(props.itemId);
+        this.load(props.webUrl, props.itemId);
     }
 
     /** private static Methods */
 
     // Load the form information
-    private static load(itemId?: number) {
+    private static load(webUrl?: string, itemId?: number) {
         // Clear the forms
         this._displayForm = null;
         this._editForm = null;
@@ -161,7 +164,8 @@ export class ItemForm {
         // Set the list form properties
         let listProps: Helper.IListFormProps = {
             listName: this.ListName,
-            itemId
+            itemId,
+            webUrl
         };
 
         // Call the event
