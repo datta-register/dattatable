@@ -34,7 +34,6 @@ export class Footer {
         // Define the default props
         let props: Components.INavbarProps = {
             el: this._props.el,
-            className: "navbar-expand",
             items: this._props.items,
             itemsEnd: this._props.itemsEnd
         };
