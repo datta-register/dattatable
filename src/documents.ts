@@ -89,6 +89,7 @@ export interface IDocumentsProps {
         onRendered?: (el?: HTMLElement, dt?: any) => void;
     }
     templatesUrl?: string;
+    webUrl?: string;
 }
 
 /**
@@ -210,9 +211,9 @@ export class Documents {
                 // Return a promise
                 return new Promise(resolve => {
                     // Get the file contents
-                    Web().getFileByServerRelativeUrl(file.ServerRelativeUrl).content().execute(data => {
+                    Web(this._props.webUrl).getFileByServerRelativeUrl(file.ServerRelativeUrl).content().execute(data => {
                         // Copy the file
-                        Web().getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(file.Name, true, data).execute(resolve, resolve);
+                        Web(this._props.webUrl).getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(file.Name, true, data).execute(resolve, resolve);
                     });
                 });
             }).then(() => {
@@ -227,7 +228,7 @@ export class Documents {
             let file = item.data as Types.SP.File;
             file.content().execute(data => {
                 // Copy the file
-                Web().getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(file.Name, true, data).execute(() => {
+                Web(this._props.webUrl).getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(file.Name, true, data).execute(() => {
                     // Close the dialog
                     LoadingDialog.hide();
 
@@ -389,14 +390,14 @@ export class Documents {
                 // Add some classes to the dataTable elements
                 drawCallback: function (settings) {
                     let api = new jQuery.fn.dataTable.Api(settings) as any;
-                        let div = api.table().container() as HTMLDivElement;
-                        let table = api.table().node() as HTMLTableElement;
-                        div.querySelector(".dataTables_info").classList.add("text-center");
-                        div.querySelector(".dataTables_length").classList.add("pt-2");
-                        div.querySelector(".dataTables_paginate").classList.add("pt-03");
-                        table.classList.remove("no-footer");
-                        table.classList.add("tbl-footer");
-                        table.classList.add("table-striped");
+                    let div = api.table().container() as HTMLDivElement;
+                    let table = api.table().node() as HTMLTableElement;
+                    div.querySelector(".dataTables_info").classList.add("text-center");
+                    div.querySelector(".dataTables_length").classList.add("pt-2");
+                    div.querySelector(".dataTables_paginate").classList.add("pt-03");
+                    table.classList.remove("no-footer");
+                    table.classList.add("tbl-footer");
+                    table.classList.add("table-striped");
                 },
                 headerCallback: function (thead, data, start, end, display) {
                     jQuery('th', thead).addClass('align-middle');
@@ -529,7 +530,7 @@ export class Documents {
     private load(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            let web = Web();
+            let web = Web(this._props.webUrl);
 
             // Clear the properties
             this._rootFolder = null;
@@ -663,7 +664,7 @@ export class Documents {
                                     LoadingDialog.show();
                                     // Delete the document
 
-                                    Web().getFileByServerRelativeUrl(file.ServerRelativeUrl).delete().execute(
+                                    Web(this._props.webUrl).getFileByServerRelativeUrl(file.ServerRelativeUrl).delete().execute(
                                         // Success
                                         () => {
                                             // close dialog
@@ -1175,7 +1176,7 @@ export class Documents {
                 list.Items(this._props.itemId).AttachmentFiles().add(fileInfo.name, fileInfo.data).execute(resolve, reject);
             } else {
                 // Upload the file to the objective folder
-                Web().getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(fileInfo.name, true, fileInfo.data).execute(resolve, reject);
+                Web(this._props.webUrl).getFolderByServerRelativeUrl(this._rootFolder.ServerRelativeUrl).Files().add(fileInfo.name, true, fileInfo.data).execute(resolve, reject);
             }
         });
     }
