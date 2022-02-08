@@ -762,6 +762,10 @@ export class Documents {
                                                         return results;
                                                     }
                                                 }
+                                                else if (field.InternalName == "Title") {
+                                                    // Update the label of the Title field
+                                                    ctrl.label = "Description";
+                                                }
                                             }
 
                                             // See if a custom event exists
@@ -820,7 +824,27 @@ export class Documents {
                                 ItemForm.view({
                                     ...(this._props.onItemFormViewing || {}),
                                     ...{
-                                        itemId: (file as Types.SP.File).ListItemAllFields["Id"]
+                                        itemId: (file as Types.SP.File).ListItemAllFields["Id"],
+                                        
+                                        // Set the view form properties
+                                        onCreateViewForm: props => {
+                                            // Set the rendering event
+                                            props.onControlRendering = (ctrl, field) => {
+                                                if (field.InternalName == "Title") {
+                                                    // Update the label of the Title field
+                                                    ctrl.label = "Description";
+                                                }
+                                            }
+
+                                            // See if a custom event exists
+                                            if (this._props.onItemFormViewing && this._props.onItemFormViewing.onCreateViewForm) {
+                                                // Return the properties
+                                                return this._props.onItemFormViewing.onCreateViewForm(props);
+                                            }
+
+                                            // Return the properties
+                                            return props;
+                                        }
                                     }
                                 });
                             }
