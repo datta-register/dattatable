@@ -825,7 +825,7 @@ export class Documents {
                                     ...(this._props.onItemFormViewing || {}),
                                     ...{
                                         itemId: (file as Types.SP.File).ListItemAllFields["Id"],
-                                        
+
                                         // Set the view form properties
                                         onCreateViewForm: props => {
                                             // Set the rendering event
