@@ -287,8 +287,8 @@ export class ItemForm {
         });
     }
 
-    // Saves the form
-    private static save(form: Components.IListFormEdit) {
+    // Saves the edit form
+    static save(form: Components.IListFormEdit = this._editForm) {
         // Validate the form
         this.validate(form).then(
             // Success
