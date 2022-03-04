@@ -56,6 +56,8 @@ export interface IDocumentsProps {
     listName: string;
     query?: Types.IODataQuery;
     onActionsRendered?: (el: HTMLElement, col: Components.ITableColumn, file: Types.SP.Attachment | Types.SP.File) => void;
+    onFileAdded?: (file?: Types.SP.Attachment | Types.SP.File) => void;
+    onFileAdding?: (fileInfo?: Helper.IListFormAttachmentInfo) => PromiseLike<boolean> | boolean;
     onFilterRendered?: (el: HTMLElement) => void;
     onItemFormEditing?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
@@ -1091,27 +1093,52 @@ export class Documents {
                         onClick: () => {
                             // Show the file upload dialog
                             Helper.ListForm.showFileDialog().then(fileInfo => {
-                                // Show a loading dialog
-                                LoadingDialog.setHeader("Uploading File");
-                                LoadingDialog.setBody("Saving the file you selected. Please wait...");
-                                LoadingDialog.show();
+                                // Code to run after the event
+                                let onCompleted = (fileInfo: Helper.IListFormAttachmentInfo) => {
+                                    // Show a loading dialog
+                                    LoadingDialog.setHeader("Uploading File");
+                                    LoadingDialog.setBody("Saving the file you selected. Please wait...");
+                                    LoadingDialog.show();
 
-                                // Upload the file
-                                this.uploadFile(fileInfo).then(
-                                    // Success
-                                    () => {
-                                        // Hide the dialog
-                                        LoadingDialog.hide();
+                                    // Upload the file
+                                    this.uploadFile(fileInfo).then(
+                                        // Success
+                                        file => {
+                                            // Call the event
+                                            this._props.onFileAdded ? this._props.onFileAdded(file) : null;
 
-                                        // Refresh the page
-                                        this.refresh();
-                                    },
-                                    // Error
-                                    () => {
-                                        // Hide the dialog
-                                        LoadingDialog.hide();
-                                    }
-                                );
+                                            // Hide the dialog
+                                            LoadingDialog.hide();
+
+                                            // Refresh the page
+                                            this.refresh();
+                                        },
+                                        // Error
+                                        () => {
+                                            // Hide the dialog
+                                            LoadingDialog.hide();
+                                        }
+                                    );
+                                }
+
+                                // Call the file adding event
+                                let returnVal = this._props.onFileAdding ? this._props.onFileAdding(fileInfo) : null;
+                                if (typeof (returnVal) === "boolean") {
+                                    // Add the file
+                                    returnVal ? onCompleted(fileInfo) : null;
+                                }
+                                // Else, see if it doesn't exist
+                                else if (returnVal == null) {
+                                    // Add the file
+                                    onCompleted(fileInfo);
+                                }
+                                else if (returnVal.then) {
+                                    // Wait for the event to complete
+                                    returnVal.then(addFile => {
+                                        // Add the file
+                                        addFile ? onCompleted(fileInfo) : null;
+                                    });
+                                }
                             });
                         }
                     },
@@ -1189,7 +1216,7 @@ export class Documents {
     }
 
     // Uploads a file
-    private uploadFile(fileInfo: Helper.IListFormAttachmentInfo) {
+    private uploadFile(fileInfo: Helper.IListFormAttachmentInfo): PromiseLike<Types.SP.Attachment | Types.SP.File> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let list = List(this._props.listName);
