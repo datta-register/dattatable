@@ -103,7 +103,9 @@ export class InstallationRequired {
         Modal.setBody(Components.Card({
             body: [
                 {
-                    text: "An installation is required. The following were missing in your environment:"
+                    text: props.errors && props.errors.length > 0 ?
+                        "An installation is required. The following were missing in your environment:" :
+                        "No errors were detected."
                 },
                 {
                     onRender: el => {
