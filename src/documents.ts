@@ -1064,7 +1064,7 @@ export class Documents {
         let itemsEnd: Components.INavbarItem[] = [];
 
         // See if templates exist
-        if (this._props.templatesUrl) {
+        if (this.TemplateFiles && this.TemplateFolders) {
             // Add the item
             itemsEnd.push({
                 text: "Templates",
