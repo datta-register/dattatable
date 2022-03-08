@@ -544,13 +544,22 @@ export class Documents {
                 // Load the files and folders
                 web.getFolderByServerRelativeUrl(this._props.templatesUrl).query({
                     Expand: ["Folders/Files", "Files"]
-                }).execute(folder => {
-                    // Set the template files
-                    this._templatesFiles = folder.Files.results;
+                }).execute(
+                    // Templates folder exists
+                    folder => {
+                        // Set the template files
+                        this._templatesFiles = folder.Files.results;
 
-                    // Set the template folders
-                    this._templateFolders = folder.Folders.results;
-                }, reject);
+                        // Set the template folders
+                        this._templateFolders = folder.Folders.results;
+                    },
+
+                    // Error loading the templates folder
+                    () => {
+                        // Log
+                        console.error("[Dattatable] Document's template folder failed to be loaded.", this._props.templatesUrl)
+                    }
+                );
             }
 
             // Set the query
