@@ -18,8 +18,15 @@ export class InstallationRequired {
     private static _cfg: Helper.ISPConfig = null;
     private static _report: string[] = null;
 
+    // Lists exists
+    private static _listsExist: boolean = null;
+    static get ListsExist(): boolean { return this._listsExist; }
+
     // Checks the lists
     private static checkLists(): PromiseLike<void> {
+        // Clear the flag
+        this._listsExist = true;
+
         // Return a promise
         return new Promise((resolve) => {
             // Parse the lists
@@ -61,6 +68,9 @@ export class InstallationRequired {
                         () => {
                             // List doesn't exist
                             this._report.push("List '" + listCfg.ListInformation.Title + "' does not exist");
+
+                            // Set the flag
+                            this._listsExist = false;
 
                             // Resolve the promise
                             resolve(null);

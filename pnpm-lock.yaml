@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.7.1_webpack@5.70.0
   datatables.net: 1.11.5
   datatables.net-bs5: 1.11.5
-  gd-sprest-bs: 9.2.4
+  gd-sprest-bs: 9.2.5
   html-loader: 3.1.0_webpack@5.70.0
   jquery: 3.6.0
   moment: 2.29.1
@@ -1197,12 +1197,12 @@ packages:
       node: '>=6.9.0'
     resolution:
       integrity: sha512-TmKSNO4D5rzhL5bjWFcVHHLETzfQ/AmbKpKPOSjlP0WoHZ6L911fgoOKY4Alp/emzG4cHJdyN49zpgkbXFEHHw==
-  /@discoveryjs/json-ext/0.5.6:
+  /@discoveryjs/json-ext/0.5.7:
     dev: true
     engines:
       node: '>=10.0.0'
     resolution:
-      integrity: sha512-ws57AidsDvREKrZKYffXddNkyaF14iHNHm8VQnZH6t99E8gczjNN0GpvcGny0imC80yQ0tHz1xVUKk/KFQSUyA==
+      integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
   /@gar/promisify/1.1.3:
     dev: true
     resolution:
@@ -1674,7 +1674,7 @@ packages:
   /browserslist/4.20.0:
     dependencies:
       caniuse-lite: 1.0.30001314
-      electron-to-chromium: 1.4.77
+      electron-to-chromium: 1.4.79
       escalade: 3.1.1
       node-releases: 2.0.2
       picocolors: 1.0.0
@@ -2029,10 +2029,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-OoOpBOVDUyh4dMVkt1SThoSamMk=
-  /electron-to-chromium/1.4.77:
+  /electron-to-chromium/1.4.79:
     dev: true
     resolution:
-      integrity: sha512-fiDxw8mO9Ph1Z0bjX2sFTPpi0J0QkOiwOJF+5Q0J0baNc/F9lLePAvDPlnoxvbUYYMizqrKPeotRRkJ9LtxAew==
+      integrity: sha512-nWfAxof87mGHkbORCwVRPst4FlSVdprOKS6dBMrcwn3sjwf8iHXEhsu1+FU5Psd7Ps3KKeBufAdfsPK5BmbSUg==
   /emoji-regex/8.0.0:
     dev: true
     resolution:
@@ -2288,7 +2288,7 @@ packages:
     dev: true
     resolution:
       integrity: sha512-0nnmVogRU1EqnT84XQ3baCm0s/a46F/vIS5zlI+dZiRc/3FBD2hWZJoe6jysUdIWga1xYDByFYVfgp5okLqQnA==
-  /gd-sprest-bs/9.2.4:
+  /gd-sprest-bs/9.2.5:
     dependencies:
       flatpickr: 4.6.10
       gd-bs: 5.3.9
@@ -2296,7 +2296,7 @@ packages:
       gd-sprest-def: 1.1.0
     dev: true
     resolution:
-      integrity: sha512-Buecmfs/vZD694U5J5wrcmKlYfuzRgnMirw6fyDhLncsPdDD3SCC2zfTRAWt14F7SLx5hev9CkkekUPdeBrKGw==
+      integrity: sha512-gT5rBOSjiHz3tgcplfoUeS3bCVeAExi7QgtD47x+AwNbMDPFDFkhD7zO9HFVfRfm+yzxdw2FNJm9mFDKzIrM7A==
   /gd-sprest-def/1.1.0:
     dev: true
     resolution:
@@ -4240,7 +4240,7 @@ packages:
       integrity: sha512-x0t0JuydIo8qCNctdDrn1OzH/qDzk2+rdCOC3YzumZ42fiMqmQ7T3xQurykYMhYfHaPHTp4ZxAx2NfUo1K6QaA==
   /webpack-cli/4.9.2_webpack@5.70.0:
     dependencies:
-      '@discoveryjs/json-ext': 0.5.6
+      '@discoveryjs/json-ext': 0.5.7
       '@webpack-cli/configtest': 1.1.1_webpack-cli@4.9.2+webpack@5.70.0
       '@webpack-cli/info': 1.4.1_webpack-cli@4.9.2
       '@webpack-cli/serve': 1.6.1_webpack-cli@4.9.2
@@ -4403,7 +4403,7 @@ specifiers:
   css-loader: ^6.7.1
   datatables.net: ^1.11.5
   datatables.net-bs5: ^1.11.5
-  gd-sprest-bs: ^9.2.4
+  gd-sprest-bs: ^9.2.5
   html-loader: ^3.1.0
   jquery: ^3.6.0
   moment: ^2.29.1
