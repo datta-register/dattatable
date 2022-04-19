@@ -63,7 +63,7 @@ export class DataTable implements IDataTable {
     // Filters the status
     filter(idx: number, value: string = "") {
         // Set the filter
-        this._datatable.column(idx).search(value, true, false).draw();
+        this._datatable.column(idx).search(value.replace(/[-[/\]{}()*+?.,\\^$|#\s]/g, '\\$&'), true, false).draw();
     }
 
     // Method to reload the data
