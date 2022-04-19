@@ -1,3 +1,5 @@
+[![Current Version](https://badge.fury.io/js/dattatable.svg)](https://www.npmjs.com/package/dattatable) [![Downloads](https://img.shields.io/npm/dm/dattatable.svg)](https://www.npmjs.com/package/dattatable) [![Total Downloads](https://img.shields.io/npm/dt/dattatable.svg)](https://www.npmjs.com/package/dattatable)
+
 # DattaTable Library
 
 This library will help generate a dashboard or an interactive [datatables.net](https://datatables.net/) table referencing data from a SharePoint list.
