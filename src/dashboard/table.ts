@@ -67,7 +67,7 @@ export class DataTable implements IDataTable {
     }
 
     // Method to reload the data
-    refresh(rows: any[]) {
+    refresh(rows: any[] = []) {
         // See if the datatable exists
         if (this._datatable != null) {
             // Clear the datatable
