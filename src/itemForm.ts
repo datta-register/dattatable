@@ -3,6 +3,7 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 
 /** Create Item Properties */
 export interface IItemFormCreateProps {
+    info?: Helper.IListFormResult;
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
@@ -17,6 +18,7 @@ export interface IItemFormCreateProps {
 
 /** Edit Item Properties */
 export interface IItemFormEditProps {
+    info?: Helper.IListFormResult;
     itemId: number;
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
@@ -32,6 +34,7 @@ export interface IItemFormEditProps {
 
 /** View Item Properties */
 export interface IItemFormViewProps {
+    info?: Helper.IListFormResult;
     itemId: number;
     onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
@@ -101,6 +104,7 @@ export class ItemForm {
     static create(props: IItemFormCreateProps = {}) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
+        this._info = props.info;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
         this._onGetListInfo = props.onGetListInfo;
@@ -119,6 +123,7 @@ export class ItemForm {
     static edit(props: IItemFormEditProps) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Edit;
+        this._info = props.info;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
         this._onGetListInfo = props.onGetListInfo;
@@ -133,10 +138,26 @@ export class ItemForm {
         this.load(props.webUrl, props.itemId);
     }
 
+    // Loads the form information
+    static loadFormInfo(props: Helper.IListFormProps): PromiseLike<void> {
+        // Return a promise
+        return new Promise(resolve => {
+            // Load the form info
+            Helper.ListForm.create(props).then(info => {
+                // Save the information
+                this._info = info;
+
+                // Resolve the request
+                resolve();
+            });
+        });
+    }
+
     // Views the task
     static view(props: IItemFormViewProps) {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
+        this._info = props.info;
         this._onCreateViewForm = props.onCreateViewForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
         this._onGetListInfo = props.onGetListInfo;
@@ -161,21 +182,36 @@ export class ItemForm {
         LoadingDialog.setBody("This will close after the form is loaded...");
         LoadingDialog.show();
 
-        // Set the list form properties
-        let listProps: Helper.IListFormProps = {
-            listName: this.ListName,
-            itemId,
-            webUrl
-        };
-
-        // Call the event
-        listProps = this._onGetListInfo ? this._onGetListInfo(listProps) : listProps;
-
         // Load the form information
-        Helper.ListForm.create(listProps).then(info => {
-            // Save the form information
-            this._info = info;
+        ((): PromiseLike<void> => {
+            // Return a promise
+            return new Promise(resolve => {
+                // See if the info already exists
+                if (this._info) {
+                    // Resolve the request
+                    resolve();
+                } else {
+                    // Set the list form properties
+                    let listProps: Helper.IListFormProps = {
+                        listName: this.ListName,
+                        itemId,
+                        webUrl
+                    };
 
+                    // Call the event
+                    listProps = this._onGetListInfo ? this._onGetListInfo(listProps) : listProps;
+
+                    // Load the form info
+                    Helper.ListForm.create(listProps).then(info => {
+                        // Save the information
+                        this._info = info;
+
+                        // Resolve the request
+                        resolve();
+                    });
+                }
+            });
+        })().then(() => {
             // Set the header
             (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
 
@@ -301,7 +337,7 @@ export class ItemForm {
                 // Saves the item
                 let saveItem = (values) => {
                     // Save the item
-                    Components.ListForm.saveItem(this._info, values).then(item => {
+                    form.save(values).then(item => {
                         // Call the update event
                         this._updateEvent ? this._updateEvent(item) : null;
 
