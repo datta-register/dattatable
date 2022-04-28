@@ -25,6 +25,10 @@ export class CanvasForm {
         // Clear the header and body
         this.setHeader("");
         this.setBody("");
+
+        // Set the default properties
+        this.setAutoClose(true);
+        this.setType(Components.OffcanvasTypes.End);
     }
 
     // Element

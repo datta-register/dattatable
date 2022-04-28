@@ -31,6 +31,17 @@ export class Modal {
         this.setHeader("");
         this.setBody("");
         this.setFooter("");
+
+        // Set the default properties
+        this.setAutoClose(false);
+        this.setBackdrop(true);
+        this.setCloseButtonVisibility(true);
+        this.setCloseEvent(null);
+        this.setFocus(false);
+        this.setIsCentered(true);
+        this.setKeyboard(true);
+        this.setScrollable(false);
+        this.setType(Components.ModalTypes.Large);
     }
 
     // Hides the modal
