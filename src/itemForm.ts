@@ -1,6 +1,12 @@
 import { Components, Helper, SPTypes } from "gd-sprest-bs";
 import { CanvasForm, LoadingDialog, Modal } from "./common";
 
+/** Optional Tabs */
+export interface IItemFormTabInfo {
+    title: string;
+    fields: string[];
+}
+
 /** Create Item Properties */
 export interface IItemFormCreateProps {
     info?: Helper.IListFormResult;
@@ -12,6 +18,7 @@ export interface IItemFormCreateProps {
     onSetHeader?: (el: HTMLElement) => void;
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
+    tabs?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
 }
@@ -28,6 +35,7 @@ export interface IItemFormEditProps {
     onSetHeader?: (el: HTMLElement) => void;
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
+    tabs?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
 }
@@ -41,6 +49,7 @@ export interface IItemFormViewProps {
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
+    tabs?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
 }
@@ -212,115 +221,136 @@ export class ItemForm {
                 }
             });
         })().then(() => {
-            // Set the header
-            (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
-
-            // Call the header event
-            this._onSetHeader ? this._onSetHeader(this._useModal ? Modal.HeaderElement : CanvasForm.HeaderElement) : null;
-
-            // Render the form based on the type
-            if (this.IsDisplay) {
-                let el = document.createElement("div");
-                let props: Components.IListFormDisplayProps = {
-                    el,
-                    info: this._info,
-                    rowClassName: "mb-3"
-                };
-
-                // Call the event if it exists
-                props = this._onCreateViewForm ? this._onCreateViewForm(props) : props;
-
-                // Render the display form
-                this._displayForm = Components.ListForm.renderDisplayForm(props);
-
-                /* Remove the bottom margin from the last row of the form */
-                (this._displayForm.el.lastChild as HTMLElement).classList.remove("mb-3");
-
-                // Render the form buttons
-                let elButtons = document.createElement("div");
-                el.appendChild(elButtons);
-
-                // Add styling if not using a modal
-                if (!this._useModal) {
-                    elButtons.classList.add("float-end");
-                    elButtons.style.padding = "1rem 0";
-                }
-
-                // Append the create/update button
-                this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
-
-                // Call the item form button rendering event
-                let formButtons: Components.IButtonProps[] = [];
-                formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
-
-                // Render the form buttons
-                formButtons && formButtons.length > 0 ? Components.ButtonGroup({
-                    el: elButtons,
-                    buttons: formButtons
-                }) : null;
-
-                // Call the footer event
-                this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
-
-                // Update the body
-                (this._useModal ? Modal : CanvasForm).setBody(el);
-            } else {
-                let el = document.createElement("div");
-                let props: Components.IListFormEditProps = {
-                    el,
-                    info: this._info,
-                    rowClassName: "mb-3",
-                    controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
-                };
-
-                // Call the event if it exists
-                props = this._onCreateEditForm ? this._onCreateEditForm(props) : props;
-
-                // Render the edit form
-                this._editForm = Components.ListForm.renderEditForm(props);
-
-                /* Remove the bottom margin from the last row of the form */
-                (this._editForm.el.lastChild as HTMLElement).classList.remove("mb-3");
-
-                // Render the form buttons
-                let elButtons = document.createElement("div");
-
-                // Add styling if not using a modal
-                if (!this._useModal) {
-                    elButtons.classList.add("float-end");
-                    elButtons.style.padding = "1rem 0";
-                }
-
-                // Append the create/update button
-                this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
-
-                // Call the item form button rendering event
-                let formButtons: Components.IButtonProps[] = [{
-                    text: this.IsNew ? "Create" : "Update",
-                    type: Components.ButtonTypes.OutlinePrimary,
-                    onClick: () => { this.save(this._editForm); }
-                }];
-                formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
-
-                // Render the form buttons
-                formButtons && formButtons.length > 0 ? Components.ButtonGroup({
-                    el: elButtons,
-                    buttons: formButtons
-                }) : null;
-
-                // Call the footer event
-                this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
-
-                // Update the body
-                (this._useModal ? Modal : CanvasForm).setBody(el);
-            }
-
-            // Close the dialog
-            LoadingDialog.hide();
-
-            // Show the form
-            (this._useModal ? Modal : CanvasForm).show();
+            // Render the form
+            this.renderForm();
         });
+    }
+
+    // Renders the display form
+    private static renderDisplayForm() {
+        let el = document.createElement("div");
+        let props: Components.IListFormDisplayProps = {
+            el,
+            info: this._info,
+            rowClassName: "mb-3"
+        };
+
+        // Call the event if it exists
+        props = this._onCreateViewForm ? this._onCreateViewForm(props) : props;
+
+        // Render the display form
+        this._displayForm = Components.ListForm.renderDisplayForm(props);
+
+        /* Remove the bottom margin from the last row of the form */
+        (this._displayForm.el.lastChild as HTMLElement).classList.remove("mb-3");
+
+        // Render the form buttons
+        let elButtons = document.createElement("div");
+        el.appendChild(elButtons);
+
+        // Add styling if not using a modal
+        if (!this._useModal) {
+            elButtons.classList.add("float-end");
+            elButtons.style.padding = "1rem 0";
+        }
+
+        // Append the create/update button
+        this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
+
+        // Call the item form button rendering event
+        let formButtons: Components.IButtonProps[] = [];
+        formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
+
+        // Render the form buttons
+        formButtons && formButtons.length > 0 ? Components.ButtonGroup({
+            el: elButtons,
+            buttons: formButtons
+        }) : null;
+
+        // Call the footer event
+        this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
+
+        // Update the body
+        (this._useModal ? Modal : CanvasForm).setBody(el);
+    }
+
+    // Renders the edit form
+    private static renderEditForm() {
+        let el = document.createElement("div");
+        let props: Components.IListFormEditProps = {
+            el,
+            info: this._info,
+            rowClassName: "mb-3",
+            controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
+        };
+
+        // Call the event if it exists
+        props = this._onCreateEditForm ? this._onCreateEditForm(props) : props;
+
+        // Render the edit form
+        this._editForm = Components.ListForm.renderEditForm(props);
+
+        /* Remove the bottom margin from the last row of the form */
+        (this._editForm.el.lastChild as HTMLElement).classList.remove("mb-3");
+
+        // Render the form buttons
+        let elButtons = document.createElement("div");
+
+        // Add styling if not using a modal
+        if (!this._useModal) {
+            elButtons.classList.add("float-end");
+            elButtons.style.padding = "1rem 0";
+        }
+
+        // Append the create/update button
+        this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
+
+        // Call the item form button rendering event
+        let formButtons: Components.IButtonProps[] = [{
+            text: this.IsNew ? "Create" : "Update",
+            type: Components.ButtonTypes.OutlinePrimary,
+            onClick: () => { this.save(this._editForm); }
+        }];
+        formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
+
+        // Render the form buttons
+        formButtons && formButtons.length > 0 ? Components.ButtonGroup({
+            el: elButtons,
+            buttons: formButtons
+        }) : null;
+
+        // Call the footer event
+        this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
+
+        // Update the body
+        (this._useModal ? Modal : CanvasForm).setBody(el);
+    }
+
+    // Renders the form
+    private static renderForm() {
+        // Set the header
+        (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
+
+        // Call the header event
+        this._onSetHeader ? this._onSetHeader(this._useModal ? Modal.HeaderElement : CanvasForm.HeaderElement) : null;
+
+        // See if we are rendering tabs
+        // TODO
+
+        // Render the form based on the type
+        if (this.IsDisplay) {
+            // Render the display form
+            this.renderDisplayForm();
+        } else {
+            // Render the edit form
+            this.renderEditForm();
+        }
+
+        // Close the dialog
+        LoadingDialog.hide();
+
+        // Show the form
+        (this._useModal ? Modal : CanvasForm).show();
     }
 
     // Saves the edit form
