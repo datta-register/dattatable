@@ -1,10 +1,18 @@
 import { Components, Helper, SPTypes } from "gd-sprest-bs";
 import { CanvasForm, LoadingDialog, Modal } from "./common";
 
-/** Optional Tabs */
-export interface IItemFormTabInfo {
+/** Tab */
+export interface IItemFormTab {
     title: string;
     fields: string[];
+    onRendered: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
+    onRendering: (item?: Components.IListGroupItem) => any;
+}
+
+/** Tab Information */
+export interface IItemFormTabInfo {
+    isVertical?: boolean;
+    tabs: IItemFormTab[];
 }
 
 /** Create Item Properties */
@@ -18,7 +26,7 @@ export interface IItemFormCreateProps {
     onSetHeader?: (el: HTMLElement) => void;
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
-    tabs?: IItemFormTabInfo;
+    tabInfo?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
 }
@@ -35,7 +43,7 @@ export interface IItemFormEditProps {
     onSetHeader?: (el: HTMLElement) => void;
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
-    tabs?: IItemFormTabInfo;
+    tabInfo?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
 }
@@ -49,7 +57,7 @@ export interface IItemFormViewProps {
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
-    tabs?: IItemFormTabInfo;
+    tabInfo?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
 }
@@ -66,6 +74,7 @@ export class ItemForm {
     private static _onSetHeader?: (el: HTMLElement) => void = null;
     private static _onSave: (values: any) => any | PromiseLike<any> = null;
     private static _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
+    private static _tabInfo: IItemFormTabInfo = null;
     private static _updateEvent: Function = null;
 
     // Auto Close Flag
@@ -75,12 +84,12 @@ export class ItemForm {
     }
 
     // Display Form
-    private static _displayForm: Components.IListFormDisplay = null;
-    static get DisplayForm(): Components.IListFormDisplay { return this._displayForm; }
+    private static _displayForms: Components.IListFormDisplay[] = null;
+    static get DisplayForm(): Components.IListFormDisplay { return this._displayForms[0]; }
 
     // Edit Form
-    private static _editForm: Components.IListFormEdit = null;
-    static get EditForm(): Components.IListFormEdit { return this._editForm; }
+    private static _editForms: Components.IListFormEdit[] = null;
+    static get EditForm(): Components.IListFormEdit { return this._editForms[0]; }
 
     // Form Information
     private static _info = null;
@@ -121,6 +130,7 @@ export class ItemForm {
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
         this._onValidation = props.onValidation;
+        this._tabInfo = props.tabInfo;
         this._updateEvent = props.onUpdate;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
@@ -140,6 +150,7 @@ export class ItemForm {
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
         this._onValidation = props.onValidation;
+        this._tabInfo = props.tabInfo;
         this._updateEvent = props.onUpdate;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
@@ -172,19 +183,20 @@ export class ItemForm {
         this._onGetListInfo = props.onGetListInfo;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
+        this._tabInfo = props.tabInfo;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
         this.load(props.webUrl, props.itemId);
     }
 
-    /** private static Methods */
+    /** Private Methods */
 
     // Load the form information
     private static load(webUrl?: string, itemId?: number) {
         // Clear the forms
-        this._displayForm = null;
-        this._editForm = null;
+        this._displayForms = [];
+        this._editForms = [];
 
         // Show a loading dialog
         LoadingDialog.setHeader("Loading the Item");
@@ -227,72 +239,64 @@ export class ItemForm {
     }
 
     // Renders the display form
-    private static renderDisplayForm() {
-        let el = document.createElement("div");
+    private static renderDisplayForm(el?: HTMLElement, tab?: IItemFormTab) {
+        // Ensure the element exists
+        el = el || document.createElement("div");
+
+        // Set the form properties
         let props: Components.IListFormDisplayProps = {
             el,
             info: this._info,
-            rowClassName: "mb-3"
+            rowClassName: "mb-3",
+            includeFields: tab.fields,
+            onFormRendered: form => {
+                /* Remove the bottom margin from the last row of the form */
+                (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+            }
         };
 
         // Call the event if it exists
         props = this._onCreateViewForm ? this._onCreateViewForm(props) : props;
 
         // Render the display form
-        this._displayForm = Components.ListForm.renderDisplayForm(props);
+        let form = Components.ListForm.renderDisplayForm(props);
+        this._displayForms.push(form);
 
-        /* Remove the bottom margin from the last row of the form */
-        (this._displayForm.el.lastChild as HTMLElement).classList.remove("mb-3");
-
-        // Render the form buttons
-        let elButtons = document.createElement("div");
-        el.appendChild(elButtons);
-
-        // Add styling if not using a modal
-        if (!this._useModal) {
-            elButtons.classList.add("float-end");
-            elButtons.style.padding = "1rem 0";
-        }
-
-        // Append the create/update button
-        this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
-
-        // Call the item form button rendering event
-        let formButtons: Components.IButtonProps[] = [];
-        formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
-
-        // Render the form buttons
-        formButtons && formButtons.length > 0 ? Components.ButtonGroup({
-            el: elButtons,
-            buttons: formButtons
-        }) : null;
-
-        // Call the footer event
-        this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
-
-        // Update the body
-        (this._useModal ? Modal : CanvasForm).setBody(el);
+        // Return the form element
+        return el;
     }
 
     // Renders the edit form
-    private static renderEditForm() {
-        let el = document.createElement("div");
+    private static renderEditForm(el?: HTMLElement, tab?: IItemFormTab) {
+        // Ensure the element exists
+        el = el || document.createElement("div");
+
+        // Set the form properties
         let props: Components.IListFormEditProps = {
             el,
             info: this._info,
             rowClassName: "mb-3",
-            controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
+            controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit,
+            includeFields: tab.fields,
+            onFormRendered: form => {
+                /* Remove the bottom margin from the last row of the form */
+                (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+            }
         };
 
         // Call the event if it exists
         props = this._onCreateEditForm ? this._onCreateEditForm(props) : props;
 
         // Render the edit form
-        this._editForm = Components.ListForm.renderEditForm(props);
+        let form = Components.ListForm.renderEditForm(props);
+        this._editForms.push(form);
 
-        /* Remove the bottom margin from the last row of the form */
-        (this._editForm.el.lastChild as HTMLElement).classList.remove("mb-3");
+        // Return the form element
+        return el;
+    }
 
+    // Renders the footer
+    private static renderFooter() {
         // Render the form buttons
         let elButtons = document.createElement("div");
 
@@ -303,27 +307,37 @@ export class ItemForm {
         }
 
         // Append the create/update button
-        this._useModal ? Modal.setFooter(elButtons) : el.appendChild(elButtons);
+        this._useModal ? Modal.setFooter(elButtons) : CanvasForm.BodyElement.appendChild(elButtons);
 
-        // Call the item form button rendering event
-        let formButtons: Components.IButtonProps[] = [{
-            text: this.IsNew ? "Create" : "Update",
-            type: Components.ButtonTypes.OutlinePrimary,
-            onClick: () => { this.save(this._editForm); }
-        }];
-        formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
+        // See if we are rendering a display form
+        if (this.IsDisplay) {
+            // Call the item form button rendering event
+            let formButtons: Components.IButtonProps[] = [];
+            formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
 
-        // Render the form buttons
-        formButtons && formButtons.length > 0 ? Components.ButtonGroup({
-            el: elButtons,
-            buttons: formButtons
-        }) : null;
+            // Render the form buttons
+            formButtons && formButtons.length > 0 ? Components.ButtonGroup({
+                el: elButtons,
+                buttons: formButtons
+            }) : null;
+        } else {
+            // Call the item form button rendering event
+            let formButtons: Components.IButtonProps[] = [{
+                text: this.IsNew ? "Create" : "Update",
+                type: Components.ButtonTypes.OutlinePrimary,
+                onClick: () => { this.save(); }
+            }];
+            formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
+
+            // Render the form buttons
+            formButtons && formButtons.length > 0 ? Components.ButtonGroup({
+                el: elButtons,
+                buttons: formButtons
+            }) : null;
+        }
 
         // Call the footer event
         this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
-
-        // Update the body
-        (this._useModal ? Modal : CanvasForm).setBody(el);
     }
 
     // Renders the form
@@ -335,16 +349,19 @@ export class ItemForm {
         this._onSetHeader ? this._onSetHeader(this._useModal ? Modal.HeaderElement : CanvasForm.HeaderElement) : null;
 
         // See if we are rendering tabs
-        // TODO
-
-        // Render the form based on the type
-        if (this.IsDisplay) {
-            // Render the display form
-            this.renderDisplayForm();
+        if (this._tabInfo) {
+            // Render the tabs
+            this.renderTabs();
         } else {
-            // Render the edit form
-            this.renderEditForm();
+            // Render the form based on the type
+            let elForm = this.IsDisplay ? this.renderDisplayForm() : this.renderEditForm();
+
+            // Update the body
+            (this._useModal ? Modal : CanvasForm).setBody(elForm);
         }
+
+        // Render the footer
+        this.renderFooter();
 
         // Close the dialog
         LoadingDialog.hide();
@@ -353,82 +370,149 @@ export class ItemForm {
         (this._useModal ? Modal : CanvasForm).show();
     }
 
+    // Generates a tab
+    private static renderTabs(): Element {
+        let tabs: Components.IListGroupItem[] = [];
+
+        // Parse the tabs to render
+        for (let i = 0; i < this._tabInfo.tabs.length; i++) {
+            let tabInfo = this._tabInfo.tabs[i];
+
+            // Generate the tab
+            let tab: Components.IListGroupItem = {
+                data: tabInfo,
+                isActive: i == 0,
+                tabName: tabInfo.title,
+                onRender: (el, item) => {
+                    // Render the form
+                    this.IsDisplay ? this.renderDisplayForm(el, item.data) : this.renderEditForm(el, item.data);
+
+                    // Call the event
+                    let tab = item.data as IItemFormTab;
+                    tab.onRendered ? tab.onRendered(el, item) : null;
+                }
+            };
+
+            // Call the rendering event
+            tab = tabInfo.onRendering ? tabInfo.onRendering(tab) : tab;
+            if (tab) {
+                // Append the tab
+                tabs.push(tab);
+            }
+        }
+
+        // Render the tabs
+        return Components.ListGroup({
+            el: this.UseModal ? Modal.BodyElement : CanvasForm.BodyElement,
+            colWidth: this._tabInfo.isVertical ? 4 : 12,
+            isTabs: true,
+            isHorizontal: this._tabInfo.isVertical != true,
+            items: tabs
+        }).el;
+    }
+
     // Saves the edit form
-    static save(form: Components.IListFormEdit = this._editForm) {
-        // Validate the form
-        this.validate(form).then(
+    static save(form: Components.IListFormEdit = this._editForms[0]) {
+        let forms = form ? [form] : this._editForms;
+        let values = {};
+
+        // Display a loading dialog
+        LoadingDialog.setHeader("Validation");
+        LoadingDialog.setBody("Validating the form...");
+        LoadingDialog.show();
+
+        // Validate the forms
+        let isValid = true;
+        Helper.Executor(forms, form => {
+            // Return a promise
+            return new Promise(resolve => {
+                // Validate the form
+                this.validate(form).then(
+                    // Valid
+                    () => {
+                        // Update the values
+                        values = { ...values, ...form.getValues() }
+
+                        // Resolve the request
+                        resolve(null);
+                    },
+
+                    // Not Valid
+                    () => {
+                        // Set the flag
+                        isValid = false;
+
+                        // Resolve the request
+                        resolve(null);
+                    }
+                )
+            });
+        }).then(
             // Success
             () => {
-                // Display a loading dialog
-                LoadingDialog.setHeader("Saving the Item");
-                LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
-                LoadingDialog.show();
+                // See if the form(s) are valid
+                if (isValid) {
+                    // Call the custom validation event
+                    this.validate(values).then(
+                        // Valid
+                        () => {
+                            // Update the loading dialog
+                            LoadingDialog.setHeader("Saving the Item");
+                            LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
 
-                // Saves the item
-                let saveItem = (values) => {
-                    // Save the item
-                    form.save(values).then(item => {
-                        // Call the update event
-                        this._updateEvent ? this._updateEvent(item) : null;
+                            // Saves the item
+                            let saveItem = (values) => {
+                                // Save the item
+                                form.save(values).then(item => {
+                                    // Call the update event
+                                    this._updateEvent ? this._updateEvent(item) : null;
 
-                        // Close the dialogs
-                        (this._useModal ? Modal : CanvasForm).hide();
-                        LoadingDialog.hide();
-                    });
-                }
+                                    // Close the dialogs
+                                    (this._useModal ? Modal : CanvasForm).hide();
+                                    LoadingDialog.hide();
+                                });
+                            }
 
-                // Call the save event
-                let values = form.getValues();
-                values = this._onSave ? this._onSave(values) : values;
+                            // Call the save event
+                            values = this._onSave ? this._onSave(values) : values;
 
-                // See if the onSave event returned a promise
-                if (values && typeof (values.then) === "function") {
-                    // Wait for the promise to complete
-                    values.then(values => {
-                        // Save the item
-                        saveItem(values);
-                    });
+                            // See if the onSave event returned a promise
+                            if (values && typeof (values["then"]) === "function") {
+                                // Wait for the promise to complete
+                                values["then"](values => {
+                                    // Save the item
+                                    saveItem(values);
+                                });
+                            } else {
+                                // Save the item
+                                saveItem(values);
+                            }
+                        },
+
+                        // Not Valid
+                        () => {
+                            // Do nothing
+                        }
+                    )
                 } else {
-                    // Save the item
-                    saveItem(values);
+                    // Close the dialog
+                    LoadingDialog.hide();
                 }
-            },
-            // Error
-            () => {
-                // Do Nothing
             }
         );
     }
 
     // Validates the form
-    private static validate(form: Components.IListFormEdit): PromiseLike<void> {
+    private static validate(values: any): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            let isValid = form.isValid();
-
-            // Display a loading dialog
-            LoadingDialog.setHeader("Validation");
-            LoadingDialog.setBody("Validating the form...");
-            LoadingDialog.show();
-
-            // Ensure it's valid
-            if (!isValid) {
-                // Close the dialog
-                LoadingDialog.hide();
-
-                // Reject the request
-                reject();
-                return;
-            }
+            let isValid = true;
 
             // Call the validation event
-            let returnVal: any = this._onValidation ? this._onValidation(form.getValues()) : null;
+            let returnVal: any = this._onValidation ? this._onValidation(values) : null;
             if (returnVal && typeof (returnVal.then) === "function") {
                 // Wait for the promise to complete
                 returnVal.then(isValid => {
-                    // Close the dialog
-                    LoadingDialog.hide();
-
                     // Resolve the request
                     isValid ? resolve() : reject();
                 });
@@ -437,9 +521,6 @@ export class ItemForm {
                     // Update the flag
                     isValid = returnVal;
                 }
-
-                // Close the dialog
-                LoadingDialog.hide();
 
                 // Resolve the request
                 isValid ? resolve() : reject();
