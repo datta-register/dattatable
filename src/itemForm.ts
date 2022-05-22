@@ -106,6 +106,10 @@ export class ItemForm {
     static get ListName(): string { return this._listName; }
     static set ListName(value: string) { this._listName = value; }
 
+    // List Form Tabs
+    private static _tabs: Components.IListGroup = null;
+    static get Tabs(): Components.IListGroup { return this._tabs; }
+
     // Flag to use a modal or canvas (default)
     private static _useModal: boolean = false;
     static get UseModal(): boolean { return this._useModal; }
@@ -402,13 +406,16 @@ export class ItemForm {
         }
 
         // Render the tabs
-        return Components.ListGroup({
+        this._tabs = Components.ListGroup({
             el: this.UseModal ? Modal.BodyElement : CanvasForm.BodyElement,
             colWidth: this._tabInfo.isVertical ? 4 : 12,
             isTabs: true,
             isHorizontal: this._tabInfo.isVertical != true,
             items: tabs
-        }).el;
+        });
+
+        // Return the tabs element
+        return this._tabs.el;
     }
 
     // Saves the edit form
