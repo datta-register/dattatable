@@ -5,8 +5,8 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 export interface IItemFormTab {
     title: string;
     fields: string[];
-    onRendered: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
-    onRendering: (item?: Components.IListGroupItem) => any;
+    onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
+    onRendering?: (item?: Components.IListGroupItem) => any;
 }
 
 /** Tab Information */
