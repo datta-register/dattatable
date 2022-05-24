@@ -487,7 +487,8 @@ export class ItemForm {
 
                     // Not Valid
                     () => {
-                        // Do nothing
+                        // Close the dialog
+                        LoadingDialog.hide();
                     }
                 );
             }
