@@ -1,4 +1,4 @@
-import { Components, Helper, Web } from "gd-sprest-bs";
+import { Components, Helper, Site, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
@@ -18,6 +18,114 @@ export class InstallationRequired {
     private static _cfg: Helper.ISPConfig = null;
     private static _report: string[] = null;
 
+    // Custom Actions exists
+    private static _customActionsExist: boolean = null;
+    static get CustomActionsExist(): boolean { return this._customActionsExist; }
+
+    // Checks the custom actions
+    private static checkCustomActions(): PromiseLike<void> {
+        // Clear the flag
+        this._customActionsExist = true;
+
+        // Method to check the web custom actions
+        let checkWeb = () => {
+            // Return a promise
+            return new Promise(resolve => {
+                // Ensure custom actions exist
+                if (this._cfg._configuration.CustomActionCfg == null || this._cfg._configuration.CustomActionCfg.Web == null || this._cfg._configuration.CustomActionCfg.Web.length == 0) {
+                    // Resolve the request
+                    resolve(null);
+                    return;
+                }
+
+                // Load the web custom actions
+                let web = Web();
+                web.UserCustomActions().execute(webCustomActions => {
+                    // Parse the web custom actions
+                    for (let i = 0; i < this._cfg._configuration.CustomActionCfg.Web.length; i++) {
+                        let customAction = this._cfg._configuration.CustomActionCfg.Web[i];
+                        let found = false;
+
+                        // Parse the web custom actions
+                        for (let j = 0; j < webCustomActions.results.length; j++) {
+                            // See if they match
+                            if (customAction.Title == webCustomActions.results[j].Title) {
+                                // Set the flag
+                                found = true;
+                            }
+                        }
+
+                        // See if it was not found
+                        if (!found) {
+                            // Set the error
+                            this._report.push("Web Custom Action '" + customAction.Title + "' is missing.");
+
+                            // Set the flag
+                            this._customActionsExist = false;
+                        }
+                    }
+
+                    // Resolve the request
+                    resolve(null);
+                });
+            });
+        }
+
+        // Method to check the site custom actions
+        let checkSite = () => {
+            return new Promise((resolve) => {
+                // Ensure custom actions exist
+                if (this._cfg._configuration.CustomActionCfg == null || this._cfg._configuration.CustomActionCfg.Site == null || this._cfg._configuration.CustomActionCfg.Site.length == 0) {
+                    // Resolve the request
+                    resolve(null);
+                    return;
+                }
+
+                // Load the site custom actions
+                Site().UserCustomActions().execute(siteCustomActions => {
+                    // Parse the site custom actions
+                    for (let i = 0; i < this._cfg._configuration.CustomActionCfg.Site.length; i++) {
+                        let customAction = this._cfg._configuration.CustomActionCfg.Site[i];
+                        let found = false;
+
+                        // Parse the web custom actions
+                        for (let j = 0; j < siteCustomActions.results.length; j++) {
+                            // See if they match
+                            if (customAction.Title == siteCustomActions.results[j].Title) {
+                                // Set the flag
+                                found = true;
+                            }
+                        }
+
+                        // See if it was not found
+                        if (!found) {
+                            // Set the error
+                            this._report.push("Site Custom Action '" + customAction.Title + "' is missing.");
+
+                            // Set the flag
+                            this._customActionsExist = false;
+                        }
+                    }
+
+                    // Resolve the request
+                    resolve(null);
+                });
+            });
+        }
+
+        // Return a promise
+        return new Promise(resolve => {
+            // Check the site & web
+            Promise.all([
+                checkSite(),
+                checkWeb()
+            ]).then(() => {
+                // Resolve the request
+                resolve();
+            });
+        });
+    }
+
     // Lists exists
     private static _listsExist: boolean = null;
     static get ListsExist(): boolean { return this._listsExist; }
@@ -29,6 +137,13 @@ export class InstallationRequired {
 
         // Return a promise
         return new Promise((resolve) => {
+            // Ensure lists exist
+            if (this._cfg._configuration.ListCfg == null || this._cfg._configuration.ListCfg.length == 0) {
+                // Resolve the request
+                resolve(null);
+                return;
+            }
+
             // Parse the lists
             Helper.Executor(this._cfg._configuration.ListCfg, listCfg => {
                 // Return a promise
@@ -94,8 +209,13 @@ export class InstallationRequired {
 
         // Return a promise
         return new Promise((resolve) => {
-            // Check the lists
-            this.checkLists().then(() => {
+            // Check the configuration
+            Promise.all([
+                // Check the custom actions
+                this.checkCustomActions(),
+                // Check the lists
+                this.checkLists()
+            ]).then(() => {
                 // Resolve the request
                 resolve(this._report.length > 0);
             });
