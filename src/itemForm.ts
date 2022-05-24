@@ -252,7 +252,7 @@ export class ItemForm {
             el,
             info: this._info,
             rowClassName: "mb-3",
-            includeFields: tab.fields,
+            includeFields: tab ? tab.fields : null,
             onFormRendered: form => {
                 /* Remove the bottom margin from the last row of the form */
                 (form.el.lastChild as HTMLElement).classList.remove("mb-3");
@@ -281,7 +281,7 @@ export class ItemForm {
             info: this._info,
             rowClassName: "mb-3",
             controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit,
-            includeFields: tab.fields,
+            includeFields: tab ? tab.fields : null,
             onFormRendered: form => {
                 /* Remove the bottom margin from the last row of the form */
                 (form.el.lastChild as HTMLElement).classList.remove("mb-3");
@@ -388,11 +388,12 @@ export class ItemForm {
                 isActive: i == 0,
                 tabName: tabInfo.title,
                 onRender: (el, item) => {
+                    let tab = item.data as IItemFormTab;
+
                     // Render the form
-                    this.IsDisplay ? this.renderDisplayForm(el, item.data) : this.renderEditForm(el, item.data);
+                    this.IsDisplay ? this.renderDisplayForm(el, tab) : this.renderEditForm(el, tab);
 
                     // Call the event
-                    let tab = item.data as IItemFormTab;
                     tab.onRendered ? tab.onRendered(el, item) : null;
                 }
             };
