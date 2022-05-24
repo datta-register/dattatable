@@ -431,29 +431,14 @@ export class ItemForm {
         // Validate the forms
         let isValid = true;
         Helper.Executor(forms, form => {
-            // Return a promise
-            return new Promise(resolve => {
-                // Validate the form
-                this.validate(form).then(
-                    // Valid
-                    () => {
-                        // Update the values
-                        values = { ...values, ...form.getValues() }
+            // Update the values
+            values = { ...values, ...form.getValues() }
 
-                        // Resolve the request
-                        resolve(null);
-                    },
-
-                    // Not Valid
-                    () => {
-                        // Set the flag
-                        isValid = false;
-
-                        // Resolve the request
-                        resolve(null);
-                    }
-                )
-            });
+            // See if the form is not valid
+            if (!form.isValid()) {
+                // Set the flag
+                isValid = false;
+            }
         }).then(
             // Success
             () => {
