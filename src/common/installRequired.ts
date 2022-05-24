@@ -233,7 +233,7 @@ export class InstallationRequired {
         Modal.setBody(Components.Card({
             body: [
                 {
-                    text: props.errors && props.errors.length > 0 ?
+                    text: this._report.length > 0 || (props.errors && props.errors.length > 0) ?
                         "An installation is required. The following were missing in your environment:" :
                         "No errors were detected."
                 },
