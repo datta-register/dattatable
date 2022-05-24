@@ -442,12 +442,12 @@ export class ItemForm {
         }).then(
             // Success
             () => {
-                // See if the form(s) are valid
-                if (isValid) {
-                    // Call the custom validation event
-                    this.validate(values).then(
-                        // Valid
-                        () => {
+                // Call the custom validation event
+                this.validate(values).then(
+                    // Valid
+                    () => {
+                        // See if the form(s) are valid
+                        if (isValid) {
                             // Update the loading dialog
                             LoadingDialog.setHeader("Saving the Item");
                             LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
@@ -479,17 +479,17 @@ export class ItemForm {
                                 // Save the item
                                 saveItem(values);
                             }
-                        },
-
-                        // Not Valid
-                        () => {
-                            // Do nothing
+                        } else {
+                            // Close the dialog
+                            LoadingDialog.hide();
                         }
-                    )
-                } else {
-                    // Close the dialog
-                    LoadingDialog.hide();
-                }
+                    },
+
+                    // Not Valid
+                    () => {
+                        // Do nothing
+                    }
+                );
             }
         );
     }
