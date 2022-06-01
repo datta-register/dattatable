@@ -52,8 +52,8 @@ export class Comments {
     }
 
     // Configuration
-    static configuration() {
-        return Helper.SPConfig({
+    static configuration(cfg?: Helper.ISPConfig) {
+        let commentsCfg = Helper.SPConfig({
             ListCfg: [
                 {
                     ListInformation: {
@@ -82,6 +82,15 @@ export class Comments {
                 }
             ]
         });
+
+        // Append the comments to the configuration if it exists
+        if (cfg && cfg._configuration.ListCfg && cfg._configuration.ListCfg.length > 0) {
+            // Append the list configuration
+            cfg._configuration.ListCfg = cfg._configuration.ListCfg.concat(commentsCfg._configuration.ListCfg);
+        }
+
+        // Return the configuration
+        return cfg || commentsCfg;
     }
 
     // Initialization of the component
