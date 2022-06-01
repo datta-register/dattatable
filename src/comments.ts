@@ -1,4 +1,4 @@
-import { Components, Helper, List, SPTypes } from "gd-sprest-bs";
+import { Components, Helper, List, SPTypes, Web } from "gd-sprest-bs";
 import * as moment from "moment";
 import { CanvasForm } from "./common/canvas";
 import { LoadingDialog } from "./common/loadingDialog";
@@ -198,6 +198,51 @@ export class Comments {
 
         // Show the form
         Modal.show();
+    }
+
+    // Security configuration
+    static security(cfg: { principalId: number, roleDefId: number }[], webUrl?: string): PromiseLike<void> {
+        // Resets the list permissions
+        let resetPermissions = () => {
+            return new Promise(resolve => {
+                let list = Web(webUrl).Lists(LIST_NAME);
+
+                // Reset the inheritance
+                list.resetRoleInheritance().execute();
+
+                // Clear the permissions
+                list.breakRoleInheritance(false, true).execute(resolve, true);
+            });
+        }
+
+        // Return a promise
+        return new Promise((resolve) => {
+            let list = Web(webUrl).Lists(LIST_NAME);
+
+            // Ensure a configuration exists
+            if (cfg && cfg.length > 0) {
+                // Reset the list permissions
+                resetPermissions().then(() => {
+                    // Parse the configuration
+                    for (let i = 0; i < cfg.length; i++) {
+                        let principalId = cfg[i].principalId;
+                        let roleDefId = cfg[i].roleDefId;
+
+                        // Update the list settings
+                        list.RoleAssignments().addRoleAssignment(principalId, roleDefId).execute(() => {
+                            // Log
+                            console.log("[Comments List] The user/group (" + principalId + ") was added successfully.");
+                        });
+                    }
+
+                    // Wait for the requests to complete
+                    list.done(resolve);
+                });
+            } else {
+                // Resolve the request
+                resolve();
+            }
+        });
     }
 
     // Displays the comments in a canvas form
