@@ -1,5 +1,7 @@
 import * as Common from "./common";
 export * from "./common";
+import { Comments } from "./comments";
+export * from "./comments";
 import { Dashboard } from "./dashboard";
 export * from "./dashboard";
 import { ActionButtonTypes, Documents } from "./documents";
@@ -12,5 +14,5 @@ import "./styles";
 
 /** Global Variable */
 window["DattaTable"] = {
-    ActionButtonTypes, Common, Dashboard, Documents, ItemForm
+    ActionButtonTypes, Common, Comments, Dashboard, Documents, ItemForm
 }
