@@ -1,4 +1,4 @@
-import { Components, Helper, List, SPTypes, Web } from "gd-sprest-bs";
+import { Components, Helper, SPTypes, Web } from "gd-sprest-bs";
 import * as moment from "moment";
 import { CanvasForm } from "./common/canvas";
 import { LoadingDialog } from "./common/loadingDialog";
@@ -21,6 +21,11 @@ export interface ICommentsItem {
  */
 export class Comments {
     private static _listId: string = null;
+    private static _webUrl: string = null;
+
+    // Comment's List Id
+    private static _commentsListId: string = null;
+    static get CommentsListId(): string { return this._commentsListId; }
 
     // Adds a comment to an item
     static add(item: any, comment: string): PromiseLike<void> {
@@ -34,7 +39,7 @@ export class Comments {
                 LoadingDialog.show();
 
                 // Add the item
-                List(LIST_NAME).Items().add({
+                Web(this._webUrl).Lists(LIST_NAME).Items().add({
                     Comment: comment,
                     Title: this._listId + "|" + item.Id
                 }).execute(() => {
@@ -94,11 +99,22 @@ export class Comments {
     }
 
     // Initialization of the component
-    static init(listName: string): PromiseLike<void> {
+    static init(listName: string, webUrl?: string): PromiseLike<void> {
+        // Save the web url
+        this._webUrl = webUrl;
+
         // Return a promise
         return new Promise((resolve, reject) => {
+            // Load the list id
+            Web(this._webUrl).Lists(LIST_NAME).query({
+                Select: ["Id"]
+            }).execute(list => {
+                // Set the list id
+                this._commentsListId = list.Id;
+            }, reject);
+
             // Load the List Information
-            List(listName).execute(list => {
+            Web(this._webUrl).Lists(listName).execute(list => {
                 // Set the list id
                 this._listId = list.Id;
 
@@ -115,7 +131,7 @@ export class Comments {
             // Ensure a list id exists
             if (this._listId) {
                 // Load the comments for this item
-                List(LIST_NAME).Items().query({
+                Web(this._webUrl).Lists(LIST_NAME).Items().query({
                     Expand: ["Author"],
                     Filter: "Title eq '" + this._listId + "|" + item.Id + "'",
                     OrderBy: ["Created desc"],
