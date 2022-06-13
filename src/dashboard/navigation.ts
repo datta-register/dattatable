@@ -83,7 +83,7 @@ export class Navigation {
 
             // Call the event
             this._props.onShowFilter ? ttp.el.addEventListener("click", this._props.onShowFilter as any) : null;
-            this._props.onFilterRendered ? this._props.onFilterRendered(this._props.el) : null;
+            this._props.onFilterRendered ? this._props.onFilterRendered(span) : null;
         }
 
         // Call the event
