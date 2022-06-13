@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 5.2.7_webpack@5.73.0
   datatables.net: 1.12.1
   datatables.net-bs5: 1.12.1
-  gd-sprest-bs: 9.6.3
+  gd-sprest-bs: 9.6.4
   html-loader: 3.1.0_webpack@5.73.0
   jquery: 3.6.0
   moment: 2.29.3
@@ -1733,11 +1733,11 @@ packages:
     dev: true
     resolution:
       integrity: sha512-pQnwg4xtuvc2Bs/5zYQPaEYYSuTxsF7LBWF0SvnVhthZo/Qe+rJpcEekrdNK5DWwDJ0gv0oI9NNX5Mppdy0ctg==
-  /core-js/3.22.8:
+  /core-js/3.23.0:
     dev: true
     requiresBuild: true
     resolution:
-      integrity: sha512-UoGQ/cfzGYIuiq6Z7vWL1HfkE9U9IZ4Ub+0XSiJTCzvbZzgPA69oDF2f+lgJ6dFFLEdjW5O6svvoKzXX23xFkA==
+      integrity: sha512-v2/hZoRcRrvQiBoGsHwmRdr+S4oICKcjA6xb2qjVurin6TpcDC1X2CIDa8rdu/d5n8RT/Sdoos2IlnpQ1rXs5A==
   /cross-spawn/7.0.3:
     dependencies:
       path-key: 3.1.1
@@ -1961,25 +1961,25 @@ packages:
     dev: true
     resolution:
       integrity: sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
-  /gd-bs/5.5.5:
+  /gd-bs/5.5.6:
     dependencies:
       '@popperjs/core': 2.11.5
       bootstrap: 5.1.3_@popperjs+core@2.11.5
       bootstrap-icons: 1.8.3
-      core-js: 3.22.8
+      core-js: 3.23.0
       tippy.js: 6.3.7
     dev: true
     resolution:
-      integrity: sha512-6177S80Fqyk3POx24uW2IocCdt/AOwg50A/+Q8Nk025+aUoJTHZ4EFR/iK+EvvCeCx2nYVK2/3wExWkeP1t+hQ==
-  /gd-sprest-bs/9.6.3:
+      integrity: sha512-BNWrUTgGySvAZAJ8Z/hhn0rCfQNnMLSFnQhwLRJc0KIWx8Oy7Lym3K0cXQe7bv/G6b+ZwqC7ZuUFyDYfSSqkDA==
+  /gd-sprest-bs/9.6.4:
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 5.5.5
+      gd-bs: 5.5.6
       gd-sprest: 6.9.8
       gd-sprest-def: 1.1.0
     dev: true
     resolution:
-      integrity: sha512-X9lfcUm1Nac8oloa96COPJauXZ3MhAb5Stw5GJ8T8SPZ6YBQoSvDEc89Lnn7wWsTVUFaKGK3RBN8DyU93l+/5g==
+      integrity: sha512-kje5fG0Bb0NzUaxiySq2+m5sF3V8LY1MWagOCkLyovA5EvMRfnG4bM14WD6ButWukHXhRnGQbE42epV/oBC3YA==
   /gd-sprest-def/1.1.0:
     dev: true
     resolution:
@@ -3129,7 +3129,7 @@ specifiers:
   css-loader: ^5.2.7
   datatables.net: ^1.12.1
   datatables.net-bs5: ^1.12.1
-  gd-sprest-bs: ^9.6.3
+  gd-sprest-bs: ^9.6.4
   html-loader: ^3.1.0
   jquery: ^3.6.0
   moment: ^2.29.3

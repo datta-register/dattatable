@@ -57,25 +57,10 @@ export class Navigation {
         // Call the rendering event
         this._props.onRendering ? this._props.onRendering(props) : null;
 
-        // Set the onRendered event
-        let onRendered = this._props.onRendered;
-        this._props.onRendered = (el) => {
-            // See if we are showing the filter
-            if (this._props.hideFilter != true) {
-                // Call the event
-                this._props.onShowFilter && ttp ? ttp.el.addEventListener("click", this._props.onShowFilter as any) : null;
-                this._props.onFilterRendered ? this._props.onFilterRendered(el) : null;
-            }
-
-            // Call the custom onRendered event
-            onRendered ? onRendered(el) : null;
-        }
-
         // Render a navbar
         let nav = Components.Navbar(props);
 
         // See if we are showing the filter
-        let ttp: Components.ITooltip = null;
         if (this._props.hideFilter != true) {
             // Render the filter icon
             // Create a span to wrap the icon in
@@ -84,7 +69,7 @@ export class Navigation {
             nav.el.firstElementChild.appendChild(span);
 
             // Render a tooltip
-            ttp = Components.Tooltip({
+            let ttp = Components.Tooltip({
                 el: span,
                 content: "Filters",
                 type: Components.TooltipTypes.Secondary,
@@ -95,6 +80,10 @@ export class Navigation {
                     type: Components.ButtonTypes.OutlineSecondary
                 },
             });
+
+            // Call the event
+            this._props.onShowFilter && ttp ? ttp.el.addEventListener("click", this._props.onShowFilter as any) : null;
+            this._props.onFilterRendered ? this._props.onFilterRendered(span) : null;
         }
 
         // Call the event
