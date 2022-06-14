@@ -6,7 +6,7 @@ export interface IItemFormTab {
     title: string;
     fields: string[];
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
-    onRendering?: (item?: Components.IListGroupItem) => any;
+    onRendering?: (item?: Components.IListGroupItem) => object;
 }
 
 /** Tab Information */
@@ -21,7 +21,7 @@ export interface IItemFormCreateProps {
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
-    onSave?: (values: any) => any | PromiseLike<any>;
+    onSave?: (values: any) => object | PromiseLike<object>;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
     onUpdate?: (item?: any) => void;
@@ -38,7 +38,7 @@ export interface IItemFormEditProps {
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
-    onSave?: (values: any) => any | PromiseLike<any>;
+    onSave?: (values: any) => object | PromiseLike<object>;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
     onUpdate?: (item?: any) => void;
