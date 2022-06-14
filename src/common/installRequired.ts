@@ -226,6 +226,13 @@ export class InstallationRequired {
         // Clear the modal
         Modal.clear();
 
+        // Ensure the configuration exists
+        if (this._cfg == null || this._report == null) {
+            // Show the error dialog
+            this.showErrorDialog();
+            return;
+        }
+
         // Set the header
         Modal.setHeader("Installation Required");
 
@@ -309,6 +316,17 @@ export class InstallationRequired {
         props.onFooterRendered ? props.onFooterRendered(Modal.FooterElement) : null;
 
         // Show the modal
+        Modal.show();
+    }
+
+    private static showErrorDialog() {
+        // Set the header
+        Modal.setHeader("Not Configured");
+
+        // Set the body
+        Modal.setBody("The component has not been configured. The SPConfiguration definition hasn't been initialized.");
+
+        // Show the dialog
         Modal.show();
     }
 }
