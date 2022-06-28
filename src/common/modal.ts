@@ -45,7 +45,13 @@ export class Modal {
     }
 
     // Hides the modal
-    static hide() { this._modal.hide(); }
+    static hide() {
+        // Hide the modal
+        this._modal.hide();
+
+        // Call the close event
+        this._onCloseEvent ? this._onCloseEvent() : null;
+    }
 
     // Renders the canvas
     private static render() {
