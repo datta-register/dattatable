@@ -346,6 +346,9 @@ export class ItemForm {
 
     // Renders the form
     private static renderForm() {
+        // Clear the form
+        (this._useModal ? Modal : CanvasForm).clear();
+
         // Set the header
         (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
 
