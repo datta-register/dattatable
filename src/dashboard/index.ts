@@ -89,8 +89,11 @@ export class Dashboard {
         // Render the dashboard
         this.render();
 
-        // Call the render event
-        props.onRendered ? props.onRendered(this._props.el) : null;
+        // Let the object get instaniated before calling the event
+        setTimeout(() => {
+            // Call the render event
+            props.onRendered ? props.onRendered(this._props.el) : null;
+        }, 10);
     }
 
     // Renders the component
