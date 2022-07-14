@@ -423,9 +423,11 @@ export class ItemForm {
     }
 
     // Saves the edit form
-    static save(form: Components.IListFormEdit = this._editForms[0]) {
-        let forms = form ? [form] : this._editForms;
+    static save(form?: Components.IListFormEdit) {
         let values = {};
+
+        // Default the form
+        let forms = form ? [form] : this._editForms;
 
         // Display a loading dialog
         LoadingDialog.setHeader("Validation");
