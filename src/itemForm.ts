@@ -461,7 +461,7 @@ export class ItemForm {
                             // Saves the item
                             let saveItem = (values) => {
                                 // Save the item
-                                form.save(values).then(item => {
+                                forms[0].save(values).then(item => {
                                     // Call the update event
                                     this._updateEvent ? this._updateEvent(item) : null;
 
