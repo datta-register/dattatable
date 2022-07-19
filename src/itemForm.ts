@@ -5,6 +5,7 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 export interface IItemFormTab {
     title: string;
     fields: string[];
+    onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void;
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     onRendering?: (item?: Components.IListGroupItem) => object;
 }
@@ -86,10 +87,12 @@ export class ItemForm {
     // Display Form
     private static _displayForms: Components.IListFormDisplay[] = null;
     static get DisplayForm(): Components.IListFormDisplay { return this._displayForms[0]; }
+    static get DisplayForms(): Components.IListFormDisplay[] { return this._displayForms; }
 
     // Edit Form
     private static _editForms: Components.IListFormEdit[] = null;
     static get EditForm(): Components.IListFormEdit { return this._editForms[0]; }
+    static get EditForms(): Components.IListFormEdit[] { return this._editForms; }
 
     // Form Information
     private static _info = null;
@@ -266,6 +269,9 @@ export class ItemForm {
         let form = Components.ListForm.renderDisplayForm(props);
         this._displayForms.push(form);
 
+        // Call the event if it exists
+        tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
+
         // Return the form element
         return el;
     }
@@ -294,6 +300,9 @@ export class ItemForm {
         // Render the edit form
         let form = Components.ListForm.renderEditForm(props);
         this._editForms.push(form);
+
+        // Call the event if it exists
+        tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
 
         // Return the form element
         return el;
