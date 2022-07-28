@@ -28,6 +28,7 @@ export class CanvasForm {
 
         // Set the default properties
         this.setAutoClose(true);
+        this.setSize(0);
         this.setType(Components.OffcanvasTypes.End);
     }
 
@@ -109,8 +110,11 @@ export class CanvasForm {
         }
     }
 
+    // Sets the modal size
+    static setSize(size: number) { this._canvas.setSize(size); }
+
     // Sets the modal type
-    static setType(type) { this._canvas.setType(type); }
+    static setType(type: number) { this._canvas.setType(type); }
 
     // Shows the canvas
     static show() { this._canvas.show(); }
