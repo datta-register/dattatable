@@ -118,6 +118,12 @@ export class ItemForm {
     static get UseModal(): boolean { return this._useModal; }
     static set UseModal(value: boolean) { this._useModal = value; }
 
+    // Sets the size of the modal or canvas
+    static setSize(value: number) {
+        // Set the modal type or offcanvas size
+        this._useModal ? Modal.setType(value) : CanvasForm.setSize(value);
+    }
+
     /** Public Methods */
 
     // Closes the item form
