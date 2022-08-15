@@ -25,6 +25,7 @@ export interface IItemFormCreateProps {
     onSave?: (values: any) => object | PromiseLike<object>;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
+    onShowForm?: (form?: CanvasForm | Modal) => void;
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
     tabInfo?: IItemFormTabInfo;
@@ -42,6 +43,7 @@ export interface IItemFormEditProps {
     onSave?: (values: any) => object | PromiseLike<object>;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
+    onShowForm?: (form?: CanvasForm | Modal) => void;
     onUpdate?: (item?: any) => void;
     onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
     tabInfo?: IItemFormTabInfo;
@@ -58,6 +60,7 @@ export interface IItemFormViewProps {
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
+    onShowForm?: (form?: CanvasForm | Modal) => void;
     tabInfo?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
@@ -73,6 +76,7 @@ export class ItemForm {
     private static _onGetListInfo: (props: Helper.IListFormProps) => Helper.IListFormProps = null;
     private static _onSetFooter?: (el: HTMLElement) => void = null;
     private static _onSetHeader?: (el: HTMLElement) => void = null;
+    private static _onShowForm?: (form?: CanvasForm | Modal) => void = null;
     private static _onSave: (values: any) => any | PromiseLike<any> = null;
     private static _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
     private static _tabInfo: IItemFormTabInfo = null;
@@ -142,6 +146,7 @@ export class ItemForm {
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
+        this._onShowForm = props.onShowForm;
         this._onValidation = props.onValidation;
         this._tabInfo = props.tabInfo;
         this._updateEvent = props.onUpdate;
@@ -162,6 +167,7 @@ export class ItemForm {
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
+        this._onShowForm = props.onShowForm;
         this._onValidation = props.onValidation;
         this._tabInfo = props.tabInfo;
         this._updateEvent = props.onUpdate;
@@ -196,6 +202,7 @@ export class ItemForm {
         this._onGetListInfo = props.onGetListInfo;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
+        this._onShowForm = props.onShowForm;
         this._tabInfo = props.tabInfo;
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
@@ -384,6 +391,9 @@ export class ItemForm {
 
         // Render the footer
         this.renderFooter();
+
+        // Call the event
+        this._onShowForm ? this._onShowForm(this._useModal ? Modal : CanvasForm) : null;
 
         // Close the dialog
         LoadingDialog.hide();
