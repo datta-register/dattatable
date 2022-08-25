@@ -264,8 +264,10 @@ export class ItemForm {
         el = el || document.createElement("div");
 
         // Set the form properties
+        let displayAttachments = tab ? tab.fields && tab.fields.indexOf("Attachments") >= 0 : true;
         let props: Components.IListFormDisplayProps = {
             el,
+            displayAttachments,
             info: this._info,
             rowClassName: "mb-3",
             includeFields: tab ? tab.fields : null,
@@ -295,8 +297,10 @@ export class ItemForm {
         el = el || document.createElement("div");
 
         // Set the form properties
+        let displayAttachments = tab ? tab.fields && tab.fields.indexOf("Attachments") >= 0 : true;
         let props: Components.IListFormEditProps = {
             el,
+            displayAttachments,
             info: this._info,
             rowClassName: "mb-3",
             controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit,
