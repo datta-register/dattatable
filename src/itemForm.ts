@@ -479,7 +479,7 @@ export class ItemForm {
             // See if tabs exist
             if (this.Tabs) {
                 // Get the tab
-                let tab = this.Tabs.el.querySelector(".list-group-item")[counter++] as HTMLAnchorElement;
+                let tab = this.Tabs.el.querySelectorAll(".list-group-item")[counter++] as HTMLAnchorElement;
                 if (tab) {
                     // Clear the class name
                     tab.classList.remove("is-valid");
