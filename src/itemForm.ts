@@ -465,6 +465,7 @@ export class ItemForm {
 
         // Validate the forms
         let isValid = true;
+        let counter = 0;
         Helper.Executor(forms, form => {
             // Update the values
             values = { ...values, ...form.getValues() }
@@ -474,6 +475,21 @@ export class ItemForm {
                 // Set the flag
                 isValid = false;
             }
+
+            // See if tabs exist
+            if (this.Tabs) {
+                // Get the tab
+                let tab = this.Tabs.el.querySelector(".list-group-item")[counter++] as HTMLAnchorElement;
+                if (tab) {
+                    // Clear the class name
+                    tab.classList.remove("is-valid");
+                    tab.classList.remove("is-invalid");
+
+                    // Set the class name
+                    tab.classList.add(isValid ? "is-valid" : "is-invalid");
+                }
+            }
+            // Set the tab class
         }).then(
             // Success
             () => {
