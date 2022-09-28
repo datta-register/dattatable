@@ -11,6 +11,7 @@ import "datatables.net-bs5";
 export interface IDataTable {
     datatable: any;
     filter: (idx: number, value?: string) => void;
+    filterMulti: (idx: number, values?: string[]) => void;
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     refresh: (rows: any[]) => void;
     search: (value?: string) => void;
@@ -63,7 +64,19 @@ export class DataTable implements IDataTable {
     // Filters the status
     filter(idx: number, value: string = "") {
         // Set the filter
-        this._datatable.column(idx).search(value.replace(/[-[/\]{}()*+?.,\\^$|#\s]/g, '\\$&'), true, false).draw();
+        this._datatable.column(idx).search(value.replace(/[-[/\]{}()*+?.,\\^$#\s]/g, '\\$&'), true, false).draw();
+    }
+
+    // Filters multiple values against the status
+    filterMulti(idx: number, values: string[] = []) {
+        // Parse the values
+        for (let i = 0; i < values.length; i++) {
+            // Update the value
+            values[i] = values[i].replace(/|/g, '\\$&');
+        }
+
+        // Filter the values
+        this.filter(idx, values.join('|'));
     }
 
     // Method to reload the data

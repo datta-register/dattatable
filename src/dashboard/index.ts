@@ -275,6 +275,12 @@ export class Dashboard {
         this._dt.filter(idx, value);
     }
 
+    // Filter the table by multiple values
+    filterMulti(idx: number, values?: string[]) {
+        // Filter the table
+        this._dt.filterMulti(idx, values);
+    }
+
     // Returns a filter checkbox group by its key
     getFilter(key: string) { return this._filters.getFilter(key); }
 
