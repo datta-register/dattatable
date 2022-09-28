@@ -72,7 +72,7 @@ export class DataTable implements IDataTable {
         // Parse the values
         for (let i = 0; i < values.length; i++) {
             // Update the value
-            values[i] = values[i].replace(/|/g, '\\$&');
+            values[i] = values[i].replace(/\|/g, '\\$&');
         }
 
         // Filter the values
