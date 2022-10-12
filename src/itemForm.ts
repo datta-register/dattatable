@@ -274,6 +274,9 @@ export class ItemForm {
             onFormRendered: form => {
                 /* Remove the bottom margin from the last row of the form */
                 (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+
+                // Call the event if it exists
+                tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
             }
         };
 
@@ -283,9 +286,6 @@ export class ItemForm {
         // Render the display form
         let form = Components.ListForm.renderDisplayForm(props);
         this._displayForms.push(form);
-
-        // Call the event if it exists
-        tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
 
         // Return the form element
         return el;
@@ -308,6 +308,9 @@ export class ItemForm {
             onFormRendered: form => {
                 /* Remove the bottom margin from the last row of the form */
                 (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+
+                // Call the event if it exists
+                tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
             }
         };
 
@@ -317,9 +320,6 @@ export class ItemForm {
         // Render the edit form
         let form = Components.ListForm.renderEditForm(props);
         this._editForms.push(form);
-
-        // Call the event if it exists
-        tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
 
         // Return the form element
         return el;
