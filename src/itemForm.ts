@@ -270,18 +270,24 @@ export class ItemForm {
             displayAttachments,
             info: this._info,
             rowClassName: "mb-3",
-            includeFields: tab ? tab.fields : null,
-            onFormRendered: form => {
-                /* Remove the bottom margin from the last row of the form */
-                (form.el.lastChild as HTMLElement).classList.remove("mb-3");
-
-                // Call the event if it exists
-                tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
-            }
+            includeFields: tab ? tab.fields : null
         };
 
         // Call the event if it exists
         props = this._onCreateViewForm ? this._onCreateViewForm(props) : props;
+
+        // Override the form rendered event
+        let customEvent = props.onFormRendered;
+        props.onFormRendered = form => {
+            /* Remove the bottom margin from the last row of the form */
+            (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+
+            // Call the event if it exists
+            tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
+
+            // Call the custom event if it exists
+            customEvent ? customEvent(form) : null;
+        }
 
         // Render the display form
         let form = Components.ListForm.renderDisplayForm(props);
@@ -304,18 +310,21 @@ export class ItemForm {
             info: this._info,
             rowClassName: "mb-3",
             controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit,
-            includeFields: tab ? tab.fields : null,
-            onFormRendered: form => {
-                /* Remove the bottom margin from the last row of the form */
-                (form.el.lastChild as HTMLElement).classList.remove("mb-3");
-
-                // Call the event if it exists
-                tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
-            }
+            includeFields: tab ? tab.fields : null
         };
 
         // Call the event if it exists
         props = this._onCreateEditForm ? this._onCreateEditForm(props) : props;
+
+        // Override the form rendered event
+        let customEvent = props.onFormRendered;
+        props.onFormRendered = form => {
+            /* Remove the bottom margin from the last row of the form */
+            (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+
+            // Call the custom event if it exists
+            customEvent ? customEvent(form) : null;
+        }
 
         // Render the edit form
         let form = Components.ListForm.renderEditForm(props);
