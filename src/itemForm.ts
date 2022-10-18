@@ -278,15 +278,15 @@ export class ItemForm {
 
         // Override the form rendered event
         let customEvent = props.onFormRendered;
-        props.onFormRendered = form => {
+        props.onFormRendered = listForm => {
             /* Remove the bottom margin from the last row of the form */
-            (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+            (listForm.el.lastChild as HTMLElement).classList.remove("mb-3");
 
             // Call the event if it exists
             tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
 
             // Call the custom event if it exists
-            customEvent ? customEvent(form) : null;
+            customEvent ? customEvent(listForm) : null;
         }
 
         // Render the display form
@@ -318,12 +318,15 @@ export class ItemForm {
 
         // Override the form rendered event
         let customEvent = props.onFormRendered;
-        props.onFormRendered = form => {
+        props.onFormRendered = listForm => {
             /* Remove the bottom margin from the last row of the form */
-            (form.el.lastChild as HTMLElement).classList.remove("mb-3");
+            (listForm.el.lastChild as HTMLElement).classList.remove("mb-3");
+
+            // Call the event if it exists
+            tab && tab.onFormRendered ? tab.onFormRendered(form) : null;
 
             // Call the custom event if it exists
-            customEvent ? customEvent(form) : null;
+            customEvent ? customEvent(listForm) : null;
         }
 
         // Render the edit form
