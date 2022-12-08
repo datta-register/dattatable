@@ -101,8 +101,14 @@ export class Dashboard {
         // Create the filters
         this._filters = new FilterSlideout({
             filters: this._props.filters ? this._props.filters.items : [],
-            onClear: this._props.filters ? this._props.filters.onClear : null,
-            onRendered: this._props.filters ? this._props.filters.onRendered : null
+            onRendered: this._props.filters ? this._props.filters.onRendered : null,
+            onClear: () => {
+                // Clear the filters
+                this._dt.datatable.columns().search('').draw();
+
+                // Call the event
+                this._props.filters ? this._props.filters.onClear : null
+            }
         });
 
         // Render the template
