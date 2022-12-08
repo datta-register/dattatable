@@ -25,7 +25,6 @@ export interface IFilterProps {
  */
 export class FilterSlideout {
     private _cbs: Array<Components.ICheckboxGroup> = null;
-    private _clearFl: boolean = false;
     private _el: HTMLElement = null;
     private _filters: IFilterItem[] = null;
     private _items: Array<Components.IAccordionItem> = null;
@@ -59,17 +58,11 @@ export class FilterSlideout {
             text: "Clear Filters",
             type: Components.ButtonTypes.OutlineDanger,
             onClick: () => {
-                // Set the flag
-                this._clearFl = true;
-
                 // Parse the filters
                 for (let i = 0; i < this._cbs.length; i++) {
                     // Clear the filter
                     this._cbs[i].setValue("");
                 }
-
-                // Clear the flag
-                this._clearFl = false;
 
                 // Execute the event
                 this._onClear ? this._onClear() : null;
@@ -118,20 +111,14 @@ export class FilterSlideout {
                                 values.push(items[i].label);
                             }
 
-                            // Ensure the clear button wasn't clicked
-                            if (!this._clearFl) {
-                                // Execute the event
-                                filter.onFilter ? filter.onFilter(values) : null;
-                            }
+                            // Execute the event
+                            filter.onFilter ? filter.onFilter(values) : null;
                         } else {
                             let item = value as Components.ICheckboxGroupItem;
 
 
-                            // Ensure the clear button wasn't clicked
-                            if (!this._clearFl) {
-                                // Execute the event
-                                filter.onFilter ? filter.onFilter(item ? item.label : "") : null;
-                            }
+                            // Execute the event
+                            filter.onFilter ? filter.onFilter(item ? item.label : "") : null;
                         }
                     }
                 }));
