@@ -58,14 +58,8 @@ export class FilterSlideout {
             text: "Clear Filters",
             type: Components.ButtonTypes.OutlineDanger,
             onClick: () => {
-                // Parse the filters
-                for (let i = 0; i < this._cbs.length; i++) {
-                    // Clear the filter
-                    this._cbs[i].setValue("");
-                }
-
-                // Execute the event
-                this._onClear ? this._onClear() : null;
+                // Clear the filters
+                this.clear();
             }
         });
 
@@ -127,6 +121,18 @@ export class FilterSlideout {
 
         // Return the item
         return item;
+    }
+
+    // Clears the filters
+    clear() {
+        // Parse the filters
+        for (let i = 0; i < this._cbs.length; i++) {
+            // Clear the filter
+            this._cbs[i].setValue("");
+        }
+
+        // Execute the event
+        this._onClear ? this._onClear() : null;
     }
 
     // Gets a checkbox group by its name

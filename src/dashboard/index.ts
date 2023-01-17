@@ -269,6 +269,12 @@ export class Dashboard {
      * Public Interface
      */
 
+    // Clears the filters
+    clearFilter() {
+        // Clear the filters
+        this._filters.clear();
+    }
+
     // Filter the table
     filter(idx: number, value?: string) {
         // Filter the table
