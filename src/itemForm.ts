@@ -4,7 +4,8 @@ import { CanvasForm, LoadingDialog, Modal } from "./common";
 /** Tab */
 export interface IItemFormTab {
     title: string;
-    fields: string[];
+    fields?: string[];
+    excludeFields?: string[];
     onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void;
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     onRendering?: (item?: Components.IListGroupItem) => object;
@@ -268,9 +269,10 @@ export class ItemForm {
         let props: Components.IListFormDisplayProps = {
             el,
             displayAttachments,
+            excludeFields: tab ? tab.excludeFields : null,
+            includeFields: tab ? tab.fields : null,
             info: this._info,
-            rowClassName: "mb-3",
-            includeFields: tab ? tab.fields : null
+            rowClassName: "mb-3"
         };
 
         // Call the event if it exists
@@ -307,10 +309,11 @@ export class ItemForm {
         let props: Components.IListFormEditProps = {
             el,
             displayAttachments,
+            excludeFields: tab ? tab.excludeFields : null,
+            includeFields: tab ? tab.fields : null,
             info: this._info,
             rowClassName: "mb-3",
-            controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit,
-            includeFields: tab ? tab.fields : null
+            controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
         };
 
         // Call the event if it exists
