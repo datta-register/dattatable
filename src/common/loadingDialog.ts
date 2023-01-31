@@ -57,8 +57,7 @@ export class LoadingDialog {
         let elMain = this._el.firstChild as HTMLElement;
         elMain.classList.add("d-flex");
         elMain.classList.add("flex-column");
-        elMain.classList.add("mw-fit");
-
+        
         // Append the header
         this._elHeader = document.createElement("div");
         this._elHeader.classList.add("fs-4");
