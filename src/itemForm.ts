@@ -520,36 +520,34 @@ export class ItemForm {
 
                             // Saves the item
                             let saveItem = (values) => {
-                                // Save the item
-                                forms[0].save(values).then(item => {
-                                    // Call the update event
-                                    this._updateEvent ? this._updateEvent(item) : null;
+                                // If values is null then do nothing. This would happen when the
+                                // onSave event wants to cancel the save and do something custom
+                                if (values) {
+                                    // Save the item
+                                    forms[0].save(values).then(item => {
+                                        // Call the update event
+                                        this._updateEvent ? this._updateEvent(item) : null;
 
-                                    // Close the dialogs
-                                    (this._useModal ? Modal : CanvasForm).hide();
-                                    LoadingDialog.hide();
-                                });
+                                        // Close the dialogs
+                                        (this._useModal ? Modal : CanvasForm).hide();
+                                        LoadingDialog.hide();
+                                    });
+                                }
                             }
 
                             // Call the save event and ensure values exist
                             values = this._onSave ? this._onSave(values) : values;
-                            if (values) {
-                                // See if the onSave event returned a promise
-                                if (typeof (values["then"]) === "function") {
-                                    // Wait for the promise to complete
-                                    values["then"](values => {
-                                        // Save the item
-                                        saveItem(values);
-                                    });
-                                } else {
+
+                            // See if the onSave event returned a promise
+                            if (values && typeof (values["then"]) === "function") {
+                                // Wait for the promise to complete
+                                values["then"](values => {
                                     // Save the item
                                     saveItem(values);
-                                }
+                                });
                             } else {
-                                // Saving the item has been cancelled
-                                // Close the dialogs
-                                (this._useModal ? Modal : CanvasForm).hide();
-                                LoadingDialog.hide();
+                                // Save the item
+                                saveItem(values);
                             }
                         } else {
                             // Close the dialog
