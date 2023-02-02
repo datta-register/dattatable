@@ -531,19 +531,25 @@ export class ItemForm {
                                 });
                             }
 
-                            // Call the save event
+                            // Call the save event and ensure values exist
                             values = this._onSave ? this._onSave(values) : values;
-
-                            // See if the onSave event returned a promise
-                            if (values && typeof (values["then"]) === "function") {
-                                // Wait for the promise to complete
-                                values["then"](values => {
+                            if (values) {
+                                // See if the onSave event returned a promise
+                                if (typeof (values["then"]) === "function") {
+                                    // Wait for the promise to complete
+                                    values["then"](values => {
+                                        // Save the item
+                                        saveItem(values);
+                                    });
+                                } else {
                                     // Save the item
                                     saveItem(values);
-                                });
+                                }
                             } else {
-                                // Save the item
-                                saveItem(values);
+                                // Saving the item has been cancelled
+                                // Close the dialogs
+                                (this._useModal ? Modal : CanvasForm).hide();
+                                LoadingDialog.hide();
                             }
                         } else {
                             // Close the dialog
