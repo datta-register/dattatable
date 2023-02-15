@@ -23,6 +23,7 @@ interface INavProps {
  * Navigation
  */
 export class Navigation {
+    private _nav: Components.INavbar;
     private _props: INavProps = null;
 
     // Constructor
@@ -58,7 +59,7 @@ export class Navigation {
         this._props.onRendering ? this._props.onRendering(props) : null;
 
         // Render a navbar
-        let nav = Components.Navbar(props);
+        this._nav = Components.Navbar(props);
 
         // See if we are showing the filter
         if (this._props.hideFilter != true) {
@@ -66,7 +67,7 @@ export class Navigation {
             // Create a span to wrap the icon in
             let span = document.createElement("span");
             span.className = "bg-white d-inline-flex filter-icon ms-2 rounded";
-            nav.el.firstElementChild.appendChild(span);
+            this._nav.el.firstElementChild.appendChild(span);
 
             // Render a tooltip
             let ttp = Components.Tooltip({
@@ -89,4 +90,11 @@ export class Navigation {
         // Call the event
         this._props.onSearchRendered ? this._props.onSearchRendered(this._props.el.querySelector("input[type='search']")) : null;
     }
+
+    /**
+     * Public Interface
+     */
+
+    // Returns the current search value
+    getSearchValue() { return this._nav.getSearchValue(); }
 }

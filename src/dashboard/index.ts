@@ -76,6 +76,7 @@ export interface IDashboardProps {
 export class Dashboard {
     private _dt: IDataTable = null;
     private _filters: FilterSlideout = null;
+    private _navigation: Navigation = null;
     private _props: IDashboardProps = null;
 
     // Constructor
@@ -138,7 +139,7 @@ export class Dashboard {
         } else {
             // Render the navigation
             let navProps = this._props.navigation || {};
-            new Navigation({
+            this._navigation = new Navigation({
                 el: this._props.el.querySelector("#navigation"),
                 hideFilter: navProps.showFilter != null ? !navProps.showFilter : false,
                 hideSearch: navProps.showSearch != null ? !navProps.showSearch : false,
@@ -290,6 +291,9 @@ export class Dashboard {
     // Returns a filter checkbox group by its key
     getFilter(key: string) { return this._filters.getFilter(key); }
 
+    // Returns the current search value
+    getSearchValue() { return this._navigation ? this._navigation.getSearchValue() : ""; }
+
     // Hides the filter
     hideFilter() { this._filters.hide(); }
 
@@ -297,6 +301,13 @@ export class Dashboard {
     refresh(rows: any[]) {
         // Refresh the table
         this._dt.refresh(rows);
+
+        // See if a search value exists
+        let searchValue = this._navigation ? this._navigation.getSearchValue() : "";
+        if (searchValue) {
+            // Apply the search value
+            this.search(searchValue);
+        }
     }
 
     // Search the table
