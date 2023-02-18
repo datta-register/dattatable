@@ -1,5 +1,5 @@
 import { Components } from "gd-sprest-bs";
-import { ItemForm } from "../itemForm";
+import { ItemForm } from "../common";
 import { FilterSlideout, IFilterItem } from "./filter";
 import { Footer } from "./footer";
 import { Header } from "./header";

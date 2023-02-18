@@ -1,5 +1,5 @@
 import { Components, Helper, SPTypes } from "gd-sprest-bs";
-import { CanvasForm, LoadingDialog, Modal } from "./common";
+import { CanvasForm, LoadingDialog, Modal } from ".";
 
 /** Tab */
 export interface IItemFormTab {
@@ -137,7 +137,7 @@ export class ItemForm {
     }
 
     // Creates a new task
-    static create(props: IItemFormCreateProps = {}) {
+    static create(props: IItemFormCreateProps = {}): PromiseLike<void> {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
         this._info = props.info;
@@ -154,11 +154,11 @@ export class ItemForm {
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the item
-        this.load(props.webUrl);
+        return this.load(props.webUrl);
     }
 
     // Edits a task
-    static edit(props: IItemFormEditProps) {
+    static edit(props: IItemFormEditProps): PromiseLike<void> {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Edit;
         this._info = props.info;
@@ -175,7 +175,7 @@ export class ItemForm {
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
-        this.load(props.webUrl, props.itemId);
+        return this.load(props.webUrl, props.itemId);
     }
 
     // Loads the form information
@@ -194,7 +194,7 @@ export class ItemForm {
     }
 
     // Views the task
-    static view(props: IItemFormViewProps) {
+    static view(props: IItemFormViewProps): PromiseLike<void> {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
         this._info = props.info;
@@ -208,13 +208,13 @@ export class ItemForm {
         typeof (props.useModal) === "boolean" ? this._useModal = props.useModal : false;
 
         // Load the form
-        this.load(props.webUrl, props.itemId);
+        return this.load(props.webUrl, props.itemId);
     }
 
     /** Private Methods */
 
     // Load the form information
-    private static load(webUrl?: string, itemId?: number) {
+    private static load(webUrl?: string, itemId?: number): PromiseLike<void> {
         // Clear the forms
         this._displayForms = [];
         this._editForms = [];
@@ -224,38 +224,41 @@ export class ItemForm {
         LoadingDialog.setBody("This will close after the form is loaded...");
         LoadingDialog.show();
 
-        // Load the form information
-        ((): PromiseLike<void> => {
-            // Return a promise
-            return new Promise(resolve => {
-                // See if the info already exists
-                if (this._info) {
-                    // Resolve the request
-                    resolve();
-                } else {
-                    // Set the list form properties
-                    let listProps: Helper.IListFormProps = {
-                        listName: this.ListName,
-                        itemId,
-                        webUrl
-                    };
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Code to run after the data is loaded
+            let onComplete = () => {
+                // Render the form
+                this.renderForm();
 
-                    // Call the event
-                    listProps = this._onGetListInfo ? this._onGetListInfo(listProps) : listProps;
+                // Resolve the request
+                resolve(null);
+            }
 
-                    // Load the form info
-                    Helper.ListForm.create(listProps).then(info => {
-                        // Save the information
-                        this._info = info;
+            // See if the info already exists
+            if (this._info) {
+                // Form information is already loaded
+                onComplete();
+            } else {
+                // Set the list form properties
+                let listProps: Helper.IListFormProps = {
+                    listName: this.ListName,
+                    itemId,
+                    webUrl
+                };
 
-                        // Resolve the request
-                        resolve();
-                    });
-                }
-            });
-        })().then(() => {
-            // Render the form
-            this.renderForm();
+                // Call the event
+                listProps = this._onGetListInfo ? this._onGetListInfo(listProps) : listProps;
+
+                // Load the form info
+                Helper.ListForm.create(listProps).then(info => {
+                    // Save the information
+                    this._info = info;
+
+                    // Form information is already loaded
+                    onComplete();
+                }, reject);
+            }
         });
     }
 

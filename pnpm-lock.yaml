@@ -3,8 +3,8 @@ devDependencies:
   '@babel/preset-env': 7.19.4_@babel+core@7.19.3
   babel-loader: 8.2.5_b1475583497452e4eb6a502a776a8f19
   css-loader: 5.2.7_webpack@5.74.0
-  datatables.net: 1.12.1
-  datatables.net-bs5: 1.12.1
+  datatables.net: 1.13.2
+  datatables.net-bs5: 1.13.2
   gd-sprest-bs: 10.10.4
   html-loader: 3.1.2_webpack@5.74.0
   jquery: 3.6.1
@@ -1788,19 +1788,19 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==
-  /datatables.net-bs5/1.12.1:
+  /datatables.net-bs5/1.13.2:
     dependencies:
-      datatables.net: 1.12.1
+      datatables.net: 1.13.2
       jquery: 3.6.1
     dev: true
     resolution:
-      integrity: sha512-CcQCImfmH4YZk7I0aC0kTiNPyfHJ2ueGgOh/kFB9KqsZD8bNJy2A88gC6hn9A7TbmmenOL+K3Q1ti7G8yqi8SQ==
-  /datatables.net/1.12.1:
+      integrity: sha512-p1JOXFi+VD4wS0AxRmJPHBylJ8AC4xGJ3j0TZ+8hMspuZ+QvAhEqEPt8OEAGVzlN1ElfQimZjBeAoES/9nsuig==
+  /datatables.net/1.13.2:
     dependencies:
       jquery: 3.6.1
     dev: true
     resolution:
-      integrity: sha512-e6XAMUoV41JdQPS/r9YRfRcmTPcCVvyZbWI+xog1Zg+kjVliMQbEkvWK5XFItmi64Cvwg+IqsZbTUJ1KSY3umA==
+      integrity: sha512-u5nOU+C9SBp1SyPmd6G+niozZtrBwo1E8xzdOk3JJaAkFYgX/KxF3Gd79R8YLbUfmIs2OLnLe5gaz/qs5U8UDA==
   /debug/4.3.4:
     dependencies:
       ms: 2.1.2
@@ -3212,8 +3212,8 @@ specifiers:
   '@babel/preset-env': ^7.19.4
   babel-loader: ^8.2.5
   css-loader: ^5.2.7
-  datatables.net: ^1.12.1
-  datatables.net-bs5: ^1.12.1
+  datatables.net: ^1.13.2
+  datatables.net-bs5: ^1.13.2
   gd-sprest-bs: ^10.10.4
   html-loader: ^3.1.2
   jquery: ^3.6.1
