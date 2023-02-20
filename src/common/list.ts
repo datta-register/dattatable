@@ -30,6 +30,10 @@ export class List<T = Types.SP.ListItem> {
     private _listName: string = null;
     get ListName(): string { return this._listName; }
 
+    // OData query
+    private _odata: Types.IODataQuery = null;
+    get OData(): Types.IODataQuery { return this._odata; }
+
     // Web Url
     private _webUrl: string = null;
     get WebUrl(): string { return this._webUrl; }
@@ -47,13 +51,14 @@ export class List<T = Types.SP.ListItem> {
     constructor(props: IListProps) {
         // Save the properties
         this._listName = props.listName;
+        this._odata = props.itemQuery;
         this._onItemsLoaded = props.onItemsLoaded;
         this._onLoadFormError = props.onLoadFormError;
         this._onLoadItemsError = props.onLoadItemsError;
         this._webUrl = props.webUrl || ContextInfo.webServerRelativeUrl;
 
         // Load the data
-        this.load(props.itemQuery).then(items => {
+        this.load().then(items => {
             // Set the items
             this._items = items;
 
@@ -72,7 +77,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Loads the items
-    load(query?: Types.IODataQuery): PromiseLike<T[]> {
+    load(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // See if the items exist
@@ -110,8 +115,8 @@ export class List<T = Types.SP.ListItem> {
         ItemForm.edit(props).then(null, this._onLoadFormError);
     }
 
-    // Reset the items
-    reset(query?: Types.IODataQuery): PromiseLike<T[]> {
+    // Refresh the data
+    refresh(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
         // Clear the items
         this._items = null;
 
