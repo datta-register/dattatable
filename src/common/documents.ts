@@ -1,9 +1,9 @@
 import { Components, ContextInfo, Helper, List, Types, Web } from "gd-sprest-bs";
 import * as jQuery from "jquery";
 import * as moment from "moment";
-import { LoadingDialog } from "./common/loadingDialog";
-import { formatBytes, formatTimeValue, getFileExt } from "./common/methods";
-import { DataTable, IDataTableProps } from "./dashboard/table";
+import { LoadingDialog } from "./loadingDialog";
+import { formatBytes, formatTimeValue, getFileExt } from "./methods";
+import { DataTable, IDataTableProps } from "../dashboard/table";
 import { ItemForm, IItemFormEditProps } from "./itemForm";
 
 /** Icons */
