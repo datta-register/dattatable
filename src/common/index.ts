@@ -1,6 +1,7 @@
 /** Common Components */
 
 export * from "./canvas";
+export * from "./comments";
 export * from "./documents";
 export * from "./installRequired";
 export * from "./itemForm";

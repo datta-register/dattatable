@@ -1,8 +1,8 @@
 import { Components, Helper, SPTypes, Web } from "gd-sprest-bs";
 import * as moment from "moment";
-import { CanvasForm } from "./common/canvas";
-import { LoadingDialog } from "./common/loadingDialog";
-import { Modal } from "./common/modal";
+import { CanvasForm } from "./canvas";
+import { LoadingDialog } from "./loadingDialog";
+import { Modal } from "./modal";
 
 // List Name
 const LIST_NAME = "Comments";
