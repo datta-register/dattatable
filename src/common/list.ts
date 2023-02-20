@@ -85,8 +85,11 @@ export class List<T = Types.SP.ListItem> {
 
             // Query the items
             Web(this.WebUrl).Lists(this.ListName).Items().query(query).execute(items => {
+                // Save the items
+                this._items = items.results as any;
+
                 // Resolve the request
-                resolve(items.results as any);
+                resolve(this._items);
             }, (...args) => {
                 // Call the event
                 this._onLoadItemsError ? this._onLoadItemsError(...args) : null;
