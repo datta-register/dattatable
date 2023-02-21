@@ -18,6 +18,12 @@ export interface IListProps {
  * List
  */
 export class List<T = Types.SP.ListItem> {
+    // Reference to the edit form
+    get EditForm() { return ItemForm.EditForm; }
+
+    // Reference to the edit forms, if tabs are used
+    get EditForms() { return ItemForm.EditForms; }
+
     // Form Information
     private _formInfo: Helper.IListFormResult = null;
     get FormInfo(): Helper.IListFormResult { return this._formInfo; }
@@ -33,6 +39,12 @@ export class List<T = Types.SP.ListItem> {
     // OData query
     private _odata: Types.IODataQuery = null;
     get OData(): Types.IODataQuery { return this._odata; }
+
+    // Reference to the display form
+    get ViewForm() { return ItemForm.DisplayForm; }
+
+    // Reference to the display forms, if tabs are used
+    get ViewForms() { return ItemForm.DisplayForms; }
 
     // Web Url
     private _webUrl: string = null;
@@ -118,12 +130,6 @@ export class List<T = Types.SP.ListItem> {
         ItemForm.edit(props).then(null, this._onLoadFormError);
     }
 
-    // Reference to the edit form
-    get editForm() { return ItemForm.EditForm; }
-
-    // Reference to the edit forms, if tabs are used
-    get editForms() { return ItemForm.EditForms; }
-
     // Refresh the data
     refresh(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
         // Clear the items
@@ -141,10 +147,4 @@ export class List<T = Types.SP.ListItem> {
         // Display the form
         ItemForm.view(props).then(null, this._onLoadFormError);
     }
-
-    // Reference to the display form
-    get viewForm() { return ItemForm.DisplayForm; }
-
-    // Reference to the display forms, if tabs are used
-    get viewForms() { return ItemForm.DisplayForms; }
 }
