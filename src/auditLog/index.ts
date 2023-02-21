@@ -1,4 +1,5 @@
-import { ContextInfo, Helper, Types, Web } from "gd-sprest-bs";
+import { Helper, Types } from "gd-sprest-bs";
+import { List } from "../common/list";
 import { Configuration } from "./cfg";
 
 // Audit Log Item Creation
@@ -21,6 +22,14 @@ export interface IAuditLogItem extends IAuditLogItemCreation, Types.SP.IListItem
     };
 }
 
+// Audit Log Properties
+export interface IAuditLogProps {
+    listName: string;
+    onInitError?: (...args) => void;
+    onInitialized?: () => void;
+    webUrl?: string;
+}
+
 /**
  * Audit Log
  */
@@ -33,63 +42,54 @@ export class AuditLog<T = IAuditLogItem> {
         return this.Configuration._configuration.ListCfg[0].ListInformation.Title;
     }
 
-    // List name
-    private _listName: string = null;
-    get ListName(): string { return this._listName; }
-
-    // Web url
-    private _webUrl: string = null;
-    get WebUrl(): string { return this._webUrl; }
-    set WebUrl(value: string) { this._webUrl = value; }
+    // List
+    private _list: List<IAuditLogItem> = null;
+    get List(): List<IAuditLogItem> { return this._list; }
 
     // Constructor
-    constructor(listName: string) {
-        // Save the associated list
-        this._listName = listName;
-
+    constructor(props: IAuditLogProps) {
         // Set the configuration
         this._cfg = Configuration;
 
-        // Default the web url
-        this.WebUrl = ContextInfo.webServerRelativeUrl;
+        // Create the list component
+        this._list = new List<IAuditLogItem>({
+            listName: props.listName,
+            webUrl: props.webUrl,
+            onInitError: props.onInitError,
+            onInitialized: props.onInitialized,
+            itemQuery: {
+                Filter: "Id eq 0"
+            }
+        });
     }
 
     // Gets data for an associated item
-    getItems(itemId: number, onQuery?: (query: Types.IODataQuery) => Types.IODataQuery) {
-        // Return a promise
-        return new Promise((resolve, reject) => {
-            // Set the odata query
-            let odata: Types.IODataQuery = {
-                Expand: ["LogUser"],
-                Filter: `ParentListName eq '${this.ListName}' and ParentItemId eq ${itemId}`,
-                OrderBy: ["Created desc"],
-                Select: ["*", "LogUser/EMail", "LogUser/Id", "LogUser/LoginName", "LogUser/Title"]
-            };
+    getItems(itemId: number, onQuery?: (query: Types.IODataQuery) => Types.IODataQuery): PromiseLike<IAuditLogItem[]> {
+        // Set the odata query
+        let odata: Types.IODataQuery = {
+            Expand: ["LogUser"],
+            Filter: `ParentListName eq '${this.List.ListName}' and ParentItemId eq ${itemId}`,
+            OrderBy: ["Created desc"],
+            Select: ["*", "LogUser/EMail", "LogUser/Id", "LogUser/LoginName", "LogUser/Title"]
+        };
 
-            // Call the event
-            odata = onQuery ? onQuery(odata) : odata;
+        // Call the event
+        odata = onQuery ? onQuery(odata) : odata;
 
-            // Get the list data
-            Web(this.WebUrl).Lists(this.AuditListName).Items().query(odata).execute(items => {
-                // Resolve the request
-                resolve(items.results as any);
-            }, reject);
-        });
-    }
-
-    // Logs an item to the audit log
-    logItem(values: IAuditLogItemCreation): PromiseLike<T> {
-        // Return a promise
-        return new Promise((resolve, reject) => {
-            // Create the item
-            Web(this.WebUrl).Lists(this.AuditListName).Items().add(values).execute(resolve as any, reject);
-        });
+        // Get the list data
+        return this.List.refresh(odata);
     }
 
     // Installs the list
     install(): PromiseLike<void> {
         // Installs the list
         return this.Configuration.install();
+    }
+
+    // Logs an item to the audit log
+    logItem(values: IAuditLogItemCreation): PromiseLike<IAuditLogItem> {
+        // Create the item
+        return this.List.createItem(values);
     }
 
     // Removes the audit log list

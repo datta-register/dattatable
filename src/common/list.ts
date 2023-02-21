@@ -1,16 +1,18 @@
-import { ContextInfo, Helper, Types, Web } from "gd-sprest-bs";
+import { ContextInfo, Types, Web } from "gd-sprest-bs";
 import {
     ItemForm, IItemFormCreateProps, IItemFormEditProps, IItemFormViewProps,
     CanvasForm, Modal
 } from "../common";
 
 /** List Properties */
-export interface IListProps {
+export interface IListProps<T = Types.SP.ListItem> {
     itemQuery?: Types.IODataQuery;
     listName: string;
-    onItemsLoaded?: () => void;
-    onLoadItemsError?: (...args) => void;
+    onInitError?: (...args) => void;
+    onInitialized?: () => void;
+    onItemsLoaded?: (items?: T[]) => void;
     onLoadFormError?: (...args) => void;
+    onResetForm?: () => void;
     webUrl?: string;
 }
 
@@ -18,6 +20,8 @@ export interface IListProps {
  * List
  */
 export class List<T = Types.SP.ListItem> {
+    /** Public Properties */
+
     // Reference to the edit form
     get EditForm() { return ItemForm.EditForm; }
 
@@ -62,32 +66,54 @@ export class List<T = Types.SP.ListItem> {
     private _webUrl: string = null;
     get WebUrl(): string { return this._webUrl; }
 
+    /** Private Properties */
+
+    // Error event when loading the items fail
+    private _onInitError: (...args) => void = null;
+
+    // Event triggered when the component is initialized
+    private _onInitialized?: () => void = null;
+
     // Items loaded event
-    private _onItemsLoaded?: () => void = null;
+    private _onItemsLoaded?: (items?: T[]) => void = null;
 
     // Error event when loading a form
     private _onLoadFormError: (...args) => void = null;
 
-    // Error event when loading the items fail
-    private _onLoadItemsError: (...args) => void = null;
+    // Event triggered when the form is reset
+    private _onResetForm: () => void = null;
 
     // Constructor
-    constructor(props: IListProps) {
+    constructor(props: IListProps<T>) {
         // Save the properties
         this._listName = props.listName;
         this._odata = props.itemQuery;
+        this._onInitError = props.onInitError;
+        this._onInitialized = props.onInitialized;
         this._onItemsLoaded = props.onItemsLoaded;
         this._onLoadFormError = props.onLoadFormError;
-        this._onLoadItemsError = props.onLoadItemsError;
+        this._onResetForm = props.onResetForm;
         this._webUrl = props.webUrl || ContextInfo.webServerRelativeUrl;
 
-        // Load the data
-        this.load().then(items => {
-            // Set the items
-            this._items = items;
+        // Load the list information
+        this.init().then(() => {
+            // Load the items
+            this.loadItems().then(items => {
+                // Set the items
+                this._items = items;
 
-            // Call the items loaded event
-            this._onItemsLoaded ? this._onItemsLoaded() : null;
+                // Call the event
+                this._onInitialized ? this._onInitialized() : null;
+
+                // Call the items loaded event
+                this._onItemsLoaded ? this._onItemsLoaded(this.Items) : null;
+            }, (...args) => {
+                // Call the init error event
+                this._onInitError ? this._onInitError(...args) : null;
+            });
+        }, (...args) => {
+            // Call the init error event
+            this._onInitError ? this._onInitError(...args) : null;
         });
     }
 
@@ -98,22 +124,52 @@ export class List<T = Types.SP.ListItem> {
 
         // Set the list name
         ItemForm.ListName = this.ListName;
+
+        // Call the event
+        this._onResetForm ? this._onResetForm() : null;
     }
 
-    // Loads the items
-    load(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
+    // Reference to the create item method
+    createItem(values): PromiseLike<T> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Create the item
+            this.ListInfo.Items().add(values).execute(resolve as any, reject);
+        });
+    }
+
+    // Displays the new form
+    newForm(props: IItemFormCreateProps) {
+        // Clear the modal/canvas
+        this.clear();
+
+        // Display the form
+        ItemForm.create(props).then(null, this._onLoadFormError);
+    }
+
+    // Displays the edit form
+    editForm(props: IItemFormEditProps) {
+        // Clear the modal/canvas
+        this.clear();
+
+        // Display the form
+        ItemForm.edit(props).then(null, this._onLoadFormError);
+    }
+
+    // Initializes the list component
+    private init(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let list = Web(this.WebUrl).Lists(this.ListName);
-
-            // See if the items exist
-            if (this._items) { return this._items; }
 
             // Query the list content types
             list.execute(list => {
                 // Save the list information
                 this._listInfo = list;
-            }, reject);
+            }, (...args) => {
+                // Reject the request
+                reject(...args);
+            });
 
             // Query the content types
             list.ContentTypes().query({
@@ -137,39 +193,33 @@ export class List<T = Types.SP.ListItem> {
                 this._listViews = views.results;
             }, true);
 
+            // Wait for the requests to complete
+            list.done(() => {
+                // Resolve the request
+                resolve();
+            });
+        });
+    }
+
+    // Loads the items
+    private loadItems(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the items exist
+            if (this._items) { return this._items; }
+
             // Query the items
-            list.Items().query(query).execute(items => {
+            Web(this.WebUrl).Lists(this.ListName).Items().query(query).execute(items => {
                 // Save the items
                 this._items = items.results as any;
 
                 // Resolve the request
                 resolve(this._items);
             }, (...args) => {
-                // Call the event
-                this._onLoadItemsError ? this._onLoadItemsError(...args) : null;
-
                 // Reject the request
                 reject(...args);
             }, true);
         });
-    }
-
-    // Displays the new form
-    createItem(props: IItemFormCreateProps) {
-        // Clear the modal/canvas
-        this.clear();
-
-        // Display the form
-        ItemForm.create(props).then(null, this._onLoadFormError);
-    }
-
-    // Displays the edit form
-    editItem(props: IItemFormEditProps) {
-        // Clear the modal/canvas
-        this.clear();
-
-        // Display the form
-        ItemForm.edit(props).then(null, this._onLoadFormError);
     }
 
     // Refresh the data
@@ -178,11 +228,20 @@ export class List<T = Types.SP.ListItem> {
         this._items = null;
 
         // Load the data
-        return this.load(query);
+        return this.loadItems(query);
+    }
+
+    // Updates an item
+    updateItem(itemId: number, values): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Create the item
+            this.ListInfo.Items(itemId).update(values).execute(resolve, reject);
+        });
     }
 
     // Displays the view form
-    viewItem(props: IItemFormViewProps) {
+    viewForm(props: IItemFormViewProps) {
         // Clear the modal/canvas
         this.clear();
 
