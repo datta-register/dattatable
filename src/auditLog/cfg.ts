@@ -4,6 +4,7 @@ import { Helper, SPTypes } from "gd-sprest-bs";
 export const Configuration: Helper.ISPConfig = Helper.SPConfig({
     ListCfg: [{
         ListInformation: {
+            BaseTemplate: SPTypes.ListTemplateType.GenericList,
             Title: "Audit Log",
             Hidden: true,
             NoCrawl: true
