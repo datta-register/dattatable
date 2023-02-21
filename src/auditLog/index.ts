@@ -51,9 +51,13 @@ export class AuditLog {
         // Set the configuration
         this._cfg = Configuration;
 
+        // Update the list name
+        let listName = props.listName ? props.listName : this._cfg._configuration.ListCfg[0].ListInformation.Title;
+        props.listName ? this._cfg._configuration.ListCfg[0].ListInformation.Title = listName : null;
+
         // Create the list component
         this._list = new List<IAuditLogItem>({
-            listName: props.listName,
+            listName: listName,
             webUrl: props.webUrl,
             onInitError: props.onInitError,
             onInitialized: props.onInitialized,
