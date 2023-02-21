@@ -118,6 +118,12 @@ export class List<T = Types.SP.ListItem> {
         ItemForm.edit(props).then(null, this._onLoadFormError);
     }
 
+    // Reference to the edit form
+    get editForm() { return ItemForm.EditForm; }
+
+    // Reference to the edit forms, if tabs are used
+    get editForms() { return ItemForm.EditForms; }
+
     // Refresh the data
     refresh(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
         // Clear the items
@@ -135,4 +141,10 @@ export class List<T = Types.SP.ListItem> {
         // Display the form
         ItemForm.view(props).then(null, this._onLoadFormError);
     }
+
+    // Reference to the display form
+    get viewForm() { return ItemForm.DisplayForm; }
+
+    // Reference to the display forms, if tabs are used
+    get viewForms() { return ItemForm.DisplayForms; }
 }
