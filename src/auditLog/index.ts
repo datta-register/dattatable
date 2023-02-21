@@ -33,7 +33,7 @@ export interface IAuditLogProps {
 /**
  * Audit Log
  */
-export class AuditLog<T = IAuditLogItem> {
+export class AuditLog {
     // Configuration
     private _cfg: Helper.ISPConfig = null;
     get Configuration(): Helper.ISPConfig { return this._cfg; }
