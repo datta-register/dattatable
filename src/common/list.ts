@@ -25,8 +25,8 @@ export class List<T = Types.SP.ListItem> {
     get EditForms() { return ItemForm.EditForms; }
 
     // List Content Types Information
-    private _listContentTypes: Types.SP.ContentType[] = null;
-    get ListContentTypes(): Types.SP.ContentType[] { return this._listContentTypes; }
+    private _listContentTypes: Types.SP.ContentTypeOData[] = null;
+    get ListContentTypes(): Types.SP.ContentTypeOData[] { return this._listContentTypes; }
 
     // List Fields Information
     private _listFields: Types.SP.Field[] = null;
@@ -37,8 +37,8 @@ export class List<T = Types.SP.ListItem> {
     get ListInfo(): Types.SP.List { return this._listInfo; }
 
     // List Views Information
-    private _listViews: Types.SP.View[] = null;
-    get ListViews(): Types.SP.View[] { return this._listViews; }
+    private _listViews: Types.SP.ViewOData[] = null;
+    get ListViews(): Types.SP.ViewOData[] { return this._listViews; }
 
     // Items
     private _items: T[] = null;
@@ -104,22 +104,41 @@ export class List<T = Types.SP.ListItem> {
     load(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
         // Return a promise
         return new Promise((resolve, reject) => {
+            let list = Web(this.WebUrl).Lists(this.ListName);
+
             // See if the items exist
             if (this._items) { return this._items; }
 
-            // Query the list
-            Web(this.WebUrl).Lists(this.ListName).query({
-                Expand: ["ContentTypes", "Fields", "Views"]
-            }).execute(list => {
-                // Save the list properties
-                this._listInfo = list as any;
-                this._listContentTypes = list.ContentTypes.results;
-                this._listFields = list.Fields.results;
-                this._listViews = list.Views.results;
-            });
+            // Query the list content types
+            list.execute(list => {
+                // Save the list information
+                this._listInfo = list;
+            }, reject);
+
+            // Query the content types
+            list.ContentTypes().query({
+                Expand: ["FieldLinks", "Fields"]
+            }).execute(cts => {
+                // Save the content types
+                this._listContentTypes = cts.results;
+            }, true);
+
+            // Query the list fields
+            list.Fields().execute(fields => {
+                // Save the fields
+                this._listFields = fields.results;
+            }, true);
+
+            // Query the list views
+            list.Views().query({
+                Expand: ["FieldLinks", "Fields"]
+            }).execute(views => {
+                // Save the views
+                this._listViews = views.results;
+            }, true);
 
             // Query the items
-            Web(this.WebUrl).Lists(this.ListName).Items().query(query).execute(items => {
+            list.Items().query(query).execute(items => {
                 // Save the items
                 this._items = items.results as any;
 
@@ -131,7 +150,7 @@ export class List<T = Types.SP.ListItem> {
 
                 // Reject the request
                 reject(...args);
-            });
+            }, true);
         });
     }
 
