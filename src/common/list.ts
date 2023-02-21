@@ -24,9 +24,21 @@ export class List<T = Types.SP.ListItem> {
     // Reference to the edit forms, if tabs are used
     get EditForms() { return ItemForm.EditForms; }
 
-    // Form Information
-    private _formInfo: Helper.IListFormResult = null;
-    get FormInfo(): Helper.IListFormResult { return this._formInfo; }
+    // List Content Types Information
+    private _listContentTypes: Types.SP.ContentType[] = null;
+    get ListContentTypes(): Types.SP.ContentType[] { return this._listContentTypes; }
+
+    // List Fields Information
+    private _listFields: Types.SP.Field[] = null;
+    get ListFields(): Types.SP.Field[] { return this._listFields; }
+
+    // List Information
+    private _listInfo: Types.SP.List = null;
+    get ListInfo(): Types.SP.List { return this._listInfo; }
+
+    // List Views Information
+    private _listViews: Types.SP.View[] = null;
+    get ListViews(): Types.SP.View[] { return this._listViews; }
 
     // Items
     private _items: T[] = null;
@@ -94,6 +106,17 @@ export class List<T = Types.SP.ListItem> {
         return new Promise((resolve, reject) => {
             // See if the items exist
             if (this._items) { return this._items; }
+
+            // Query the list
+            Web(this.WebUrl).Lists(this.ListName).query({
+                Expand: ["ContentTypes", "Fields", "Views"]
+            }).execute(list => {
+                // Save the list properties
+                this._listInfo = list as any;
+                this._listContentTypes = list.ContentTypes.results;
+                this._listFields = list.Fields.results;
+                this._listViews = list.Views.results;
+            });
 
             // Query the items
             Web(this.WebUrl).Lists(this.ListName).Items().query(query).execute(items => {
