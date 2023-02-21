@@ -132,7 +132,7 @@ export class AuditLog {
                     dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
                     columnDefs: [
                         {
-                            "targets": 4,
+                            "targets": [3, 4],
                             "orderable": false,
                             "searchable": false
                         }
