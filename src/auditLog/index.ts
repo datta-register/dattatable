@@ -1,5 +1,9 @@
-import { Helper, Types } from "gd-sprest-bs";
+import { Components, Helper, Types } from "gd-sprest-bs";
+import * as jQuery from "jquery";
+import { Modal } from "../common/modal";
 import { List } from "../common/list";
+import { LoadingDialog } from "../common/loadingDialog";
+import { DataTable } from "../dashboard/table";
 import { Configuration } from "./cfg";
 
 // Audit Log Item Creation
@@ -100,5 +104,94 @@ export class AuditLog {
     uninstall(): PromiseLike<void> {
         // Remove the audit log list
         return this.Configuration.uninstall();
+    }
+
+    // Method to view the audit log information for an item
+    viewLog(itemId: number, onQuery?: (query: Types.IODataQuery) => Types.IODataQuery) {
+        // Display a loading dialog
+        LoadingDialog.setHeader("Loading Audit History");
+        LoadingDialog.setBody("This will close after the information is loaded...");
+        LoadingDialog.show();
+
+        // Load the information
+        this.getItems(itemId, onQuery).then(items => {
+            // Clear the modal
+            Modal.clear();
+
+            // Set the size
+            Modal.setType(Components.ModalTypes.Large);
+
+            // Set the header
+            Modal.setHeader("Audit History");
+
+            // Render the table
+            new DataTable({
+                el: Modal.BodyElement,
+                rows: items,
+                dtProps: {
+                    dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
+                    columnDefs: [
+                        {
+                            "targets": 4,
+                            "orderable": false,
+                            "searchable": false
+                        }
+                    ],
+                    createdRow: function (row, data, index) {
+                        jQuery('td', row).addClass('align-middle');
+                    },
+                    drawCallback: function (settings) {
+                        let api = new jQuery.fn.dataTable.Api(settings) as any;
+                        jQuery(api.context[0].nTable).removeClass('no-footer');
+                        jQuery(api.context[0].nTable).addClass('tbl-footer');
+                        jQuery(api.context[0].nTable).addClass('table-striped');
+                        jQuery(api.context[0].nTableWrapper).find('.dataTables_info').addClass('text-center');
+                        jQuery(api.context[0].nTableWrapper).find('.dataTables_length').addClass('pt-2');
+                        jQuery(api.context[0].nTableWrapper).find('.dataTables_paginate').addClass('pt-03');
+                    },
+                    headerCallback: function (thead, data, start, end, display) {
+                        jQuery('th', thead).addClass('align-middle');
+                    },
+                    // Set the empty text
+                    language: {
+                        emptyTable: "No logs exist for this item."
+                    },
+                    // Order by the 1st column by default; ascending
+                    order: [[0, "desc"]]
+                },
+                columns: [
+                    {
+                        name: "Created",
+                        title: "Created"
+                    },
+                    {
+                        name: "Title",
+                        title: "Title"
+                    },
+                    {
+                        name: "",
+                        title: "User",
+                        onRenderCell: (el, col, item: IAuditLogItem) => {
+                            // Render the user information
+                            item.LogUser ? el.innerHTML = item.LogUser.Title : null;
+                        }
+                    },
+                    {
+                        name: "LogComment",
+                        title: "Comment"
+                    },
+                    {
+                        name: "LogData",
+                        title: "Data"
+                    }
+                ]
+            });
+
+            // Hide the loading dialog
+            LoadingDialog.hide();
+
+            // Show the modal
+            Modal.show();
+        });
     }
 }
