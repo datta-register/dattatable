@@ -78,7 +78,7 @@ export class AuditLog {
             Expand: ["LogUser"],
             Filter: `ParentListName eq '${this.List.ListName}' and ParentItemId eq ${itemId}`,
             OrderBy: ["Created desc"],
-            Select: ["*", "LogUser/EMail", "LogUser/Id", "LogUser/LoginName", "LogUser/Title"]
+            Select: ["*", "LogUser/EMail", "LogUser/Id", "LogUser/Title"]
         };
 
         // Call the event
