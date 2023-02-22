@@ -19,7 +19,7 @@ export const Configuration: Helper.ISPConfig = Helper.SPConfig({
         }],
         CustomFields: [
             {
-                name: "ParentIId",
+                name: "ParentId",
                 title: "Parent Id",
                 description: "The parent identifier linked to this item.",
                 type: Helper.SPCfgFieldType.Text,

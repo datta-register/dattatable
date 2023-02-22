@@ -10,7 +10,7 @@ import { Configuration } from "./cfg";
 export interface IAuditLogItemCreation {
     LogComment?: string;
     LogData?: string;
-    ParentIId?: string;
+    ParentId: string;
     ParentListName: string;
     LogUserId?: number;
     Title: string;
