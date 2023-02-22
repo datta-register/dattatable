@@ -206,7 +206,7 @@ export class List<T = Types.SP.ListItem> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // See if the items exist
-            if (this._items) { return this._items; }
+            if (this._items) { resolve(this._items); return; }
 
             // Query the items
             Web(this.WebUrl).Lists(this.ListName).Items().query(query).execute(items => {
