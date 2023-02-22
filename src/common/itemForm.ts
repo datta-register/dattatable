@@ -512,9 +512,9 @@ export class ItemForm {
             // Success
             () => {
                 // Call the custom validation event
-                this.validate(values).then(
+                this.validate(values, isValid).then(
                     // Valid
-                    () => {
+                    isValid => {
                         // See if the form(s) are valid
                         if (isValid) {
                             // Update the loading dialog
@@ -569,27 +569,25 @@ export class ItemForm {
     }
 
     // Validates the form
-    private static validate(values: any): PromiseLike<void> {
+    private static validate(values: any, isValid: boolean): PromiseLike<boolean> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            let isValid = true;
-
             // Call the validation event
             let returnVal: any = this._onValidation ? this._onValidation(values) : null;
+            // See if it's a promise function
             if (returnVal && typeof (returnVal.then) === "function") {
                 // Wait for the promise to complete
-                returnVal.then(isValid => {
+                returnVal.then(returnVal => {
                     // Resolve the request
-                    isValid ? resolve() : reject();
+                    isValid = typeof (returnVal) === "boolean" ? returnVal : isValid;
+                    isValid ? resolve(isValid) : reject();
                 });
             } else {
-                if (typeof (returnVal) === "boolean") {
-                    // Update the flag
-                    isValid = returnVal;
-                }
+                // Update the flag
+                isValid = typeof (returnVal) === "boolean" ? returnVal : isValid;
 
                 // Resolve the request
-                isValid ? resolve() : reject();
+                isValid ? resolve(isValid) : reject();
             }
         });
     }
