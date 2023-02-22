@@ -132,7 +132,7 @@ export class AuditLog {
                     dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
                     columnDefs: [
                         {
-                            "targets": [3, 4],
+                            "targets": [3],
                             "orderable": false,
                             "searchable": false
                         }
@@ -179,10 +179,6 @@ export class AuditLog {
                     {
                         name: "LogComment",
                         title: "Comment"
-                    },
-                    {
-                        name: "LogData",
-                        title: "Data"
                     }
                 ]
             });
