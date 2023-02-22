@@ -72,11 +72,11 @@ export class AuditLog {
     }
 
     // Gets data for an associated item
-    getItems(itemId: number, onQuery?: (query: Types.IODataQuery) => Types.IODataQuery): PromiseLike<IAuditLogItem[]> {
+    getItems(itemId: number, listName: string, onQuery?: (query: Types.IODataQuery) => Types.IODataQuery): PromiseLike<IAuditLogItem[]> {
         // Set the odata query
         let odata: Types.IODataQuery = {
             Expand: ["LogUser"],
-            Filter: `ParentListName eq '${this.List.ListName}' and ParentItemId eq ${itemId}`,
+            Filter: `ParentListName eq '${listName}' and ParentItemId eq ${itemId}`,
             OrderBy: ["Created desc"],
             Select: ["*", "LogUser/EMail", "LogUser/Id", "LogUser/Title"]
         };
@@ -107,14 +107,14 @@ export class AuditLog {
     }
 
     // Method to view the audit log information for an item
-    viewLog(itemId: number, onQuery?: (query: Types.IODataQuery) => Types.IODataQuery) {
+    viewLog(itemId: number, listName: string, onQuery?: (query: Types.IODataQuery) => Types.IODataQuery) {
         // Display a loading dialog
         LoadingDialog.setHeader("Loading Audit History");
         LoadingDialog.setBody("This will close after the information is loaded...");
         LoadingDialog.show();
 
         // Load the information
-        this.getItems(itemId, onQuery).then(items => {
+        this.getItems(itemId, listName, onQuery).then(items => {
             // Clear the modal
             Modal.clear();
 
