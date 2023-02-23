@@ -39,7 +39,7 @@ export interface IAuditLogViewProps {
     id: string;
     listName: string;
     onQuery?: (query: Types.IODataQuery) => Types.IODataQuery;
-    onRenderCell?: (el?: HTMLElement, column?: Components.ITableColumn, item?: IAuditLogItem) => void;
+    onTableCellRendering?: (el?: HTMLElement, column?: Components.ITableColumn, item?: IAuditLogItem) => void;
     onTableRendering?: (props: IDataTableProps) => IDataTableProps;
 }
 
@@ -130,12 +130,12 @@ export class AuditLog {
                 {
                     name: "Created",
                     title: "Created",
-                    onRenderCell: viewProps.onRenderCell
+                    onRenderCell: viewProps.onTableCellRendering
                 },
                 {
                     name: "Title",
                     title: "Title",
-                    onRenderCell: viewProps.onRenderCell
+                    onRenderCell: viewProps.onTableCellRendering
                 },
                 {
                     name: "",
@@ -145,13 +145,13 @@ export class AuditLog {
                         item.LogUser ? el.innerHTML = item.LogUser.Title : null;
 
                         // Call the event
-                        viewProps.onRenderCell ? viewProps.onRenderCell(el, col, item) : null;
+                        viewProps.onTableCellRendering ? viewProps.onTableCellRendering(el, col, item) : null;
                     }
                 },
                 {
                     name: "LogComment",
                     title: "Comment",
-                    onRenderCell: viewProps.onRenderCell
+                    onRenderCell: viewProps.onTableCellRendering
                 }
             ]
         };
