@@ -40,6 +40,10 @@ export class List<T = Types.SP.ListItem> {
     private _listInfo: Types.SP.List = null;
     get ListInfo(): Types.SP.List { return this._listInfo; }
 
+    // List Url
+    private _listUrl: string = null;
+    get ListUrl(): string { return this._listUrl; }
+
     // List Views Information
     private _listViews: Types.SP.ViewOData[] = null;
     get ListViews(): Types.SP.ViewOData[] { return this._listViews; }
@@ -165,11 +169,17 @@ export class List<T = Types.SP.ListItem> {
             // Query the list content types
             list.execute(list => {
                 // Save the list information
-                this._listInfo = list;
+                this._listInfo = list as any;
             }, (...args) => {
                 // Reject the request
                 reject(...args);
             });
+
+            // Get the root folder
+            list.RootFolder().execute(folder => {
+                // Set the url
+                this._listUrl = folder.ServerRelativeUrl;
+            }, true);
 
             // Query the content types
             list.ContentTypes().query({
