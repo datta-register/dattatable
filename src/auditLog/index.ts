@@ -18,6 +18,7 @@ export interface IAuditLogItemCreation {
 
 // Audit Log Item
 export interface IAuditLogItem extends IAuditLogItemCreation, Types.SP.IListItem {
+    Created: string;
     LogUser?: {
         EMail: string;
         Id: number;
