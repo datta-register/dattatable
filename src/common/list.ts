@@ -212,6 +212,44 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Loads the items
+    private loadItem(itemId: number, query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Query the items
+            Web(this.WebUrl).Lists(this.ListName).Items(itemId).query(query).execute(newItem => {
+                let itemFound = false;
+
+                // Parse the items
+                for (let i = 0; i < this._items.length; i++) {
+                    let item = this._items[i] as Types.SP.ListItem;
+
+                    // See if this is the item
+                    if (itemId == item.Id) {
+                        // Replace the item
+                        this._items[i] = newItem as any;
+
+                        // Set the flag and break from the loop
+                        itemFound = true;
+                        break;
+                    }
+                }
+
+                // See if the item wasn't found
+                if (!itemFound) {
+                    // Append the item
+                    this._items.push(newItem as any);
+                }
+
+                // Resolve the request
+                resolve(this._items);
+            }, (...args) => {
+                // Reject the request
+                reject(...args);
+            }, true);
+        });
+    }
+
+    // Loads the items
     private loadItems(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
         // Return a promise
         return new Promise((resolve, reject) => {
@@ -239,6 +277,15 @@ export class List<T = Types.SP.ListItem> {
 
         // Load the data
         return this.loadItems(query);
+    }
+
+    // Refresh the data
+    refreshItem(itemId: number, query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
+        // Clear the items
+        this._items = null;
+
+        // Load the item
+        return this.loadItem(itemId, query);
     }
 
     // Updates an item
