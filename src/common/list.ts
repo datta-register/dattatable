@@ -285,9 +285,6 @@ export class List<T = Types.SP.ListItem> {
 
     // Refresh the data
     refreshItem(itemId: number, query: Types.IODataQuery = this.OData): PromiseLike<T> {
-        // Clear the items
-        this._items = null;
-
         // Load the item
         return this.loadItem(itemId, query);
     }
