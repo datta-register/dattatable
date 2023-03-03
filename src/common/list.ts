@@ -212,7 +212,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Loads the items
-    private loadItem(itemId: number, query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
+    private loadItem(itemId: number, query: Types.IODataQuery = this.OData): PromiseLike<T> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // Query the items
@@ -226,7 +226,7 @@ export class List<T = Types.SP.ListItem> {
                     // See if this is the item
                     if (itemId == item.Id) {
                         // Replace the item
-                        this._items[i] = newItem as any;
+                        this._items[i] = newItem as T;
 
                         // Set the flag and break from the loop
                         itemFound = true;
@@ -237,11 +237,11 @@ export class List<T = Types.SP.ListItem> {
                 // See if the item wasn't found
                 if (!itemFound) {
                     // Append the item
-                    this._items.push(newItem as any);
+                    this._items.push(newItem as T);
                 }
 
                 // Resolve the request
-                resolve(this._items);
+                resolve(newItem as T);
             }, (...args) => {
                 // Reject the request
                 reject(...args);
@@ -280,7 +280,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Refresh the data
-    refreshItem(itemId: number, query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
+    refreshItem(itemId: number, query: Types.IODataQuery = this.OData): PromiseLike<T> {
         // Clear the items
         this._items = null;
 
