@@ -216,7 +216,11 @@ export class List<T = Types.SP.ListItem> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // Query the items
-            Web(this.WebUrl).Lists(this.ListName).Items(itemId).query(query).execute(newItem => {
+            Web(this.WebUrl).Lists(this.ListName).Items(itemId).query({
+                Custom: query ? query.Custom : null,
+                Expand: query ? query.Expand : null,
+                Select: query ? query.Select : null
+            }).execute(newItem => {
                 let itemFound = false;
 
                 // Parse the items
