@@ -2,12 +2,19 @@ import { Components, Helper, Site, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
+// Installation Properties
+export interface IInstallProps {
+    cfg: Helper.ISPConfig | Helper.ISPConfig[];
+    onCompleted?: () => void;
+}
+
 // Show Dialog Properties
 export interface IShowDialogProps {
     errors?: Components.IListGroupItem[];
-    onHeaderRendered?(el: HTMLElement);
     onBodyRendered?(el: HTMLElement);
     onFooterRendered?(el: HTMLElement);
+    onHeaderRendered?(el: HTMLElement);
+    onInstalled?: (cfg?: Helper.ISPConfig) => void;
 }
 
 /**
@@ -15,7 +22,7 @@ export interface IShowDialogProps {
  * Checks the SharePoint configuration file to see if an install is required.
  */
 export class InstallationRequired {
-    private static _cfg: Helper.ISPConfig = null;
+    private static _cfg: Helper.ISPConfig | Helper.ISPConfig[] = null;
     private static _report: string[] = null;
 
     // Custom Actions exists
@@ -23,7 +30,7 @@ export class InstallationRequired {
     static get CustomActionsExist(): boolean { return this._customActionsExist; }
 
     // Checks the custom actions
-    private static checkCustomActions(): PromiseLike<void> {
+    private static checkCustomActions(cfg: Helper.ISPConfig): PromiseLike<void> {
         // Clear the flag
         this._customActionsExist = true;
 
@@ -32,7 +39,7 @@ export class InstallationRequired {
             // Return a promise
             return new Promise(resolve => {
                 // Ensure custom actions exist
-                if (this._cfg._configuration.CustomActionCfg == null || this._cfg._configuration.CustomActionCfg.Web == null || this._cfg._configuration.CustomActionCfg.Web.length == 0) {
+                if (cfg._configuration.CustomActionCfg == null || cfg._configuration.CustomActionCfg.Web == null || cfg._configuration.CustomActionCfg.Web.length == 0) {
                     // Resolve the request
                     resolve(null);
                     return;
@@ -42,8 +49,8 @@ export class InstallationRequired {
                 let web = Web();
                 web.UserCustomActions().execute(webCustomActions => {
                     // Parse the web custom actions
-                    for (let i = 0; i < this._cfg._configuration.CustomActionCfg.Web.length; i++) {
-                        let customAction = this._cfg._configuration.CustomActionCfg.Web[i];
+                    for (let i = 0; i < cfg._configuration.CustomActionCfg.Web.length; i++) {
+                        let customAction = cfg._configuration.CustomActionCfg.Web[i];
                         let found = false;
 
                         // Parse the web custom actions
@@ -75,7 +82,7 @@ export class InstallationRequired {
         let checkSite = () => {
             return new Promise((resolve) => {
                 // Ensure custom actions exist
-                if (this._cfg._configuration.CustomActionCfg == null || this._cfg._configuration.CustomActionCfg.Site == null || this._cfg._configuration.CustomActionCfg.Site.length == 0) {
+                if (cfg._configuration.CustomActionCfg == null || cfg._configuration.CustomActionCfg.Site == null || cfg._configuration.CustomActionCfg.Site.length == 0) {
                     // Resolve the request
                     resolve(null);
                     return;
@@ -84,8 +91,8 @@ export class InstallationRequired {
                 // Load the site custom actions
                 Site().UserCustomActions().execute(siteCustomActions => {
                     // Parse the site custom actions
-                    for (let i = 0; i < this._cfg._configuration.CustomActionCfg.Site.length; i++) {
-                        let customAction = this._cfg._configuration.CustomActionCfg.Site[i];
+                    for (let i = 0; i < cfg._configuration.CustomActionCfg.Site.length; i++) {
+                        let customAction = cfg._configuration.CustomActionCfg.Site[i];
                         let found = false;
 
                         // Parse the web custom actions
@@ -131,21 +138,21 @@ export class InstallationRequired {
     static get ListsExist(): boolean { return this._listsExist; }
 
     // Checks the lists
-    private static checkLists(): PromiseLike<void> {
+    private static checkLists(cfg: Helper.ISPConfig): PromiseLike<void> {
         // Clear the flag
         this._listsExist = true;
 
         // Return a promise
         return new Promise((resolve) => {
             // Ensure lists exist
-            if (this._cfg._configuration.ListCfg == null || this._cfg._configuration.ListCfg.length == 0) {
+            if (cfg._configuration.ListCfg == null || cfg._configuration.ListCfg.length == 0) {
                 // Resolve the request
                 resolve(null);
                 return;
             }
 
             // Parse the lists
-            Helper.Executor(this._cfg._configuration.ListCfg, listCfg => {
+            Helper.Executor(cfg._configuration.ListCfg, listCfg => {
                 // Return a promise
                 return new Promise((resolve) => {
                     // Get the list
@@ -200,25 +207,37 @@ export class InstallationRequired {
     }
 
     // Checks the configuration to see if an installation is required
-    static requiresInstall(cfg: Helper.ISPConfig): PromiseLike<boolean> {
+    static requiresInstall(props: IInstallProps): PromiseLike<boolean> {
         // Save the configuration
-        this._cfg = cfg;
+        this._cfg = props.cfg;
 
         // Clear the report
         this._report = [];
 
         // Return a promise
         return new Promise((resolve) => {
-            // Check the configuration
-            Promise.all([
-                // Check the custom actions
-                this.checkCustomActions(),
-                // Check the lists
-                this.checkLists()
-            ]).then(() => {
-                // Resolve the request
-                resolve(this._report.length > 0);
-            });
+            // Ensure this is an array
+            let cfgs: Helper.ISPConfig[] = typeof ((props as any).length) === "number" ? this._cfg as any : [this._cfg];
+
+            // Parse the configurations
+            Helper.Executor(cfgs, cfg => {
+                // Return a promise
+                return new Promise(resolve => {
+                    // Check the configuration
+                    Promise.all([
+                        // Check the custom actions
+                        this.checkCustomActions(cfg),
+                        // Check the lists
+                        this.checkLists(cfg)
+                    ]).then(() => {
+                        // Execute the event
+                        props.onCompleted ? props.onCompleted() : null;
+
+                        // Resolve the request
+                        resolve(this._report.length > 0);
+                    });
+                });
+            })
         });
     }
 
@@ -279,13 +298,28 @@ export class InstallationRequired {
                     LoadingDialog.setBody("This will close after the assets are installed.");
                     LoadingDialog.show();
 
-                    this._cfg.install().then(() => {
-                        // Hide the button
-                        btnInstall.hide();
+                    // Ensure this is an array
+                    let cfgs: Helper.ISPConfig[] = typeof ((props as any).length) === "number" ? this._cfg as any : [this._cfg];
 
-                        // Show the refresh button
-                        btnRefresh.show();
+                    // Parse the configurations
+                    Helper.Executor(cfgs, cfg => {
+                        // Return a promise
+                        return new Promise(resolve => {
+                            cfg.install().then(() => {
+                                // Hide the button
+                                btnInstall.hide();
 
+                                // Show the refresh button
+                                btnRefresh.show();
+
+                                // Call the event
+                                props.onInstalled ? props.onInstalled(cfg) : null;
+
+                                // Check the next configuration
+                                resolve(null);
+                            });
+                        });
+                    }).then(() => {
                         // Close the dialog
                         LoadingDialog.hide();
                     });
