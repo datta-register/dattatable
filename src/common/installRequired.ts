@@ -6,6 +6,7 @@ import { Modal } from "./modal";
 export interface IInstallProps {
     cfg: Helper.ISPConfig | Helper.ISPConfig[];
     onCompleted?: () => void;
+    onError?: (cfg: Helper.ISPConfig) => void;
 }
 
 // Show Dialog Properties
@@ -223,6 +224,8 @@ export class InstallationRequired {
             Helper.Executor(cfgs, cfg => {
                 // Return a promise
                 return new Promise(resolve => {
+                    let numbOfErros = this._report.length;
+
                     // Check the configuration
                     Promise.all([
                         // Check the custom actions
@@ -232,6 +235,12 @@ export class InstallationRequired {
                     ]).then(() => {
                         // Execute the event
                         props.onCompleted ? props.onCompleted() : null;
+
+                        // See if there are errors
+                        if (this._report.length > numbOfErros) {
+                            // Execute the event
+                            props.onError ? props.onError(cfg) : null;
+                        }
 
                         // Resolve the request
                         resolve(this._report.length > 0);
