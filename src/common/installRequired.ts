@@ -246,7 +246,10 @@ export class InstallationRequired {
                         resolve(this._report.length > 0);
                     });
                 });
-            }).then(resolve);
+            }).then(() => {
+                // Resolve the request
+                resolve(this._report.length > 0);
+            });
         });
     }
 
