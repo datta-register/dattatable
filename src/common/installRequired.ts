@@ -224,7 +224,7 @@ export class InstallationRequired {
             Helper.Executor(cfgs, cfg => {
                 // Return a promise
                 return new Promise(resolve => {
-                    let numbOfErros = this._report.length;
+                    let numbOfErrors = this._report.length;
 
                     // Check the configuration
                     Promise.all([
@@ -237,7 +237,7 @@ export class InstallationRequired {
                         props.onCompleted ? props.onCompleted() : null;
 
                         // See if there are errors
-                        if (this._report.length > numbOfErros) {
+                        if (this._report.length > numbOfErrors) {
                             // Execute the event
                             props.onError ? props.onError(cfg) : null;
                         }
@@ -246,7 +246,7 @@ export class InstallationRequired {
                         resolve(this._report.length > 0);
                     });
                 });
-            })
+            }).then(resolve);
         });
     }
 

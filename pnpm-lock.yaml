@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 5.2.7_webpack@5.74.0
   datatables.net: 1.13.2
   datatables.net-bs5: 1.13.2
-  gd-sprest-bs: 10.10.5
+  gd-sprest-bs: 10.10.6
   html-loader: 3.1.2_webpack@5.74.0
   jquery: 3.6.1
   moment: 2.29.4
@@ -1999,7 +1999,7 @@ packages:
     dev: true
     resolution:
       integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
-  /gd-bs/6.1.0:
+  /gd-bs/6.1.1:
     dependencies:
       '@popperjs/core': 2.11.6
       bootstrap: 5.2.3_@popperjs+core@2.11.6
@@ -2008,17 +2008,17 @@ packages:
       tippy.js: 6.3.7
     dev: true
     resolution:
-      integrity: sha512-uyc9DGo+IsGmCEqfREHr/ycOuDXmjI+zCuLsCd78yrvq1wEk2gRGYYA6/IMiDwA2X1E4hT+toHOgumrksyQ/tw==
-  /gd-sprest-bs/10.10.5:
+      integrity: sha512-LU5SKGFNy9WmAwAjSIM0q60q9C1EEPsg+5pdbvSof7Frqv0C/MB51INbAmEaFzwF3mHKE0YSnJQZ4I5bqmvzTQ==
+  /gd-sprest-bs/10.10.6:
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.1.0
+      gd-bs: 6.1.1
       gd-sprest: 7.4.1
       gd-sprest-def: 1.3.0
       quill: 1.3.7
     dev: true
     resolution:
-      integrity: sha512-GLXhspVySW7XJOfghiiPtgQMswwBplaUW8Lsb5iIx+ZCTboeM4h7MLUseqkXArprBSA7FBvZbMviRP3TPdX0dA==
+      integrity: sha512-hqpBBlgB0N3W45rx4kDUZekhFbsIVFqQ8/vjL5Dz5A1jWE46xAc0/VQmGMhUfOL2xUTtc+/xmzXsY3A5s7y+0g==
   /gd-sprest-def/1.3.0:
     dev: true
     resolution:
@@ -3214,7 +3214,7 @@ specifiers:
   css-loader: ^5.2.7
   datatables.net: ^1.13.2
   datatables.net-bs5: ^1.13.2
-  gd-sprest-bs: ^10.10.5
+  gd-sprest-bs: ^10.10.6
   html-loader: ^3.1.2
   jquery: ^3.6.1
   moment: ^2.29.4
