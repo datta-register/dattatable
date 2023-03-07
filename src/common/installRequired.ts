@@ -5,7 +5,7 @@ import { Modal } from "./modal";
 // Installation Properties
 export interface IInstallProps {
     cfg: Helper.ISPConfig | Helper.ISPConfig[];
-    onCompleted?: () => void;
+    onCompleted?: () => any;
     onError?: (cfg: Helper.ISPConfig) => void;
 }
 
@@ -233,17 +233,24 @@ export class InstallationRequired {
                         // Check the lists
                         this.checkLists(cfg)
                     ]).then(() => {
-                        // Execute the event
-                        props.onCompleted ? props.onCompleted() : null;
-
                         // See if there are errors
                         if (this._report.length > numbOfErrors) {
                             // Execute the event
                             props.onError ? props.onError(cfg) : null;
                         }
 
-                        // Resolve the request
-                        resolve(this._report.length > 0);
+                        // Execute the event and see if a promise was returned
+                        let returnVal = props.onCompleted ? props.onCompleted() : null;
+                        if (returnVal && typeof (returnVal["then"]) === "function") {
+                            // Wait for the request to complete
+                            returnVal.then(() => {
+                                // Resolve the request
+                                resolve(this._report.length > 0);
+                            });
+                        } else {
+                            // Resolve the request
+                            resolve(this._report.length > 0);
+                        }
                     });
                 });
             }).then(() => {
