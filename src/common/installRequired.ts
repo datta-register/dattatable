@@ -218,7 +218,7 @@ export class InstallationRequired {
         // Return a promise
         return new Promise((resolve) => {
             // Ensure this is an array
-            let cfgs: Helper.ISPConfig[] = typeof ((props as any).length) === "number" ? this._cfg as any : [this._cfg];
+            let cfgs: Helper.ISPConfig[] = typeof ((this._cfg as []).length) === "number" ? this._cfg as any : [this._cfg];
 
             // Parse the configurations
             Helper.Executor(cfgs, cfg => {
