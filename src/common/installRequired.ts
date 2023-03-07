@@ -246,7 +246,7 @@ export class InstallationRequired {
                         resolve(this._report.length > 0);
                     });
                 });
-            })
+            }).then(resolve);
         });
     }
 
