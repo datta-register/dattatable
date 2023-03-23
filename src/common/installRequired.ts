@@ -13,6 +13,7 @@ export interface IInstallProps {
 export interface IShowDialogProps {
     errors?: Components.IListGroupItem[];
     onBodyRendered?(el: HTMLElement);
+    onCompleted?: () => void;
     onFooterRendered?(el: HTMLElement);
     onHeaderRendered?(el: HTMLElement);
     onInstalled?: (cfg?: Helper.ISPConfig) => void;
@@ -339,6 +340,9 @@ export class InstallationRequired {
                             });
                         });
                     }).then(() => {
+                        // Call the event
+                        props.onCompleted ? props.onCompleted() : null;
+
                         // Close the dialog
                         LoadingDialog.hide();
                     });
