@@ -9,7 +9,7 @@ export interface IItemFormTab {
     onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void;
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     onRendering?: (item?: Components.IListGroupItem) => object;
-    onValidation?: (isValid?: boolean, values?: any) => boolean;
+    onValidation?: (values?: any) => boolean;
 }
 
 /** Tab Information */
@@ -29,7 +29,7 @@ export interface IItemFormCreateProps {
     onSetHeader?: (el: HTMLElement) => void;
     onShowForm?: (form?: CanvasForm | Modal) => void;
     onUpdate?: (item?: any) => void;
-    onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
+    onValidation?: (values?: any, isValid?: boolean) => boolean | PromiseLike<boolean>;
     tabInfo?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
@@ -47,7 +47,7 @@ export interface IItemFormEditProps {
     onSetHeader?: (el: HTMLElement) => void;
     onShowForm?: (form?: CanvasForm | Modal) => void;
     onUpdate?: (item?: any) => void;
-    onValidation?: (values?: any) => boolean | PromiseLike<boolean>;
+    onValidation?: (values?: any, isValid?: boolean) => boolean | PromiseLike<boolean>;
     tabInfo?: IItemFormTabInfo;
     useModal?: boolean;
     webUrl?: string;
@@ -80,7 +80,7 @@ export class ItemForm {
     private static _onSetHeader?: (el: HTMLElement) => void = null;
     private static _onShowForm?: (form?: CanvasForm | Modal) => void = null;
     private static _onSave: (values: any) => any | PromiseLike<any> = null;
-    private static _onValidation: (values?: any) => boolean | PromiseLike<boolean> = null;
+    private static _onValidation: (values?: any, isValid?: boolean) => boolean | PromiseLike<boolean> = null;
     private static _tabInfo: IItemFormTabInfo = null;
     private static _updateEvent: Function = null;
 
@@ -496,7 +496,7 @@ export class ItemForm {
             let tabInfo = this._tabInfo && this._tabInfo.tabs[counter];
             if (tabInfo && tabInfo.onValidation) {
                 // Call the event
-                tabIsValid = tabInfo.onValidation(tabIsValid, values);
+                tabIsValid = tabInfo.onValidation(values);
             }
 
             // See if the form is not valid
@@ -584,7 +584,7 @@ export class ItemForm {
         // Return a promise
         return new Promise((resolve, reject) => {
             // Call the validation event
-            let returnVal: any = this._onValidation ? this._onValidation(values) : null;
+            let returnVal: any = this._onValidation ? this._onValidation(values, isValid) : null;
             // See if it's a promise function
             if (returnVal && typeof (returnVal.then) === "function") {
                 // Wait for the promise to complete
