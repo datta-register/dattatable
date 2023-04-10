@@ -9,6 +9,7 @@ export interface IItemFormTab {
     onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void;
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     onRendering?: (item?: Components.IListGroupItem) => object;
+    onValidation?: (isValid?: boolean, values?: any) => boolean;
 }
 
 /** Tab Information */
@@ -488,8 +489,17 @@ export class ItemForm {
             // Update the values
             values = { ...values, ...form.getValues() }
 
-            // See if the form is not valid
+            // Validate the form
             let tabIsValid = form.isValid();
+
+            // See if we are using tabs and an event exists
+            let tabInfo = this._tabInfo && this._tabInfo.tabs[counter];
+            if (tabInfo && tabInfo.onValidation) {
+                // Call the event
+                tabIsValid = tabInfo.onValidation(tabIsValid, values);
+            }
+
+            // See if the form is not valid
             if (!tabIsValid) {
                 // Set the flag
                 isValid = false;
