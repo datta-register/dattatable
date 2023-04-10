@@ -489,7 +489,8 @@ export class ItemForm {
             values = { ...values, ...form.getValues() }
 
             // See if the form is not valid
-            if (!form.isValid()) {
+            let tabIsValid = form.isValid();
+            if (!tabIsValid) {
                 // Set the flag
                 isValid = false;
             }
@@ -504,7 +505,7 @@ export class ItemForm {
                     tab.classList.remove("is-invalid");
 
                     // Set the class name
-                    tab.classList.add(isValid ? "is-valid" : "is-invalid");
+                    tab.classList.add(tabIsValid ? "is-valid" : "is-invalid");
                 }
             }
             // Set the tab class
