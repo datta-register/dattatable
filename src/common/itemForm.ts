@@ -269,7 +269,7 @@ export class ItemForm {
         el = el || document.createElement("div");
 
         // Set the form properties
-        let displayAttachments = tab ? tab.fields && tab.fields.indexOf("Attachments") >= 0 : true;
+        let displayAttachments = tab ? tab.fields && tab.fields.indexOf("Attachments") >= 0 : this.FormInfo.attachments != null;
         let props: Components.IListFormDisplayProps = {
             el,
             displayAttachments,
@@ -309,7 +309,7 @@ export class ItemForm {
         el = el || document.createElement("div");
 
         // Set the form properties
-        let displayAttachments = tab ? tab.fields && tab.fields.indexOf("Attachments") >= 0 : true;
+        let displayAttachments = tab ? tab.fields && tab.fields.indexOf("Attachments") >= 0 : this.FormInfo.attachments != null;
         let props: Components.IListFormEditProps = {
             el,
             displayAttachments,
