@@ -3,9 +3,9 @@ devDependencies:
   '@babel/preset-env': 7.19.4_@babel+core@7.19.3
   babel-loader: 8.2.5_b1475583497452e4eb6a502a776a8f19
   css-loader: 5.2.7_webpack@5.74.0
-  datatables.net: 1.13.2
-  datatables.net-bs5: 1.13.2
-  gd-sprest-bs: 10.10.10
+  datatables.net: 1.13.4
+  datatables.net-bs5: 1.13.4
+  gd-sprest-bs: 10.10.17
   html-loader: 3.1.2_webpack@5.74.0
   jquery: 3.6.1
   moment: 2.29.4
@@ -1788,19 +1788,19 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==
-  /datatables.net-bs5/1.13.2:
+  /datatables.net-bs5/1.13.4:
     dependencies:
-      datatables.net: 1.13.2
+      datatables.net: 1.13.4
       jquery: 3.6.1
     dev: true
     resolution:
-      integrity: sha512-p1JOXFi+VD4wS0AxRmJPHBylJ8AC4xGJ3j0TZ+8hMspuZ+QvAhEqEPt8OEAGVzlN1ElfQimZjBeAoES/9nsuig==
-  /datatables.net/1.13.2:
+      integrity: sha512-+gtaiau4vJeuGvnsYWmQy9gqa5XQ15XmkdwpK5EjwYCMzZZEXMQ3wfu2FddBcX5tX9Ual8C+Tf1s2gmqLGNbKQ==
+  /datatables.net/1.13.4:
     dependencies:
       jquery: 3.6.1
     dev: true
     resolution:
-      integrity: sha512-u5nOU+C9SBp1SyPmd6G+niozZtrBwo1E8xzdOk3JJaAkFYgX/KxF3Gd79R8YLbUfmIs2OLnLe5gaz/qs5U8UDA==
+      integrity: sha512-yzhArTOB6tPO2QFKm1z3hA4vabtt2hRvgw8XLsT1xqEirinfGYqWDiWXlkTPTaJv2e7gG+Kf985sXkzBFlGrGQ==
   /debug/4.3.4:
     dependencies:
       ms: 2.1.2
@@ -2009,26 +2009,26 @@ packages:
     dev: true
     resolution:
       integrity: sha512-xKY16U3ZeAAR/ejJAfBf2DuRkfQOnWDNsrAb71ICUOgRBxLr+aZfKZDjP1EgLLFYyUr8UEx6j3Iz9yAZyu0V/w==
-  /gd-sprest-bs/10.10.10:
+  /gd-sprest-bs/10.10.17:
     dependencies:
       flatpickr: 4.6.13
       gd-bs: 6.1.3
-      gd-sprest: 7.4.1
+      gd-sprest: 7.4.9
       gd-sprest-def: 1.3.0
       quill: 1.3.7
     dev: true
     resolution:
-      integrity: sha512-EHp7hoKhAGVECWHAQCflhKgCpU+tqlRr9Ofb6DL5dRmGsZsbusSlPbY8k3kaPF8j21weJ0Qgiuu+O4i/2HRCPA==
+      integrity: sha512-Z22EciVNQDLNLS+PEs0nU98mnDSwOfzAQjvekYwdbtJGG/5g53Qn4uN1RhkZLb6LOxuPqNHullUX1fDhL676ag==
   /gd-sprest-def/1.3.0:
     dev: true
     resolution:
       integrity: sha512-BlGwVsx7AeNHDgy7kZkhxCczogXPFoWHW9u8u+NCxTKXDf+DvWuf4JrqSOub1w/u9gR29JDWFm1vjDmeWrm0Pw==
-  /gd-sprest/7.4.1:
+  /gd-sprest/7.4.9:
     dependencies:
       gd-sprest-def: 1.3.0
     dev: true
     resolution:
-      integrity: sha512-jVmNnH0V9y22AJvVVlLoruWyionSDkPPnAzzkcxl5aaqzxkKKulwtU2MErmuRCgVN2T3rB59PLykqF2v5iMB8Q==
+      integrity: sha512-osZnhG+ipaJ8X9hjKJX4uxrfXylSc6OdHMprL/rZDrRi7da+QNwTDvbs508RwZb2bRqmMyTB3tDDfVhSPtpT1A==
   /gensync/1.0.0-beta.2:
     dev: true
     engines:
@@ -3212,9 +3212,9 @@ specifiers:
   '@babel/preset-env': ^7.19.4
   babel-loader: ^8.2.5
   css-loader: ^5.2.7
-  datatables.net: ^1.13.2
-  datatables.net-bs5: ^1.13.2
-  gd-sprest-bs: ^10.10.10
+  datatables.net: ^1.13.4
+  datatables.net-bs5: ^1.13.4
+  gd-sprest-bs: ^10.10.17
   html-loader: ^3.1.2
   jquery: ^3.6.1
   moment: ^2.29.4

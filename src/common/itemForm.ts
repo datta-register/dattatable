@@ -476,6 +476,7 @@ export class ItemForm {
 
         // Default the form
         let forms = form ? [form] : this._editForms;
+        let defaultForm = forms[0];
 
         // Display a loading dialog
         LoadingDialog.setHeader("Validation");
@@ -488,6 +489,12 @@ export class ItemForm {
         Helper.Executor(forms, form => {
             // Update the values
             values = { ...values, ...form.getValues() }
+
+            // See if this form has attachments
+            if (form.hasAttachments()) {
+                // Set the default form
+                defaultForm = form;
+            }
 
             // Validate the form
             let tabIsValid = form.isValid();
@@ -538,7 +545,7 @@ export class ItemForm {
                                 // onSave event wants to cancel the save and do something custom
                                 if (values) {
                                     // Save the item
-                                    forms[0].save(values).then(item => {
+                                    defaultForm.save(values).then(item => {
                                         // Call the update event
                                         this._updateEvent ? this._updateEvent(item) : null;
 
