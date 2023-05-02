@@ -9,4 +9,4 @@ export * from "./list";
 export * from "./loadingDialog";
 export * from "./methods";
 export * from "./modal";
-export * from "./timout";
+export * from "./timeout";

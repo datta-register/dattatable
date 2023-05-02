@@ -14,12 +14,16 @@ export class Timeout {
         Web().query({ Select: ["Title"] }).execute(
             // Success
             () => {
-                // Do nothing
+                // Log
+                console.info("[Timeout] Successfully able to query the current web.");
             },
 
             // Error getting the web information
             // Display a modal
             () => {
+                // Log
+                console.error("[Timeout] Error getting the current web.");
+
                 // Clear the modal
                 Modal.clear();
 
