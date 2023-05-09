@@ -12,7 +12,7 @@ export interface IListProps<T = Types.SP.ListItem> {
     onInitialized?: () => void;
     onItemsLoaded?: (items?: T[]) => void;
     onLoadFormError?: (...args) => void;
-    onRefreshItems?: (items?: T[]) => void;
+    onRefreshItems?: (items?: T[]) => void | PromiseLike<any>;
     onResetForm?: () => void;
     webUrl?: string;
 }
@@ -86,7 +86,7 @@ export class List<T = Types.SP.ListItem> {
     private _onLoadFormError: (...args) => void = null;
 
     // Refresh event when refreshing the items
-    private _onRefreshItems?: (items?: T[]) => void = null;
+    private _onRefreshItems?: (items?: T[]) => void | PromiseLike<any> = null;
 
     // Event triggered when the form is reset
     private _onResetForm: () => void = null;
@@ -288,10 +288,14 @@ export class List<T = Types.SP.ListItem> {
             // Load the data
             this.loadItems(query).then((items) => {
                 // Call the event
-                this._onRefreshItems ? this._onRefreshItems(items) : null;
-
-                // Resolve the request
-                resolve(items);
+                let callback = this._onRefreshItems ? this._onRefreshItems(items) : null;
+                if (callback && typeof (callback.then) === "function") {
+                    // Wait for the request to complete
+                    callback.then(resolve, reject);
+                } else {
+                    // Resolve the request
+                    resolve(items);
+                }
             }, reject);
         });
     }
