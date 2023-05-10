@@ -8,6 +8,7 @@ import {
 export interface IListProps<T = Types.SP.ListItem> {
     itemQuery?: Types.IODataQuery;
     listName: string;
+    viewName?: string;
     onInitError?: (...args) => void;
     onInitialized?: () => void;
     onItemsLoaded?: (items?: T[]) => void;
@@ -67,6 +68,14 @@ export class List<T = Types.SP.ListItem> {
     // Reference to the display forms, if tabs are used
     get ViewForms() { return ItemForm.DisplayForms; }
 
+    // View name
+    private _viewName: string = null;
+    get ViewName(): string { return this._viewName; }
+
+    // View Xml
+    private _viewXml: string = null;
+    get ViewXml(): string { return this._viewXml; }
+
     // Web Url
     private _webUrl: string = null;
     get WebUrl(): string { return this._webUrl; }
@@ -101,6 +110,7 @@ export class List<T = Types.SP.ListItem> {
         this._onItemsLoaded = props.onItemsLoaded;
         this._onLoadFormError = props.onLoadFormError;
         this._onResetForm = props.onResetForm;
+        this._viewName = props.viewName;
         this._webUrl = props.webUrl || ContextInfo.webServerRelativeUrl;
 
         // Load the list information
@@ -209,6 +219,19 @@ export class List<T = Types.SP.ListItem> {
 
             // Wait for the requests to complete
             list.done(() => {
+                // See if the view name is specified
+                if (this.ViewName) {
+                    // Parse the views
+                    for (let i = 0; i < this.ListViews.length; i++) {
+                        let view = this.ListViews[i];
+
+                        if (view.Title.toLowerCase() == this.ViewName.toLowerCase()) {
+                            // Set the view xml
+                            this._viewXml = view.ListViewXml;
+                        }
+                    }
+                }
+
                 // Resolve the request
                 resolve();
             });
@@ -258,7 +281,19 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Loads the items
-    private loadItems(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
+    private loadItems(query?: Types.IODataQuery) {
+        // See if the view xml exists
+        if (this.ViewXml) {
+            // Get the items by the view name
+            return this.loadItemsByView();
+        } else {
+            // Get the items by odata
+            return this.loadItemsByQuery(query);
+        }
+    }
+
+    // Loads the items by odata query
+    private loadItemsByQuery(query: Types.IODataQuery = this.OData): PromiseLike<T[]> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // See if the items exist
@@ -266,6 +301,27 @@ export class List<T = Types.SP.ListItem> {
 
             // Query the items
             Web(this.WebUrl).Lists(this.ListName).Items().query(query).execute(items => {
+                // Save the items
+                this._items = items.results as any;
+
+                // Resolve the request
+                resolve(this._items);
+            }, (...args) => {
+                // Reject the request
+                reject(...args);
+            }, true);
+        });
+    }
+
+    // Loads the items by view name
+    private loadItemsByView(): PromiseLike<T[]> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the items already exist
+            if (this._items) { resolve(this._items); return; }
+
+            // Query the items
+            Web(this.WebUrl).Lists(this.ListName).getItems(this.ViewXml).execute(items => {
                 // Save the items
                 this._items = items.results as any;
 
