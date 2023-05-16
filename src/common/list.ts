@@ -116,10 +116,7 @@ export class List<T = Types.SP.ListItem> {
         // Load the list information
         this.init().then(() => {
             // Load the items
-            this.loadItems().then(items => {
-                // Set the items
-                this._items = items;
-
+            this.loadItems().then(() => {
                 // Call the event
                 this._onInitialized ? this._onInitialized() : null;
 
