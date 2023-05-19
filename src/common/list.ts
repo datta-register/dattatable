@@ -109,6 +109,7 @@ export class List<T = Types.SP.ListItem> {
         this._onInitialized = props.onInitialized;
         this._onItemsLoaded = props.onItemsLoaded;
         this._onLoadFormError = props.onLoadFormError;
+        this._onRefreshItems = props.onRefreshItems;
         this._onResetForm = props.onResetForm;
         this._viewName = props.viewName;
         this._webUrl = props.webUrl || ContextInfo.webServerRelativeUrl;
