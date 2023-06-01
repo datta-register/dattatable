@@ -37,6 +37,7 @@ export interface IDashboardProps {
     hideNavigation?: boolean;
     hideSubNavigation?: boolean;
     navigation?: {
+        searchPlaceholder?: string;
         showFilter?: boolean;
         showSearch?: boolean;
         title?: string | HTMLElement;
@@ -170,6 +171,7 @@ export class Dashboard {
                     // Call the event
                     navProps.onShowFilter ? navProps.onShowFilter() : null;
                 },
+                searchPlaceholder: navProps.searchPlaceholder
             });
         }
 

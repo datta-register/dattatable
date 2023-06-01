@@ -16,6 +16,7 @@ interface INavProps {
     onSearchRendered?: (el: HTMLElement) => void;
     onShowFilter?: () => void;
     onSearch?: (value: string) => void;
+    searchPlaceholder?: string;
     title: string | HTMLElement;
 }
 
@@ -51,7 +52,7 @@ export class Navigation {
                 hideButton: true,
                 onChange: this._props.onSearch,
                 onSearch: this._props.onSearch,
-                placeholder: "Search this app",
+                placeholder: this._props.searchPlaceholder || "Search this app",
             }
         };
 
