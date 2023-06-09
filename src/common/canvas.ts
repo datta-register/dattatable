@@ -30,6 +30,10 @@ export class CanvasForm {
         this.setAutoClose(true);
         this.setSize(0);
         this.setType(Components.OffcanvasTypes.End);
+
+        // Ensure the header and body are visible
+        this._elBody.classList.remove("d-none");
+        this._elHeader.classList.remove("d-none");
     }
 
     // Element

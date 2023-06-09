@@ -42,6 +42,11 @@ export class Modal {
         this.setKeyboard(true);
         this.setScrollable(false);
         this.setType(Components.ModalTypes.Large);
+
+        // Ensure the header, body and footer are visible
+        this._elBody.classList.remove("d-none");
+        this._elFooter.classList.remove("d-none");
+        this._elHeader.classList.remove("d-none");
     }
 
     // Hides the modal
