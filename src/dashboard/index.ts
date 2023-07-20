@@ -272,6 +272,11 @@ export class Dashboard {
      * Public Interface
      */
 
+    // Reference to the components
+    get datatable(): IDataTable { return this._dt; }
+    get Filters(): FilterSlideout { return this._filters; }
+    get Navigation(): Navigation { return this._navigation; }
+
     // Clears the filters
     clearFilter() {
         // Clear the filters
