@@ -209,7 +209,7 @@ export class List<T = Types.SP.ListItem> {
 
             // Query the list views
             list.Views().query({
-                Expand: ["FieldLinks", "Fields"]
+                Expand: ["ViewFields"]
             }).execute(views => {
                 // Save the views
                 this._listViews = views.results;
