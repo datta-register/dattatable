@@ -11,6 +11,7 @@ import "datatables.net-bs5";
 export interface IDataTable {
     datatable: any;
     filter: (idx: number, value?: string) => void;
+    filterExact: (idx: number, value?: string) => void;
     filterMulti: (idx: number, values?: string[]) => void;
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     refresh: (rows: any[]) => void;
@@ -65,6 +66,12 @@ export class DataTable implements IDataTable {
     filter(idx: number, value: string = "") {
         // Set the filter
         this._datatable.column(idx).search(value.replace(/[-[/\]{}()*+?.,\\^$#\s]/g, '\\$&'), true, false).draw();
+    }
+
+    // Filters the status
+    filterExact(idx: number, value: string = "") {
+        // Set the filter
+        this._datatable.column(idx).search("\b" + value.replace(/[-[/\]{}()*+?.,\\^$#\s]/g, '\\$&') + "\b", true, false).draw();
     }
 
     // Filters multiple values against the status

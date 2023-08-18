@@ -287,9 +287,9 @@ export class Dashboard {
     }
 
     // Filter the table
-    filter(idx: number, value?: string) {
+    filter(idx: number, value?: string, exactMatchFl?: boolean) {
         // Filter the table
-        this._dt.filter(idx, value);
+        exactMatchFl ? this._dt.filterExact(idx, value) : this._dt.filter(idx, value);
     }
 
     // Filter the table by multiple values
