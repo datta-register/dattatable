@@ -71,7 +71,7 @@ export class DataTable implements IDataTable {
     // Filters the status
     filterExact(idx: number, value: string = "") {
         // Set the filter
-        this._datatable.column(idx).search("\b" + value.replace(/[-[/\]{}()*+?.,\\^$#\s]/g, '\\$&') + "\b", true, false).draw();
+        this._datatable.column(idx).search("^" + value.replace(/[-[/\]{}()*+?.,\\^$#\s]/g, '\\$&') + "$", true, false).draw();
     }
 
     // Filters multiple values against the status
