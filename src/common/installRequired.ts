@@ -340,11 +340,11 @@ export class InstallationRequired {
                             });
                         });
                     }).then(() => {
-                        // Call the event
-                        props.onCompleted ? props.onCompleted() : null;
-
                         // Close the dialog
                         LoadingDialog.hide();
+
+                        // Call the event
+                        props.onCompleted ? props.onCompleted() : null;
                     });
                 }
             }
