@@ -4,7 +4,6 @@ import { Modal } from "./modal";
 
 // List Security
 export interface IListSecurity {
-    createFl?: boolean;
     groups?: Types.SP.GroupCreationInformation[];
     listItems: IListSecurityItem[];
     onGroupCreating?: (props: Types.SP.GroupCreationInformation) => Types.SP.GroupCreationInformation;
@@ -25,7 +24,6 @@ export interface IListSecurityItem {
  */
 export class ListSecurity {
     private _ddlItems: Components.IDropdownItem[] = null;
-    private _initFl: boolean = false;
     private _permissionTypes: { [key: number | string]: number } = null;
     private _props: IListSecurity = null;
 
@@ -35,19 +33,7 @@ export class ListSecurity {
         this._props = props;
 
         // Get the permission types
-        this.getPermissionTypes().then(() => {
-            // See if we are creating the groups
-            if (typeof (props.createFl) === "undefined" || props.createFl) {
-                // Create the groups
-                this.createGroups().then(() => {
-                    // Set the flag
-                    this._initFl = true;
-                });
-            } else {
-                // Set the flag
-                this._initFl = true;
-            }
-        });
+        this.getPermissionTypes();
     }
 
     // Configures a list
@@ -113,9 +99,19 @@ export class ListSecurity {
     }
 
     // Creates the security groups
-    private createGroups(): PromiseLike<void> {
+    private createGroups(createFl: boolean): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
+            // See if we aren't creating the groups
+            if (!createFl) {
+                // Resolve the request
+                resolve();
+                return;
+            }
+
+            // Update the loading dialog
+            LoadingDialog.setBody("Ensuring the security groups exist...");
+
             // Parse the group names
             let groups = this._props.groups || [];
             Helper.Executor(groups, groupInfo => {
@@ -131,6 +127,9 @@ export class ListSecurity {
 
                         // Group doesn't exist
                         () => {
+                            // Update the loading dialog
+                            LoadingDialog.setBody(`Creating the security group: ${groupInfo.Title}`);
+
                             // Create the properties
                             let props: Types.SP.GroupCreationInformation = {
                                 Title: groupInfo.Title
@@ -375,25 +374,31 @@ export class ListSecurity {
     }
 
     // Shows the modal
-    show() {
+    show(createFl: boolean = true) {
         // Show a loading dialog
         LoadingDialog.setHeader("Loading the Security Information")
-        LoadingDialog.setBody("This will close after the security information is read...");
+        LoadingDialog.setBody("Loading the security group information...");
         LoadingDialog.show();
 
-        // Ensure the permissions are loaded
-        let loopId = setInterval(() => {
-            // See if the permissions exist
-            if (this._ddlItems && this._permissionTypes && this._initFl) {
-                // Hide the loading dialog
-                LoadingDialog.hide();
+        // Create the groups
+        this.createGroups(createFl).then(() => {
+            // Update the loading dialog
+            LoadingDialog.setBody("Waiting for the permission types to be loaded...");
 
-                // Show the modal
-                this.renderModal();
+            // Ensure the permissions are loaded
+            let loopId = setInterval(() => {
+                // See if the permissions exist
+                if (this._ddlItems && this._permissionTypes) {
+                    // Hide the loading dialog
+                    LoadingDialog.hide();
 
-                // Stop the loop
-                clearInterval(loopId);
-            }
-        }, 10);
+                    // Show the modal
+                    this.renderModal();
+
+                    // Stop the loop
+                    clearInterval(loopId);
+                }
+            }, 10);
+        });
     }
 }
