@@ -13,7 +13,7 @@ export interface IListSecurity {
 
 // List Security Information
 export interface IListSecurityItem {
-    groupName: string;
+    group: Types.SP.GroupCreationInformation;
     listName: string;
     permission: number | string;
 }
@@ -50,13 +50,13 @@ export class ListSecurity {
             let permissionId = this._permissionTypes[listInfo.permission];
             if (permissionId > 0) {
                 // Get the group id
-                this.getGroupId(listInfo.groupName).then(
+                this.getGroupId(listInfo.group.Title).then(
                     // Exists
                     groupId => {
                         // Add the group to the list
                         Web(this._props.webUrl).Lists(listInfo.listName).RoleAssignments().addRoleAssignment(groupId, permissionId).execute(resolve, () => {
                             // Log to the console
-                            console.error(`[${listInfo.listName}] Error adding the group '${listInfo.groupName}' with permission ${listInfo.permission} to the list.`);
+                            console.error(`[${listInfo.listName}] Error adding the group '${listInfo.group.Title}' with permission ${listInfo.permission} to the list.`);
 
                             // Resolve the request
                             resolve();
@@ -66,7 +66,7 @@ export class ListSecurity {
                     // Error
                     () => {
                         // Log to the console
-                        console.error(`[${listInfo.listName}] Site Group '${listInfo.groupName}' doesn't exist`);
+                        console.error(`[${listInfo.listName}] Site Group '${listInfo.group.Title}' doesn't exist`);
 
                         // Resolve the request
                         resolve();
@@ -112,7 +112,7 @@ export class ListSecurity {
             let data = {};
             for (let i = 0; i < this._props.listItems.length; i++) {
                 // Add the group name
-                data[this._props.listItems[i].groupName.toLowerCase()] = true;
+                data[this._props.listItems[i].group.Title.toLowerCase()] = true;
             }
 
             // Get the group names
@@ -249,7 +249,7 @@ export class ListSecurity {
                             name: "groupName_" + i,
                             label: "Group Name",
                             type: Components.FormControlTypes.Readonly,
-                            value: listItem.groupName
+                            value: listItem.group.Title
                         }
                     },
                     {
@@ -302,7 +302,7 @@ export class ListSecurity {
                             for (let i = 0; i < rows.length; i++) {
                                 // Add the list information
                                 lists.push({
-                                    groupName: tableData["groupName_" + i],
+                                    group: { Title: tableData["groupName_" + i] },
                                     listName: tableData["listName_" + i],
                                     permission: tableData["permission_" + i]
                                 });
