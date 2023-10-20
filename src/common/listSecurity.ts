@@ -5,6 +5,7 @@ import { Modal } from "./modal";
 // List Security
 export interface IListSecurity {
     createFl?: boolean;
+    groups?: Types.SP.GroupCreationInformation[];
     listItems: IListSecurityItem[];
     onGroupCreating?: (props: Types.SP.GroupCreationInformation) => Types.SP.GroupCreationInformation;
     onGroupCreated?: (group: Types.SP.Group) => void;
@@ -13,7 +14,7 @@ export interface IListSecurity {
 
 // List Security Information
 export interface IListSecurityItem {
-    group: Types.SP.GroupCreationInformation;
+    groupName: string;
     listName: string;
     permission: number | string;
 }
@@ -24,6 +25,7 @@ export interface IListSecurityItem {
  */
 export class ListSecurity {
     private _ddlItems: Components.IDropdownItem[] = null;
+    private _initFl: boolean = false;
     private _permissionTypes: { [key: number | string]: number } = null;
     private _props: IListSecurity = null;
 
@@ -33,13 +35,19 @@ export class ListSecurity {
         this._props = props;
 
         // Get the permission types
-        this.getPermissionTypes();
-
-        // See if we are creating the groups
-        if (typeof (props.createFl) === "undefined" || props.createFl) {
-            // Create the groups
-            this.createGroups();
-        }
+        this.getPermissionTypes().then(() => {
+            // See if we are creating the groups
+            if (typeof (props.createFl) === "undefined" || props.createFl) {
+                // Create the groups
+                this.createGroups().then(() => {
+                    // Set the flag
+                    this._initFl = true;
+                });
+            } else {
+                // Set the flag
+                this._initFl = true;
+            }
+        });
     }
 
     // Configures a list
@@ -50,13 +58,13 @@ export class ListSecurity {
             let permissionId = this._permissionTypes[listInfo.permission];
             if (permissionId > 0) {
                 // Get the group id
-                this.getGroupId(listInfo.group.Title).then(
+                this.getGroupId(listInfo.groupName).then(
                     // Exists
                     groupId => {
                         // Add the group to the list
                         Web(this._props.webUrl).Lists(listInfo.listName).RoleAssignments().addRoleAssignment(groupId, permissionId).execute(resolve, () => {
                             // Log to the console
-                            console.error(`[${listInfo.listName}] Error adding the group '${listInfo.group.Title}' with permission ${listInfo.permission} to the list.`);
+                            console.error(`[${listInfo.listName}] Error adding the group '${listInfo.groupName}' with permission ${listInfo.permission} to the list.`);
 
                             // Resolve the request
                             resolve();
@@ -66,7 +74,7 @@ export class ListSecurity {
                     // Error
                     () => {
                         // Log to the console
-                        console.error(`[${listInfo.listName}] Site Group '${listInfo.group.Title}' doesn't exist`);
+                        console.error(`[${listInfo.listName}] Site Group '${listInfo.groupName}' doesn't exist`);
 
                         // Resolve the request
                         resolve();
@@ -108,23 +116,13 @@ export class ListSecurity {
     private createGroups(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            // Parse the list items
-            let data = {};
-            for (let i = 0; i < this._props.listItems.length; i++) {
-                // Add the group name
-                data[this._props.listItems[i].group.Title.toLowerCase()] = true;
-            }
-
-            // Get the group names
-            let groupNames: string[] = [];
-            for (let key in data) { groupNames.push(key); }
-
             // Parse the group names
-            Helper.Executor(groupNames, groupName => {
+            let groups = this._props.groups || [];
+            Helper.Executor(groups, groupInfo => {
                 // Return a promise
                 return new Promise(resolve => {
                     // Get the group
-                    this.getGroupId(groupName).then(
+                    this.getGroupId(groupInfo.Title).then(
                         // Group exists
                         group => {
                             // Check the next group
@@ -135,7 +133,7 @@ export class ListSecurity {
                         () => {
                             // Create the properties
                             let props: Types.SP.GroupCreationInformation = {
-                                Title: groupName
+                                Title: groupInfo.Title
                             };
 
                             // Call the event if it exists
@@ -146,7 +144,7 @@ export class ListSecurity {
                                 // Successfully created the group
                                 group => {
                                     // Set the group id
-                                    this.setGroupId(groupName.toLowerCase(), group);
+                                    this.setGroupId(groupInfo.Title.toLowerCase(), group);
 
                                     // Call the event
                                     this._props.onGroupCreated ? this._props.onGroupCreated(group) : null;
@@ -158,7 +156,7 @@ export class ListSecurity {
                                 // Error creating the group
                                 () => {
                                     // Log to the console
-                                    console.error(`Site Group '${groupName}' was unable to be created.`);
+                                    console.error(`Site Group '${groupInfo.Title}' was unable to be created.`);
 
                                     // Check the next group
                                     resolve(null);
@@ -249,7 +247,7 @@ export class ListSecurity {
                             name: "groupName_" + i,
                             label: "Group Name",
                             type: Components.FormControlTypes.Readonly,
-                            value: listItem.group.Title
+                            value: listItem.groupName
                         }
                     },
                     {
@@ -302,7 +300,7 @@ export class ListSecurity {
                             for (let i = 0; i < rows.length; i++) {
                                 // Add the list information
                                 lists.push({
-                                    group: { Title: tableData["groupName_" + i] },
+                                    groupName: tableData["groupName_" + i],
                                     listName: tableData["listName_" + i],
                                     permission: tableData["permission_" + i]
                                 });
@@ -378,10 +376,18 @@ export class ListSecurity {
 
     // Shows the modal
     show() {
+        // Show a loading dialog
+        LoadingDialog.setHeader("Loading the Security Information")
+        LoadingDialog.setBody("This will close after the security information is read...");
+        LoadingDialog.show();
+
         // Ensure the permissions are loaded
         let loopId = setInterval(() => {
             // See if the permissions exist
-            if (this._ddlItems && this._permissionTypes) {
+            if (this._ddlItems && this._permissionTypes && this._initFl) {
+                // Hide the loading dialog
+                LoadingDialog.hide();
+
                 // Show the modal
                 this.renderModal();
 
