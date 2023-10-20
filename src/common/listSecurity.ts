@@ -2,6 +2,15 @@ import { Components, Helper, Types, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
+// List Security
+export interface IListSecurity {
+    createFl?: boolean;
+    listItems: IListSecurityItem[];
+    onGroupCreating?: (props: Types.SP.GroupCreationInformation) => Types.SP.GroupCreationInformation;
+    onGroupCreated?: (group: Types.SP.Group) => void;
+    webUrl?: string;
+}
+
 // List Security Information
 export interface IListSecurityItem {
     groupName: string;
@@ -9,26 +18,28 @@ export interface IListSecurityItem {
     permission: number | string;
 }
 
-
-
 /**
  * List Security
  * This component is used for setting the security group/permissions for a list.
  */
 export class ListSecurity {
     private _ddlItems: Components.IDropdownItem[] = null;
-    private _listItems: IListSecurityItem[] = null;
     private _permissionTypes: { [key: number | string]: number } = null;
-    private _webUrl: string = null;
+    private _props: IListSecurity = null;
 
     // Constructor
-    constructor(listItems: IListSecurityItem[], webUrl?: string) {
+    constructor(props: IListSecurity) {
         // Save the properties
-        this._listItems = listItems;
-        this._webUrl = webUrl;
+        this._props = props;
 
         // Get the permission types
         this.getPermissionTypes();
+
+        // See if we are creating the groups
+        if (typeof (props.createFl) === "undefined" || props.createFl) {
+            // Create the groups
+            this.createGroups();
+        }
     }
 
     // Configures a list
@@ -43,7 +54,7 @@ export class ListSecurity {
                     // Exists
                     groupId => {
                         // Add the group to the list
-                        Web(this._webUrl).Lists(listInfo.listName).RoleAssignments().addRoleAssignment(groupId, permissionId).execute(resolve, () => {
+                        Web(this._props.webUrl).Lists(listInfo.listName).RoleAssignments().addRoleAssignment(groupId, permissionId).execute(resolve, () => {
                             // Log to the console
                             console.error(`[${listInfo.listName}] Error adding the group '${listInfo.groupName}' with permission ${listInfo.permission} to the list.`);
 
@@ -93,53 +104,119 @@ export class ListSecurity {
         });
     }
 
+    // Creates the security groups
+    private createGroups(): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Parse the list items
+            let data = {};
+            for (let i = 0; i < this._props.listItems.length; i++) {
+                // Add the group name
+                data[this._props.listItems[i].groupName.toLowerCase()] = true;
+            }
+
+            // Get the group names
+            let groupNames: string[] = [];
+            for (let key in data) { groupNames.push(key); }
+
+            // Parse the group names
+            Helper.Executor(groupNames, groupName => {
+                // Return a promise
+                return new Promise(resolve => {
+                    // Get the group
+                    this.getGroupId(groupName).then(
+                        // Group exists
+                        group => {
+                            // Check the next group
+                            resolve(group);
+                        },
+
+                        // Group doesn't exist
+                        () => {
+                            // Create the properties
+                            let props: Types.SP.GroupCreationInformation = {
+                                Title: groupName
+                            };
+
+                            // Call the event if it exists
+                            props = this._props.onGroupCreating ? this._props.onGroupCreating(props) : props;
+
+                            // Create the group
+                            Web(this._props.webUrl).SiteGroups().add(props).execute(
+                                // Successfully created the group
+                                group => {
+                                    // Set the group id
+                                    this.setGroupId(groupName.toLowerCase(), group);
+
+                                    // Call the event
+                                    this._props.onGroupCreated ? this._props.onGroupCreated(group) : null;
+
+                                    // Check the next group
+                                    resolve(group);
+                                },
+
+                                // Error creating the group
+                                () => {
+                                    // Log to the console
+                                    console.error(`Site Group '${groupName}' was unable to be created.`);
+
+                                    // Check the next group
+                                    resolve(null);
+                                }
+                            );
+                        }
+                    );
+                });
+            });
+        });
+    }
+
     // Gets the group id
-    private _groupIds: { [key: string]: number } = {};
+    private _groups: { [key: string]: Types.SP.Group } = {};
     private getGroupId(groupName: string): PromiseLike<number> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let key = groupName.toLowerCase();
 
             // See if we have already have it
-            if (this._groupIds[key]) {
+            if (this._groups[key]) {
                 // Resolve the request
-                resolve(this._groupIds[key]);
+                resolve(this._groups[key].Id);
                 return;
-            }
-
-            // Saves the group information
-            let saveGroupInfo = (group: Types.SP.Group) => {
-                // Save the info
-                this._groupIds[key] = group.Id;
-
-                // Resolve the request
-                resolve(group.Id);
             }
 
             // Get the group information
             switch (key) {
                 // Default owner's group
                 case "owner":
-                    Web(this._webUrl).AssociatedOwnerGroup().execute(saveGroupInfo, reject);
+                    Web(this._props.webUrl).AssociatedOwnerGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
                     break;
 
                 // Default member's group
                 case "member":
-                    Web(this._webUrl).AssociatedMemberGroup().execute(saveGroupInfo, reject);
+                    Web(this._props.webUrl).AssociatedMemberGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
                     break;
 
                 // Default visitor's group
                 case "visitor":
-                    Web(this._webUrl).AssociatedVisitorGroup().execute(saveGroupInfo, reject);
+                    Web(this._props.webUrl).AssociatedVisitorGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
                     break;
 
                 // Default
                 default:
                     // Get the group
-                    Web(this._webUrl).SiteGroups().getByName(groupName).execute(saveGroupInfo, reject);
+                    Web(this._props.webUrl).SiteGroups().getByName(groupName).execute(group => { resolve(this.setGroupId(key, group)); }, reject);
                     break;
             }
         });
+    }
+    // Saves the group information
+    private setGroupId(key: string, group: Types.SP.Group) {
+        // Save the info
+        this._groups[key] = group;
+
+        // Return the group id
+        return group.Id;
     }
 
     // Render the modal
@@ -152,8 +229,8 @@ export class ListSecurity {
 
         // Parse the lists
         let rows: Components.IFormRow[] = [];
-        for (let i = 0; i < this._listItems.length; i++) {
-            let listItem = this._listItems[i];
+        for (let i = 0; i < this._props.listItems.length; i++) {
+            let listItem = this._props.listItems[i];
 
             // Add the row
             rows.push({
@@ -285,7 +362,7 @@ export class ListSecurity {
         return new Promise((resolve) => {
             // Parse the list keys
             for (let listName in lists) {
-                let list = Web(this._webUrl).Lists(listName);
+                let list = Web(this._props.webUrl).Lists(listName);
 
                 // Reset the permissions
                 list.resetRoleInheritance().execute();
