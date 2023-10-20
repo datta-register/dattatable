@@ -8,6 +8,7 @@ export interface IListSecurity {
     listItems: IListSecurityItem[];
     onGroupCreating?: (props: Types.SP.GroupCreationInformation) => Types.SP.GroupCreationInformation;
     onGroupCreated?: (group: Types.SP.Group) => void;
+    onGroupsLoaded?: (groups?: { [key: string]: Types.SP.Group }) => void;
     webUrl?: string;
 }
 
@@ -27,6 +28,17 @@ export class ListSecurity {
     private _permissionTypes: { [key: number | string]: number } = null;
     private _props: IListSecurity = null;
 
+    // Security group information
+    private _groups: { [key: string]: Types.SP.Group } = {};
+    getGroup(groupName: string): Types.SP.Group { return this._groups[groupName.toLowerCase()]; }
+    private setGroupId(key: string, group: Types.SP.Group) {
+        // Save the info
+        this._groups[key] = group;
+
+        // Return the group id
+        return group.Id;
+    }
+
     // Constructor
     constructor(props: IListSecurity) {
         // Save the properties
@@ -34,6 +46,9 @@ export class ListSecurity {
 
         // Get the permission types
         this.getPermissionTypes();
+
+        // Load the groups
+        this.loadGroups();
     }
 
     // Configures a list
@@ -169,7 +184,6 @@ export class ListSecurity {
     }
 
     // Gets the group id
-    private _groups: { [key: string]: Types.SP.Group } = {};
     private getGroupId(groupName: string): PromiseLike<number> {
         // Return a promise
         return new Promise((resolve, reject) => {
@@ -207,13 +221,49 @@ export class ListSecurity {
             }
         });
     }
-    // Saves the group information
-    private setGroupId(key: string, group: Types.SP.Group) {
-        // Save the info
-        this._groups[key] = group;
 
-        // Return the group id
-        return group.Id;
+    // Get the permission types
+    private getPermissionTypes(): PromiseLike<void> {
+        // Return a promise
+        return new Promise(resolve => {
+            // Get the definitions
+            Web().RoleDefinitions().query({
+                OrderBy: ["Name"]
+            }).execute(roleDefs => {
+                // Clear the permissions and items
+                this._ddlItems = [{ text: "No Permission" }];
+                this._permissionTypes = {};
+
+                // Parse the role definitions
+                for (let i = 0; i < roleDefs.results.length; i++) {
+                    let roleDef = roleDefs.results[i];
+
+                    // Add the role and item
+                    let value = roleDef.RoleTypeKind > 0 ? roleDef.RoleTypeKind : roleDef.Name;
+                    this._permissionTypes[value] = roleDef.Id;
+                    this._ddlItems.push({
+                        data: roleDef,
+                        text: roleDef.Name,
+                        value: value.toString()
+                    });
+                }
+
+                // Resolve the request
+                resolve();
+            });
+        });
+    }
+
+    // Loads the security groups
+    private loadGroups() {
+        // Parse the security groups
+        Helper.Executor(this._props.groups, group => {
+            // Load the group
+            return this.getGroupId(group.Title);
+        }).then(() => {
+            // Call the event
+            this._props.onGroupsLoaded ? this._props.onGroupsLoaded() : null;
+        });
     }
 
     // Render the modal
@@ -315,35 +365,6 @@ export class ListSecurity {
 
         // Show the modal
         Modal.show();
-    }
-
-    // Get the permission types
-    private getPermissionTypes(): PromiseLike<void> {
-        // Return a promise
-        return new Promise(resolve => {
-            // Get the definitions
-            Web().RoleDefinitions().query({
-                OrderBy: ["Name"]
-            }).execute(roleDefs => {
-                // Clear the permissions and items
-                this._ddlItems = [{ text: "No Permission" }];
-                this._permissionTypes = {};
-
-                // Parse the role definitions
-                for (let i = 0; i < roleDefs.results.length; i++) {
-                    let roleDef = roleDefs.results[i];
-
-                    // Add the role and item
-                    let value = roleDef.RoleTypeKind > 0 ? roleDef.RoleTypeKind : roleDef.Name;
-                    this._permissionTypes[value] = roleDef.Id;
-                    this._ddlItems.push({
-                        data: roleDef,
-                        text: roleDef.Name,
-                        value: value.toString()
-                    });
-                }
-            });
-        });
     }
 
     // Reset list permissions
