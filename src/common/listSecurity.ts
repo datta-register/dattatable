@@ -39,6 +39,9 @@ export class ListSecurity {
         return group.Id;
     }
 
+    // Security group information for users
+    private _users: { [key: number]: Types.SP.Group[] }
+
     // Constructor
     constructor(props: IListSecurity) {
         // Save the properties
@@ -227,7 +230,7 @@ export class ListSecurity {
         // Return a promise
         return new Promise(resolve => {
             // Get the definitions
-            Web().RoleDefinitions().query({
+            Web(this._props.webUrl).RoleDefinitions().query({
                 OrderBy: ["Name"]
             }).execute(roleDefs => {
                 // Clear the permissions and items
@@ -251,6 +254,54 @@ export class ListSecurity {
                 // Resolve the request
                 resolve();
             });
+        });
+    }
+
+    // Method to see if a user is w/in a group
+    private isInGroup(userId: number, groupName: string): PromiseLike<boolean> {
+        // Return a promise
+        return new Promise(resolve => {
+            // See if we have the user information
+            if (this._users[userId]) {
+                let isInGroup = false;
+
+                // Parse the groups
+                for (let i = 0; i < this._users[userId].length; i++) {
+                    let group = this._users[userId][i];
+
+                    // See if this is the group name
+                    if (groupName == group.Title) {
+                        // Set the flag
+                        isInGroup = true;
+                        break;
+                    }
+                }
+
+                // Resolve the request
+                resolve(isInGroup);
+                return;
+            }
+
+            // Get the group information for this user
+            Web(this._props.webUrl).SiteUsers(userId).Groups().execute(
+                // Success
+                groups => {
+                    // Save the user information
+                    this._users[userId] = groups.results;
+
+                    // See if they are in the group
+                    this.isInGroup(userId, groupName).then(resolve);
+                },
+
+                // Error
+                () => {
+                    // Log
+                    console.error(`Unable to get the user information for id: ${userId}`);
+
+                    // Error get the user information
+                    resolve(false);
+                }
+            );
         });
     }
 
