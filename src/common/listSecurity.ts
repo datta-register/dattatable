@@ -38,16 +38,21 @@ export class ListSecurity {
     // Security group information
     private _groups: { [key: string]: Types.SP.Group } = {};
     getGroup(groupName: string): Types.SP.Group { return this._groups[groupName.toLowerCase()]; }
-    private setGroupId(key: string, group: Types.SP.Group) {
+    private setGroup(key: string, group: Types.SP.GroupOData | Types.SP.Group) {
         // Save the info
-        this._groups[key] = group;
+        this._groups[key] = group as Types.SP.Group;
+        this._groupUsers[key] = [];
 
-        // Return the group id
-        return group.Id;
+        // See if the users exist
+        if ((group as Types.SP.GroupOData).Users) {
+            // Set the users for this group
+            this._groupUsers[key] = (group as Types.SP.GroupOData).Users.results || [];
+        }
     }
 
-    // Security group information for users
-    private _users: { [key: number]: Types.SP.Group[] }
+    // Security group users
+    private _groupUsers: { [key: string]: Types.SP.User[] } = {};
+    getGroupUsers(groupName: string): Types.SP.User[] { return this._groupUsers[groupName.toLowerCase()] || []; }
 
     // Constructor
     constructor(props: IListSecurity) {
@@ -168,7 +173,7 @@ export class ListSecurity {
                                 // Successfully created the group
                                 group => {
                                     // Set the group id
-                                    this.setGroupId(groupInfo.Title.toLowerCase(), group);
+                                    this.setGroup(groupInfo.Title.toLowerCase(), group);
 
                                     // Call the event
                                     this._props.onGroupCreated ? this._props.onGroupCreated(group) : null;
@@ -210,23 +215,31 @@ export class ListSecurity {
             switch (key) {
                 // Default owner's group
                 case ListSecurityDefaultGroups.Owners:
-                    Web(this._props.webUrl).AssociatedOwnerGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
+                    Web(this._props.webUrl).AssociatedOwnerGroup().query({
+                        Expand: ["Users"]
+                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
                     break;
 
                 // Default member's group
                 case ListSecurityDefaultGroups.Members:
-                    Web(this._props.webUrl).AssociatedMemberGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
+                    Web(this._props.webUrl).AssociatedMemberGroup().query({
+                        Expand: ["Users"]
+                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
                     break;
 
                 // Default visitor's group
                 case ListSecurityDefaultGroups.Visitors:
-                    Web(this._props.webUrl).AssociatedVisitorGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
+                    Web(this._props.webUrl).AssociatedVisitorGroup().query({
+                        Expand: ["Users"]
+                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
                     break;
 
                 // Default
                 default:
                     // Get the group
-                    Web(this._props.webUrl).SiteGroups().getByName(groupName).execute(group => { resolve(this.setGroupId(key, group)); }, reject);
+                    Web(this._props.webUrl).SiteGroups().getByName(groupName).query({
+                        Expand: ["Users"]
+                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
                     break;
             }
         });
@@ -265,76 +278,18 @@ export class ListSecurity {
     }
 
     // Method to see if a user is w/in a group
-    isInGroup(userId: number, groupName: string): PromiseLike<boolean> {
-        // Return a promise
-        return new Promise(resolve => {
-            // See if we have the user information
-            if (this._users[userId]) {
-                let isInGroup = false;
-
-                // Parse the groups
-                for (let i = 0; i < this._users[userId].length; i++) {
-                    let group = this._users[userId][i];
-                    let isInGroup = false;
-
-                    // See if this is the default owner/member/visitor group
-                    switch (groupName.toLowerCase()) {
-                        // Default owner's group
-                        case ListSecurityDefaultGroups.Owners:
-                            isInGroup = group.Id == this._groups[ListSecurityDefaultGroups.Owners].Id
-                            break;
-
-                        // Default member's group
-                        case ListSecurityDefaultGroups.Members:
-                            isInGroup = group.Id == this._groups[ListSecurityDefaultGroups.Members].Id
-                            break;
-
-                        // Default visitor's group
-                        case ListSecurityDefaultGroups.Visitors:
-                            isInGroup = group.Id == this._groups[ListSecurityDefaultGroups.Visitors].Id
-                            break;
-
-                        // Default
-                        default:
-                            // See if they are in this group
-                            isInGroup = group.Title == groupName;
-                            break;
-                    }
-
-                    // See if the user is in this group
-                    if (isInGroup) {
-                        // Set the flag
-                        isInGroup = true;
-                        break;
-                    }
-                }
-
-                // Resolve the request
-                resolve(isInGroup);
-                return;
+    isInGroup(userId: number, groupName: string): boolean {
+        // See if we have the user information
+        let users = this.getGroupUsers(groupName);
+        for (let i = 0; i < users.length; i++) {
+            // See if the user is in this group
+            if (users[i].Id == userId) {
+                return true;
             }
+        }
 
-            // Get the group information for this user
-            Web(this._props.webUrl).SiteUsers(userId).Groups().execute(
-                // Success
-                groups => {
-                    // Save the user information
-                    this._users[userId] = groups.results;
-
-                    // See if they are in the group
-                    this.isInGroup(userId, groupName).then(resolve);
-                },
-
-                // Error
-                () => {
-                    // Log
-                    console.error(`Unable to get the user information for id: ${userId}`);
-
-                    // Error get the user information
-                    resolve(false);
-                }
-            );
-        });
+        // Not in the group
+        return false;
     }
 
     // Loads the security groups
