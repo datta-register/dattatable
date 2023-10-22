@@ -294,12 +294,12 @@ export class ListSecurity {
 
     // Loads the security groups
     private loadGroups() {
-        let groupNames = [];
+        let groupNames: string[] = [];
 
         // Parse the security groups
         for (let i = 0; i < this._props.groups.length; i++) {
             // Add the group name
-            groupNames.push(this._props.groups[i]);
+            groupNames.push(this._props.groups[i].Title);
         }
 
         // Parse the list items
