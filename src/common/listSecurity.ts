@@ -150,9 +150,9 @@ export class ListSecurity {
                     // Get the group
                     this.getGroupId(groupInfo.Title).then(
                         // Group exists
-                        group => {
+                        () => {
                             // Check the next group
-                            resolve(group);
+                            resolve(null);
                         },
 
                         // Group doesn't exist
@@ -194,7 +194,7 @@ export class ListSecurity {
                         }
                     );
                 });
-            });
+            }).then(resolve, reject);
         });
     }
 
@@ -495,6 +495,14 @@ export class ListSecurity {
                     clearInterval(loopId);
                 }
             }, 10);
+        }, () => {
+            // Hide the loading dialog
+            LoadingDialog.hide();
+
+            // Show an error
+            Modal.setHeader("Security Groups");
+            Modal.setBody("Error loading/creating the security groups. Please contact your admin.");
+            Modal.show();
         });
     }
 }
