@@ -492,7 +492,13 @@ export class ListSecurity {
                     LoadingDialog.hide();
 
                     // Show the modal
-                    this.renderModal(onComplete);
+                    this.renderModal(() => {
+                        // Hide the loading dialog
+                        LoadingDialog.hide();
+
+                        // Call the event
+                        onComplete ? onComplete() : null;
+                    });
 
                     // Stop the loop
                     clearInterval(loopId);
