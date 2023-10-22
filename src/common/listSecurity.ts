@@ -424,9 +424,9 @@ export class ListSecurity {
                             for (let i = 0; i < rows.length; i++) {
                                 // Add the list information
                                 lists.push({
-                                    groupName: tableData["groupName_" + i],
-                                    listName: tableData["listName_" + i],
-                                    permission: tableData["permission_" + i]
+                                    groupName: tableData["groupName_" + i].value,
+                                    listName: tableData["listName_" + i].value,
+                                    permission: tableData["permission_" + i].value
                                 });
                             }
 
