@@ -105,25 +105,28 @@ export class ListSecurity {
 
     // Configures the lists
     private configureLists(lists: IListSecurityItem[]) {
-        let counter = 0;
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            let counter = 0;
 
-        // Show a loading dialog
-        LoadingDialog.setHeader("Configuring Lists");
-        LoadingDialog.setBody("This will close after the lists are configured...");
-        LoadingDialog.show();
+            // Show a loading dialog
+            LoadingDialog.setHeader("Configuring Lists");
+            LoadingDialog.setBody("This will close after the lists are configured...");
+            LoadingDialog.show();
 
-        // Reset the lists
-        this.resetPermissions(lists).then(() => {
-            // Parse the lists
-            Helper.Executor(lists, list => {
-                // Return a promise
-                return new Promise(resolve => {
-                    // Update the loading dialog
-                    LoadingDialog.setBody(`Configuring ${++counter} of ${lists.length} lists...`);
+            // Reset the lists
+            this.resetPermissions(lists).then(() => {
+                // Parse the lists
+                Helper.Executor(lists, list => {
+                    // Return a promise
+                    return new Promise(resolve => {
+                        // Update the loading dialog
+                        LoadingDialog.setBody(`Configuring ${++counter} of ${lists.length} lists...`);
 
-                    // Configure the list
-                    this.configureList(list).then(resolve);
-                });
+                        // Configure the list
+                        this.configureList(list).then(resolve);
+                    });
+                }).then(resolve, reject);
             });
         });
     }
@@ -342,7 +345,7 @@ export class ListSecurity {
     }
 
     // Render the modal
-    private renderModal() {
+    private renderModal(onComplete: () => void) {
         // Clear the modal
         Modal.clear();
 
@@ -424,14 +427,14 @@ export class ListSecurity {
                             for (let i = 0; i < rows.length; i++) {
                                 // Add the list information
                                 lists.push({
-                                    groupName: tableData["groupName_" + i].value,
-                                    listName: tableData["listName_" + i].value,
+                                    groupName: tableData["groupName_" + i],
+                                    listName: tableData["listName_" + i],
                                     permission: tableData["permission_" + i].value
                                 });
                             }
 
                             // Configure the lists
-                            this.configureLists(lists);
+                            this.configureLists(lists).then(onComplete);
                         }
                     }
                 }
@@ -470,7 +473,7 @@ export class ListSecurity {
     }
 
     // Shows the modal
-    show(createFl: boolean = true) {
+    show(createFl: boolean = true, onComplete?: () => void) {
         // Show a loading dialog
         LoadingDialog.setHeader("Loading the Security Information")
         LoadingDialog.setBody("Loading the security group information...");
@@ -489,7 +492,7 @@ export class ListSecurity {
                     LoadingDialog.hide();
 
                     // Show the modal
-                    this.renderModal();
+                    this.renderModal(onComplete);
 
                     // Stop the loop
                     clearInterval(loopId);
