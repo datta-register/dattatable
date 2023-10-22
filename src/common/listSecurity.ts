@@ -294,10 +294,47 @@ export class ListSecurity {
 
     // Loads the security groups
     private loadGroups() {
+        let groupNames = [];
+
         // Parse the security groups
-        Helper.Executor(this._props.groups, group => {
+        for (let i = 0; i < this._props.groups.length; i++) {
+            // Add the group name
+            groupNames.push(this._props.groups[i]);
+        }
+
+        // Parse the list items
+        let loadDefaultOwner = false;
+        let loadDefaultMember = false;
+        let loadDefaultVisitor = false;
+        for (let i = 0; i < this._props.listItems.length; i++) {
+            // See if this item uses a default group name
+            switch (this._props.listItems[i].groupName) {
+                // Members Group
+                case ListSecurityDefaultGroups.Members:
+                    loadDefaultMember = true;
+                    break;
+
+                // Owners Group
+                case ListSecurityDefaultGroups.Owners:
+                    loadDefaultOwner = true;
+                    break;
+
+                // Visitors Group
+                case ListSecurityDefaultGroups.Visitors:
+                    loadDefaultVisitor = true;
+                    break;
+            }
+        }
+
+        // Append the group names
+        loadDefaultMember ? groupNames.push(ListSecurityDefaultGroups.Members) : null;
+        loadDefaultOwner ? groupNames.push(ListSecurityDefaultGroups.Owners) : null;
+        loadDefaultVisitor ? groupNames.push(ListSecurityDefaultGroups.Visitors) : null;
+
+        // Parse the security groups
+        Helper.Executor(groupNames, groupName => {
             // Load the group
-            return this.getGroupId(group.Title);
+            return this.getGroupId(groupName);
         }).then(() => {
             // Call the event
             this._props.onGroupsLoaded ? this._props.onGroupsLoaded(this._groups) : null;
