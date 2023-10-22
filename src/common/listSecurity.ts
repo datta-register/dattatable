@@ -19,6 +19,13 @@ export interface IListSecurityItem {
     permission: number | string;
 }
 
+// List Security Default Groups
+export const ListSecurityDefaultGroups = {
+    Members: "member",
+    Owners: "owner",
+    Visitors: "visitor"
+}
+
 /**
  * List Security
  * This component is used for setting the security group/permissions for a list.
@@ -202,17 +209,17 @@ export class ListSecurity {
             // Get the group information
             switch (key) {
                 // Default owner's group
-                case "owner":
+                case ListSecurityDefaultGroups.Owners:
                     Web(this._props.webUrl).AssociatedOwnerGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
                     break;
 
                 // Default member's group
-                case "member":
+                case ListSecurityDefaultGroups.Members:
                     Web(this._props.webUrl).AssociatedMemberGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
                     break;
 
                 // Default visitor's group
-                case "visitor":
+                case ListSecurityDefaultGroups.Visitors:
                     Web(this._props.webUrl).AssociatedVisitorGroup().execute(group => { resolve(this.setGroupId(key, group)); }, reject);
                     break;
 
@@ -258,7 +265,7 @@ export class ListSecurity {
     }
 
     // Method to see if a user is w/in a group
-    private isInGroup(userId: number, groupName: string): PromiseLike<boolean> {
+    isInGroup(userId: number, groupName: string): PromiseLike<boolean> {
         // Return a promise
         return new Promise(resolve => {
             // See if we have the user information
@@ -268,9 +275,34 @@ export class ListSecurity {
                 // Parse the groups
                 for (let i = 0; i < this._users[userId].length; i++) {
                     let group = this._users[userId][i];
+                    let isInGroup = false;
 
-                    // See if this is the group name
-                    if (groupName == group.Title) {
+                    // See if this is the default owner/member/visitor group
+                    switch (groupName.toLowerCase()) {
+                        // Default owner's group
+                        case ListSecurityDefaultGroups.Owners:
+                            isInGroup = group.Id == this._groups[ListSecurityDefaultGroups.Owners].Id
+                            break;
+
+                        // Default member's group
+                        case ListSecurityDefaultGroups.Members:
+                            isInGroup = group.Id == this._groups[ListSecurityDefaultGroups.Members].Id
+                            break;
+
+                        // Default visitor's group
+                        case ListSecurityDefaultGroups.Visitors:
+                            isInGroup = group.Id == this._groups[ListSecurityDefaultGroups.Visitors].Id
+                            break;
+
+                        // Default
+                        default:
+                            // See if they are in this group
+                            isInGroup = group.Title == groupName;
+                            break;
+                    }
+
+                    // See if the user is in this group
+                    if (isInGroup) {
                         // Set the flag
                         isInGroup = true;
                         break;
@@ -313,7 +345,7 @@ export class ListSecurity {
             return this.getGroupId(group.Title);
         }).then(() => {
             // Call the event
-            this._props.onGroupsLoaded ? this._props.onGroupsLoaded() : null;
+            this._props.onGroupsLoaded ? this._props.onGroupsLoaded(this._groups) : null;
         });
     }
 
