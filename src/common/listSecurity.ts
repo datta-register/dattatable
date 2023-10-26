@@ -300,9 +300,10 @@ export class ListSecurity {
         let groupNames: string[] = [];
 
         // Parse the security groups
-        for (let i = 0; i < this._props.groups.length; i++) {
+        let groups = this._props.groups || [];
+        for (let i = 0; i < groups.length; i++) {
             // Add the group name
-            groupNames.push(this._props.groups[i].Title);
+            groupNames.push(groups[i].Title);
         }
 
         // Parse the list items
