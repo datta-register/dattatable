@@ -441,7 +441,7 @@ export class ListSecurity {
                         type: Components.ButtonTypes.OutlinePrimary,
                         onClick: () => {
                             // Reset the list permissions
-                            this.resetPermissions(getListNames(), false);
+                            this.resetPermissions(getListNames(), false).then(onComplete);
                         }
                     }
                 },
@@ -482,7 +482,7 @@ export class ListSecurity {
                 list.resetRoleInheritance().execute();
 
                 // Revert to the default
-                list.breakRoleInheritance(false, true).execute(true);
+                if (breakInheritance) { list.breakRoleInheritance(false, true).execute(true); }
 
                 // Wait for the requests to complete
                 list.done(resolve);
