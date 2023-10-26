@@ -398,6 +398,27 @@ export class ListSecurity {
             rows
         });
 
+        // Gets the list names
+        let getListNames = () => {
+            let lists: IListSecurityItem[] = [];
+
+            // Get the form values
+            let tableData = form.getValues();
+
+            // Parse the # of rows
+            for (let i = 0; i < rows.length; i++) {
+                // Add the list information
+                lists.push({
+                    groupName: tableData["groupName_" + i],
+                    listName: tableData["listName_" + i],
+                    permission: tableData["permission_" + i].value
+                });
+            }
+
+            // Return the list names
+            return lists;
+        }
+
         // Render the footer
         Components.TooltipGroup({
             el: Modal.FooterElement,
@@ -414,28 +435,24 @@ export class ListSecurity {
                     }
                 },
                 {
+                    content: "Configures the list to inherit permissions from the web.",
+                    btnProps: {
+                        text: "Inherit",
+                        type: Components.ButtonTypes.OutlinePrimary,
+                        onClick: () => {
+                            // Reset the list permissions
+                            this.resetPermissions(getListNames(), false);
+                        }
+                    }
+                },
+                {
                     content: "Configures the security for the lists.",
                     btnProps: {
                         text: "Configure",
                         type: Components.ButtonTypes.OutlinePrimary,
                         onClick: () => {
-                            let lists: IListSecurityItem[] = [];
-
-                            // Get the form values
-                            let tableData = form.getValues();
-
-                            // Parse the # of rows
-                            for (let i = 0; i < rows.length; i++) {
-                                // Add the list information
-                                lists.push({
-                                    groupName: tableData["groupName_" + i],
-                                    listName: tableData["listName_" + i],
-                                    permission: tableData["permission_" + i].value
-                                });
-                            }
-
                             // Configure the lists
-                            this.configureLists(lists).then(onComplete);
+                            this.configureLists(getListNames()).then(onComplete);
                         }
                     }
                 }
@@ -447,7 +464,7 @@ export class ListSecurity {
     }
 
     // Reset list permissions
-    private resetPermissions(listItems: IListSecurityItem[]) {
+    private resetPermissions(listItems: IListSecurityItem[], breakInheritance: boolean = true) {
         // Parse the lists
         let lists = {};
         for (let i = 0; i < listItems.length; i++) {
