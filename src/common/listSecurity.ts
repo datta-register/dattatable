@@ -416,8 +416,11 @@ export class ListSecurity {
 
         // Parse the security groups
         Helper.Executor(groupNames, groupName => {
-            // Load the group
-            return this.getGroupId(groupName);
+            // Return a promise
+            return new Promise(resolve => {
+                // Load the group
+                this.getGroupId(groupName).then(resolve, resolve);
+            });
         }).then(() => {
             // Call the event
             this._props.onGroupsLoaded ? this._props.onGroupsLoaded(this._groups) : null;
