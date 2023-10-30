@@ -57,6 +57,14 @@ export class ListSecurity {
     // Security group users
     private _groupUsers: { [key: string]: Types.SP.User[] } = {};
     getGroupUsers(groupName: string): Types.SP.User[] { return this._groupUsers[groupName.toLowerCase()] || []; }
+    private addUser(user: Types.SP.User, groupName: string) {
+        // Ensure the group exists
+        let key = groupName.toLowerCase();
+        if (this._groupUsers[key]) {
+            // Add the user to the group
+            this._groupUsers[key].push(user);
+        }
+    }
 
     // Constructor
     constructor(props: IListSecurity) {
@@ -71,6 +79,28 @@ export class ListSecurity {
 
         // Load the groups
         this.loadGroups();
+    }
+
+    // Method to check if the user is w/in a group and add them otherwise
+    addToGroup(userId: number, groupName: string): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the user is in the group
+            if (this.isInGroup(userId, groupName)) {
+                // Resolve the request
+                resolve();
+                return;
+            }
+
+            // Add the user to the group
+            this._groups[groupName].Users().addUserById(userId).execute(user => {
+                // Add the user to the group
+                this.addUser(user, groupName);
+
+                // Resolve the request
+                resolve();
+            }, reject);
+        });
     }
 
     // Configures a list
