@@ -65,6 +65,22 @@ export class ListSecurity {
             this._groupUsers[key].push(user);
         }
     }
+    private removeUser(userId: number, groupName: string) {
+        // Ensure the group exists
+        let key = groupName.toLowerCase();
+        if (this._groupUsers[key]) {
+            // Find the idx of the user
+            for (let i = 0; i < this._groupUsers[key].length; i++) {
+                // See if this is the user
+                let user = this._groupUsers[key][i];
+                if (user.Id == userId) {
+                    // Remove the user
+                    this._groupUsers[key].splice(i, 1);
+                    break;
+                }
+            }
+        }
+    }
 
     // Constructor
     constructor(props: IListSecurity) {
@@ -405,6 +421,28 @@ export class ListSecurity {
         }).then(() => {
             // Call the event
             this._props.onGroupsLoaded ? this._props.onGroupsLoaded(this._groups) : null;
+        });
+    }
+
+    // Method remove a user from a specified group
+    removeFromGroup(userId: number, groupName: string): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the user is not in the group
+            if (!this.isInGroup(userId, groupName)) {
+                // Resolve the request
+                resolve();
+                return;
+            }
+
+            // Remove the user from the group
+            this._groups[groupName].Users().removeById(userId).execute(() => {
+                // Add the user to the group
+                this.removeUser(userId, groupName);
+
+                // Resolve the request
+                resolve();
+            }, reject);
         });
     }
 
