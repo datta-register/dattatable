@@ -1,4 +1,4 @@
-import { Components, Helper, Types, Web } from "gd-sprest-bs";
+import { Components, ContextInfo, Helper, Types, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
@@ -35,6 +35,10 @@ export class ListSecurity {
     private _permissionTypes: { [key: number | string]: number } = null;
     private _props: IListSecurity = null;
 
+    // Current User
+    private _currentUser: Types.SP.User = null;
+    get CurrentUser(): Types.SP.User { return this._currentUser; }
+
     // Security group information
     private _groups: { [key: string]: Types.SP.Group } = {};
     getGroup(groupName: string): Types.SP.Group { return this._groups[groupName.toLowerCase()]; }
@@ -58,6 +62,9 @@ export class ListSecurity {
     constructor(props: IListSecurity) {
         // Save the properties
         this._props = props;
+
+        // Get the current user information
+        this.loadCurrentUser();
 
         // Get the permission types
         this.getPermissionTypes();
@@ -293,6 +300,32 @@ export class ListSecurity {
 
         // Not in the group
         return false;
+    }
+
+    // Loads the current user
+    private loadCurrentUser() {
+        // Load the current user
+        Web(this._props.webUrl).CurrentUser().execute(
+            // Success
+            user => {
+                // Set the user
+                this._currentUser = user;
+            },
+            // Error
+            () => {
+                // Log
+                console.error("Unable to load the current user");
+
+                // Set the information from the context info
+                this._currentUser = {
+                    Email: ContextInfo.userEmail,
+                    Id: ContextInfo.userId,
+                    LoginName: ContextInfo.userLoginName,
+                    Title: ContextInfo.userDisplayName,
+                    UserPrincipalName: ContextInfo.userPrincipalName
+                } as any;
+            }
+        );
     }
 
     // Loads the security groups
