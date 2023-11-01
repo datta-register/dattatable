@@ -275,7 +275,7 @@ export class ListSecurity {
                         Expand: ["Users"]
                     }).execute(group => {
                         this.setGroup(key, group);
-                        this.setGroup(group.Title, group);
+                        this.setGroup(group.Title.toLowerCase(), group);
                         resolve(group.Id);
                     }, reject);
                     break;
@@ -286,7 +286,7 @@ export class ListSecurity {
                         Expand: ["Users"]
                     }).execute(group => {
                         this.setGroup(key, group);
-                        this.setGroup(group.Title, group);
+                        this.setGroup(group.Title.toLowerCase(), group);
                         resolve(group.Id);
                     }, reject);
                     break;
@@ -297,7 +297,7 @@ export class ListSecurity {
                         Expand: ["Users"]
                     }).execute(group => {
                         this.setGroup(key, group);
-                        this.setGroup(group.Title, group);
+                        this.setGroup(group.Title.toLowerCase(), group);
                         resolve(group.Id);
                     }, reject);
                     break;
