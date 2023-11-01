@@ -15,7 +15,7 @@ export interface IItemFormTab {
 /** Tab Information */
 export interface IItemFormTabInfo {
     isVertical?: boolean;
-    onClick: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
+    onClick?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     tabs: IItemFormTab[];
 }
 
