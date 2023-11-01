@@ -528,18 +528,7 @@ export class ListSecurity {
             el: Modal.FooterElement,
             tooltips: [
                 {
-                    content: "Closes the modal",
-                    btnProps: {
-                        text: "Cancel",
-                        type: Components.ButtonTypes.OutlineDanger,
-                        onClick: () => {
-                            // Close the modal
-                            Modal.hide();
-                        }
-                    }
-                },
-                {
-                    content: "Configures the list to inherit permissions from the web.",
+                    content: "Configure the list to inherit permissions from the web",
                     btnProps: {
                         text: "Inherit",
                         type: Components.ButtonTypes.OutlinePrimary,
@@ -550,13 +539,24 @@ export class ListSecurity {
                     }
                 },
                 {
-                    content: "Configures the security for the lists.",
+                    content: "Configure the security for the lists",
                     btnProps: {
                         text: "Configure",
                         type: Components.ButtonTypes.OutlinePrimary,
                         onClick: () => {
                             // Configure the lists
                             this.configureLists(getListNames()).then(onComplete);
+                        }
+                    }
+                },
+                {
+                    content: "Close this modal",
+                    btnProps: {
+                        text: "Close",
+                        type: Components.ButtonTypes.OutlineSecondary,
+                        onClick: () => {
+                            // Close the modal
+                            Modal.hide();
                         }
                     }
                 }
