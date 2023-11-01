@@ -15,6 +15,7 @@ export interface IItemFormTab {
 /** Tab Information */
 export interface IItemFormTabInfo {
     isVertical?: boolean;
+    onClick: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     tabs: IItemFormTab[];
 }
 
@@ -438,6 +439,7 @@ export class ItemForm {
                 data: tabInfo,
                 isActive: i == 0,
                 tabName: tabInfo.title,
+                onClick: this._tabInfo.onClick,
                 onRender: (el, item) => {
                     let tab = item.data as IItemFormTab;
 

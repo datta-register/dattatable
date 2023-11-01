@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 5.2.7_webpack@5.74.0
   datatables.net: 1.13.6
   datatables.net-bs5: 1.13.6
-  gd-sprest-bs: 10.10.59
+  gd-sprest-bs: 10.10.62
   html-loader: 3.1.2_webpack@5.74.0
   jquery: 3.7.1
   moment: 2.29.4
@@ -2009,16 +2009,17 @@ packages:
     dev: true
     resolution:
       integrity: sha512-F9EmtPumM/mt1CglB1gqFXNgWkSMdtPKJCCLJiaJijaa3GaDBiQkK9MawlSKSZb1DBQg7evZcvw3dbFcv1odpQ==
-  /gd-sprest-bs/10.10.59:
+  /gd-sprest-bs/10.10.62:
     dependencies:
       flatpickr: 4.6.13
       gd-bs: 6.3.3
       gd-sprest: 7.7.4
       gd-sprest-def: 1.3.3
+      office-ui-fabric-core: 11.1.0
       quill: 1.3.7
     dev: true
     resolution:
-      integrity: sha512-nkh+X+TjoPxSKFxYqth4sVvfTid6m0/JgQ06DEyGnf+2T2GR8XHOWLMN9jPaJaus8Elqqg5H0MBGZeqa0IBQPw==
+      integrity: sha512-P4uZTmubIKnzglTMSLtEei2KpEUyFFYomgO3ZYog01q3NZjFdd1wyfcLl/u3KyfU6t6/1IdKNcwikmPo5WZj/A==
   /gd-sprest-def/1.3.3:
     dev: true
     resolution:
@@ -2464,6 +2465,10 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha512-1mxKf0e58bvyjSCtKYY4sRe9itRk3PJpquJOjeIkz885CczcI4IvJJDLPS72oowuSh+pBxUFROpX+TU++hxhZQ==
+  /office-ui-fabric-core/11.1.0:
+    dev: true
+    resolution:
+      integrity: sha512-uV7CbMBAqbHRa7ihNlgbDMIdiKb49TCamhsfuK7Yx7JXx05WdN/lZPWLmPnAALVQAFuO95ZJMAwNjyyEeXk47A==
   /p-limit/2.3.0:
     dependencies:
       p-try: 2.2.0
@@ -3214,7 +3219,7 @@ specifiers:
   css-loader: ^5.2.7
   datatables.net: ^1.13.6
   datatables.net-bs5: ^1.13.6
-  gd-sprest-bs: ^10.10.59
+  gd-sprest-bs: ^10.10.62
   html-loader: ^3.1.2
   jquery: ^3.7.1
   moment: ^2.29.4
