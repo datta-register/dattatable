@@ -273,21 +273,33 @@ export class ListSecurity {
                 case ListSecurityDefaultGroups.Owners:
                     Web(this._props.webUrl).AssociatedOwnerGroup().query({
                         Expand: ["Users"]
-                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
+                    }).execute(group => {
+                        this.setGroup(key, group);
+                        this.setGroup(group.Title, group);
+                        resolve(group.Id);
+                    }, reject);
                     break;
 
                 // Default member's group
                 case ListSecurityDefaultGroups.Members:
                     Web(this._props.webUrl).AssociatedMemberGroup().query({
                         Expand: ["Users"]
-                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
+                    }).execute(group => {
+                        this.setGroup(key, group);
+                        this.setGroup(group.Title, group);
+                        resolve(group.Id);
+                    }, reject);
                     break;
 
                 // Default visitor's group
                 case ListSecurityDefaultGroups.Visitors:
                     Web(this._props.webUrl).AssociatedVisitorGroup().query({
                         Expand: ["Users"]
-                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
+                    }).execute(group => {
+                        this.setGroup(key, group);
+                        this.setGroup(group.Title, group);
+                        resolve(group.Id);
+                    }, reject);
                     break;
 
                 // Default
@@ -295,7 +307,10 @@ export class ListSecurity {
                     // Get the group
                     Web(this._props.webUrl).SiteGroups().getByName(groupName).query({
                         Expand: ["Users"]
-                    }).execute(group => { this.setGroup(key, group); resolve(group.Id); }, reject);
+                    }).execute(group => {
+                        this.setGroup(key, group);
+                        resolve(group.Id);
+                    }, reject);
                     break;
             }
         });
@@ -457,10 +472,23 @@ export class ListSecurity {
         // Set the header
         Modal.setHeader("List Security");
 
+        // Get the default groups
+        let defaultGroups = {};
+        defaultGroups[ListSecurityDefaultGroups.Members] = this.getGroup(ListSecurityDefaultGroups.Members);
+        defaultGroups[ListSecurityDefaultGroups.Owners] = this.getGroup(ListSecurityDefaultGroups.Owners);
+        defaultGroups[ListSecurityDefaultGroups.Visitors] = this.getGroup(ListSecurityDefaultGroups.Visitors);
+
         // Parse the lists
         let rows: Components.IFormRow[] = [];
         for (let i = 0; i < this._props.listItems.length; i++) {
             let listItem = this._props.listItems[i];
+
+            // Set the group name
+            let groupName = listItem.groupName;
+            if (defaultGroups[groupName]) {
+                // Set the group name
+                groupName = defaultGroups[groupName].Title;
+            }
 
             // Add the row
             rows.push({
@@ -479,7 +507,7 @@ export class ListSecurity {
                             name: "groupName_" + i,
                             label: "Group Name",
                             type: Components.FormControlTypes.Readonly,
-                            value: listItem.groupName
+                            value: groupName
                         }
                     },
                     {
