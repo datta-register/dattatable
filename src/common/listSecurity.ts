@@ -498,6 +498,7 @@ export class ListSecurity {
 
         // Render the form
         let form = Components.Form({
+            className: "security-form",
             el: Modal.BodyElement,
             rows
         });
