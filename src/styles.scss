@@ -1,9 +1,9 @@
 @import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 :root {
     /* Colors */
-    $item-form-tab-active: #FFFFFF;
-    $item-form-tab-valid: #198754;
-    $item-form-tab-invalid: #dc3545;
+    $item-form-tab-active: var(--sp-white, #ffffff);
+    $item-form-tab-valid: var(--sp-success-icon, #107c10);
+    $item-form-tab-invalid: var(--sp-error-icon, #a80000);
 }
 
 .bs {
@@ -30,7 +30,7 @@
 
     /* Tab is valid */
     .list-group-item.is-valid {
-        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/></svg>");
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='%23107c10' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/></svg>");
     }
 
     /* Active tab is valid */
@@ -40,7 +40,7 @@
 
     /* Tab is invalid */
     .list-group-item.is-invalid {
-        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'><circle cx='6' cy='6' r='4.5'/><path stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/><circle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/></svg>");
+        background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23a80000'><circle cx='6' cy='6' r='4.5'/><path stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/><circle cx='6' cy='8.2' r='.6' fill='%23a80000' stroke='none'/></svg>");
     }
 
     /* Active tab is invalid */
@@ -56,7 +56,7 @@
 
 /* Set white background & alignment for footer */
 #footer nav {
-    background-color: #fff !important;
+    background-color: var(--sp-white, #ffffff) !important;
     padding: 0 !important;
 }
 
@@ -70,13 +70,13 @@
     z-index: 2010;
     div.d-flex {
         align-items: center;
-        background-color: #FFF;
+        background-color: var(--sp-white, #ffffff);
         border-radius: 0.3rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
+        border: 1px solid color-mix(in srgb, var(--sp-black, #000000), transparent 20%);
         background-clip: padding-box;
         margin: 30vh 30vw;
         div[role=status] {
-            color: #0078d4 !important;
+            color: var(--sp-theme-primary, #0078d4) !important;
             height: 3rem;
             width: 3rem;
         }
@@ -85,7 +85,7 @@
 
 /* Assign styling to the loading-dialog-backdrop */
 #loading-dialog-backdrop {
-    background-color: #000;
+    background-color: var(--sp-black, #000000);
     height: 100vh;
     left: 0px;
     opacity: 0.5;
@@ -102,9 +102,14 @@
     }
 }
 
+/* Fix icon alignment inside nav item buttons */
+#navbar_content ul.navbar-nav li.nav-item a.btn svg {
+    margin: .1rem .25rem .088rem -.25rem;
+}
+
 /* Customize sub-navigation element */
 #sub-navigation nav.sub-nav {
-    background-color: rgba(0, 0, 0, 0.05) !important;
-    border: 3px solid #dee2e6;
+    background-color: var(--sp-neutral-lighter, #f3f2f1) !important;
+    border: 3px solid var(--sp-neutral-quaternary, #d2d0ce);
     border-top: 0;
 }
