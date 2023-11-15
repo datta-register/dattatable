@@ -888,7 +888,7 @@ export class Documents {
     private renderFileIcon(el: HTMLElement, fileName: string) {
         // Render the icon wrapper
         let span = document.createElement("span");
-        span.className = "text-muted";
+        span.className = "text-body";
         el.appendChild(span);
 
         // Render the icon
