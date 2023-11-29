@@ -103,13 +103,13 @@
 }
 
 /* Fix icon alignment inside nav item buttons */
-#navbar_content ul.navbar-nav li.nav-item a.btn svg {
+#navigation #navbar_content ul.navbar-nav li.nav-item .btn svg {
     margin: .1rem .25rem .088rem -.25rem;
 }
 
 /* Customize sub-navigation element */
 #sub-navigation nav.sub-nav {
-    background-color: var(--sp-neutral-lighter, #f3f2f1) !important;
+    background-color: color-mix(in srgb, var(--sp-black, #000000), transparent 95%) !important;
     border: 3px solid var(--sp-neutral-quaternary, #d2d0ce);
     border-top: 0;
 }
