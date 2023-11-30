@@ -1,4 +1,5 @@
-import { Components } from "gd-sprest-bs";
+import { Components, ThemeManager } from "gd-sprest-bs";
+import { filter } from "gd-sprest-bs/build/icons/svgs/filter";
 import { CanvasForm } from "../common/canvas";
 
 /**
@@ -51,24 +52,12 @@ export class FilterSlideout {
         // Create the filters element
         this._el = document.createElement("div");
 
-        // Render a clear button
-        Components.Button({
-            el: this._el,
-            className: "mb-3",
-            text: "Clear Filters",
-            type: Components.ButtonTypes.OutlineDanger,
-            onClick: () => {
-                // Clear the filters
-                this.clear();
-            }
-        });
-
         // Parse the filters
         for (let i = 0; i < this._filters.length; i++) {
-            let filter = this._filters[i];
+            let fltr = this._filters[i];
 
             // Add the filter
-            this._items.push(this.generateItem(filter));
+            this._items.push(this.generateItem(fltr));
         }
 
         // Default the first filter to be displayed
@@ -79,6 +68,33 @@ export class FilterSlideout {
             el: this._el,
             items: this._items
         });
+
+        // Render a clear button
+        Components.Tooltip({
+            el: this._el,
+            content: "Reset Filters",
+            placement: Components.TooltipPlacements.Left,
+            btnProps: {
+                className: "float-end mt-3 p-1 pe-2",
+                iconClassName: "me-1",
+                iconType: filter,
+                iconSize: 24,
+                isSmall: true,
+                text: "Reset",
+                type: Components.ButtonTypes.OutlinePrimary,
+                onClick: () => {
+                    // Clear the filters
+                    this.clear();
+                }
+            }
+        });
+
+        // Add the dark class if theme is inverted
+        if (ThemeManager.IsInverted) {
+            this._el.querySelectorAll("div.form-check.form-switch input[type=checkbox].form-check-input").forEach((el: HTMLElement) => {
+                el.classList.add("dark");
+            });
+        }
     }
 
     // Generates the navigation dropdown items
