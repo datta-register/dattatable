@@ -1,4 +1,4 @@
-import { Components } from "gd-sprest-bs";
+import { Components, ThemeManager } from "gd-sprest-bs";
 import { CanvasForm } from "../common/canvas";
 
 /**
@@ -79,6 +79,13 @@ export class FilterSlideout {
             el: this._el,
             items: this._items
         });
+
+        // Add the dark class if theme is inverted
+        if (ThemeManager.IsInverted) {
+            this._el.querySelectorAll("div.form-check.form-switch input[type=checkbox].form-check-input").forEach((el: HTMLElement) => {
+                el.classList.add("dark");
+            });
+        }
     }
 
     // Generates the navigation dropdown items
