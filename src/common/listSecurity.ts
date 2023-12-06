@@ -469,6 +469,9 @@ export class ListSecurity {
         // Clear the modal
         Modal.clear();
 
+        // Set the size
+        Modal.setType(Components.ModalTypes.XLarge);
+
         // Set the header
         Modal.setHeader("List Security");
 
