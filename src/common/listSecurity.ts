@@ -1,5 +1,6 @@
 import { Components, ContextInfo, Helper, Types, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
+import { getContextInfo } from "./methods";
 import { Modal } from "./modal";
 
 // List Security
@@ -89,7 +90,10 @@ export class ListSecurity {
         this._props = props;
 
         // Get the context information
-        this.getContextInfo(this._props.webUrl).then(() => {
+        getContextInfo(this._props.webUrl).then(requestDigest => {
+            // Set the request digest value
+            this._requestDigest = requestDigest;
+
             // Get the current user information
             this.loadCurrentUser();
 
@@ -255,27 +259,6 @@ export class ListSecurity {
                     );
                 });
             }).then(resolve, reject);
-        });
-    }
-
-    // Gets the context information of the target site
-    private getContextInfo(webUrl: string): PromiseLike<void> {
-        // Return a promise
-        return new Promise((resolve, reject) => {
-            // See if the web url exists
-            if (webUrl) {
-                // Get the context info of the site
-                ContextInfo.getWeb(webUrl).execute(info => {
-                    // Set the context info
-                    this._requestDigest = info.GetContextWebInformation.FormDigestValue;
-
-                    // Resolve the request
-                    resolve();
-                }, reject);
-            } else {
-                // Resolve the request
-                resolve();
-            }
         });
     }
 

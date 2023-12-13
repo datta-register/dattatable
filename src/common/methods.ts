@@ -1,3 +1,4 @@
+import { ContextInfo } from "gd-sprest-bs";
 import * as moment from "moment";
 
 // Formats file size into human readable form
@@ -35,6 +36,24 @@ export const formatTimeValue = (value: string, format: string = "MM/DD/YYYY HH:m
 
     // Return nothing
     return "";
+}
+
+// Gets the context information of the target site
+export const getContextInfo = (webUrl: string): PromiseLike<string> => {
+    // Return a promise
+    return new Promise((resolve, reject) => {
+        // See if the web url exists
+        if (webUrl) {
+            // Get the context info of the site
+            ContextInfo.getWeb(webUrl).execute(info => {
+                // Resolve the request
+                resolve(info.GetContextWebInformation.FormDigestValue);
+            }, reject);
+        } else {
+            // Resolve the request
+            resolve(null);
+        }
+    });
 }
 
 // Returns the extension of a file name

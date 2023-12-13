@@ -1,8 +1,8 @@
 import { ContextInfo, Types, Web } from "gd-sprest-bs";
 import {
     ItemForm, IItemFormCreateProps, IItemFormEditProps, IItemFormViewProps,
-    CanvasForm, Modal
-} from "../common";
+    CanvasForm, Modal, getContextInfo
+} from ".";
 
 /** List Properties */
 export interface IListProps<T = Types.SP.ListItem> {
@@ -118,7 +118,9 @@ export class List<T = Types.SP.ListItem> {
         this._webUrl = props.webUrl || ContextInfo.webServerRelativeUrl;
 
         // Set the context information
-        this.getContextInfo(props.webUrl).then(() => {
+        getContextInfo(props.webUrl).then((requestDigest) => {
+            this._requestDigest = requestDigest;
+
             // Load the list information
             this.init().then(() => {
                 // Load the items
@@ -160,27 +162,6 @@ export class List<T = Types.SP.ListItem> {
         return new Promise((resolve, reject) => {
             // Create the item
             this.ListInfo.Items().add(values).execute(resolve as any, reject);
-        });
-    }
-
-    // Gets the context information of the target site
-    private getContextInfo(webUrl: string): PromiseLike<void> {
-        // Return a promise
-        return new Promise((resolve, reject) => {
-            // See if the web url exists
-            if (webUrl) {
-                // Get the context info of the site
-                ContextInfo.getWeb(webUrl).execute(info => {
-                    // Set the context info
-                    this._requestDigest = info.GetContextWebInformation.FormDigestValue;
-
-                    // Resolve the request
-                    resolve();
-                }, reject);
-            } else {
-                // Resolve the request
-                resolve();
-            }
         });
     }
 
@@ -394,7 +375,11 @@ export class List<T = Types.SP.ListItem> {
             // See if the request digest is set
             if (this._requestDigest) {
                 // Get the context information
-                this.getContextInfo(this.WebUrl).then(resolve, reject);
+                getContextInfo(this.WebUrl).then(requestDigest => {
+                    // Save the value and resolve the request
+                    this._requestDigest = requestDigest;
+                    resolve();
+                }, reject);
             } else {
                 // Resolve the request
                 resolve();
