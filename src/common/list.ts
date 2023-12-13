@@ -100,6 +100,9 @@ export class List<T = Types.SP.ListItem> {
     // Event triggered when the form is reset
     private _onResetForm: () => void = null;
 
+    // The request digest value of the target site
+    private _requestDigest: string = null;
+
     // Constructor
     constructor(props: IListProps<T>) {
         // Save the properties
@@ -114,15 +117,21 @@ export class List<T = Types.SP.ListItem> {
         this._viewName = props.viewName;
         this._webUrl = props.webUrl || ContextInfo.webServerRelativeUrl;
 
-        // Load the list information
-        this.init().then(() => {
-            // Load the items
-            this.loadItems().then(() => {
-                // Call the event
-                this._onInitialized ? this._onInitialized() : null;
+        // Set the context information
+        this.getContextInfo(props.webUrl).then(() => {
+            // Load the list information
+            this.init().then(() => {
+                // Load the items
+                this.loadItems().then(() => {
+                    // Call the event
+                    this._onInitialized ? this._onInitialized() : null;
 
-                // Call the items loaded event
-                this._onItemsLoaded ? this._onItemsLoaded(this.Items) : null;
+                    // Call the items loaded event
+                    this._onItemsLoaded ? this._onItemsLoaded(this.Items) : null;
+                }, (...args) => {
+                    // Call the init error event
+                    this._onInitError ? this._onInitError(...args) : null;
+                });
             }, (...args) => {
                 // Call the init error event
                 this._onInitError ? this._onInitError(...args) : null;
@@ -154,6 +163,27 @@ export class List<T = Types.SP.ListItem> {
         });
     }
 
+    // Gets the context information of the target site
+    private getContextInfo(webUrl: string): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the web url exists
+            if (webUrl) {
+                // Get the context info of the site
+                ContextInfo.getWeb(webUrl).execute(info => {
+                    // Set the context info
+                    this._requestDigest = info.GetContextWebInformation.FormDigestValue;
+
+                    // Resolve the request
+                    resolve();
+                }, reject);
+            } else {
+                // Resolve the request
+                resolve();
+            }
+        });
+    }
+
     // Displays the new form
     newForm(props: IItemFormCreateProps) {
         // Clear the modal/canvas
@@ -176,7 +206,7 @@ export class List<T = Types.SP.ListItem> {
     private init(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            let list = Web(this.WebUrl).Lists(this.ListName);
+            let list = Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName);
 
             // Query the list content types
             list.execute(list => {
@@ -241,7 +271,7 @@ export class List<T = Types.SP.ListItem> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // Query the items
-            Web(this.WebUrl).Lists(this.ListName).Items(itemId).query({
+            Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).Items(itemId).query({
                 Custom: query ? query.Custom : null,
                 Expand: query ? query.Expand : null,
                 Select: query ? query.Select : null
@@ -298,7 +328,7 @@ export class List<T = Types.SP.ListItem> {
             if (this._items) { resolve(this._items); return; }
 
             // Query the items
-            Web(this.WebUrl).Lists(this.ListName).Items().query(query).execute(items => {
+            Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).Items().query(query).execute(items => {
                 // Save the items
                 this._items = items.results as any;
 
@@ -319,7 +349,7 @@ export class List<T = Types.SP.ListItem> {
             if (this._items) { resolve(this._items); return; }
 
             // Query the items
-            Web(this.WebUrl).Lists(this.ListName).getItems(this.ViewXml).execute(items => {
+            Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).getItems(this.ViewXml).execute(items => {
                 // Save the items
                 this._items = items.results as any;
 
@@ -339,18 +369,36 @@ export class List<T = Types.SP.ListItem> {
 
         // Return a promise
         return new Promise((resolve, reject) => {
-            // Load the data
-            this.loadItems(query).then((items) => {
-                // Call the event
-                let callback = this._onRefreshItems ? this._onRefreshItems(items) : null;
-                if (callback && typeof (callback.then) === "function") {
-                    // Wait for the request to complete
-                    callback.then(resolve, reject);
-                } else {
-                    // Resolve the request
-                    resolve(items);
-                }
+            // Refresh the context information
+            this.refreshContextInfo().then(() => {
+                // Load the data
+                this.loadItems(query).then((items) => {
+                    // Call the event
+                    let callback = this._onRefreshItems ? this._onRefreshItems(items) : null;
+                    if (callback && typeof (callback.then) === "function") {
+                        // Wait for the request to complete
+                        callback.then(resolve, reject);
+                    } else {
+                        // Resolve the request
+                        resolve(items);
+                    }
+                }, reject);
             }, reject);
+        });
+    }
+
+    // Refreshes the context information
+    private refreshContextInfo(): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the request digest is set
+            if (this._requestDigest) {
+                // Get the context information
+                this.getContextInfo(this.WebUrl).then(resolve, reject);
+            } else {
+                // Resolve the request
+                resolve();
+            }
         });
     }
 
