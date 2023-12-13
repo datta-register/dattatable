@@ -34,6 +34,7 @@ export class ListSecurity {
     private _ddlItems: Components.IDropdownItem[] = null;
     private _permissionTypes: { [key: number | string]: number } = null;
     private _props: IListSecurity = null;
+    private _requestDigest: string = null;
 
     // Current User
     private _currentUser: Types.SP.User = null;
@@ -87,14 +88,17 @@ export class ListSecurity {
         // Save the properties
         this._props = props;
 
-        // Get the current user information
-        this.loadCurrentUser();
+        // Get the context information
+        this.getContextInfo(this._props.webUrl).then(() => {
+            // Get the current user information
+            this.loadCurrentUser();
 
-        // Get the permission types
-        this.getPermissionTypes();
+            // Get the permission types
+            this.getPermissionTypes();
 
-        // Load the groups
-        this.loadGroups();
+            // Load the groups
+            this.loadGroups();
+        });
     }
 
     // Method to check if the user is w/in a group and add them otherwise
@@ -131,7 +135,7 @@ export class ListSecurity {
                     // Exists
                     groupId => {
                         // Add the group to the list
-                        Web(this._props.webUrl).Lists(listInfo.listName).RoleAssignments().addRoleAssignment(groupId, permissionId).execute(resolve, () => {
+                        Web(this._props.webUrl, { requestDigest: this._requestDigest }).Lists(listInfo.listName).RoleAssignments().addRoleAssignment(groupId, permissionId).execute(resolve, () => {
                             // Log to the console
                             console.error(`[${listInfo.listName}] Error adding the group '${listInfo.groupName}' with permission ${listInfo.permission} to the list.`);
 
@@ -225,7 +229,7 @@ export class ListSecurity {
                             props = this._props.onGroupCreating ? this._props.onGroupCreating(props) : props;
 
                             // Create the group
-                            Web(this._props.webUrl).SiteGroups().add(props).execute(
+                            Web(this._props.webUrl, { requestDigest: this._requestDigest }).SiteGroups().add(props).execute(
                                 // Successfully created the group
                                 group => {
                                     // Set the group id
@@ -254,6 +258,27 @@ export class ListSecurity {
         });
     }
 
+    // Gets the context information of the target site
+    private getContextInfo(webUrl: string): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the web url exists
+            if (webUrl) {
+                // Get the context info of the site
+                ContextInfo.getWeb(webUrl).execute(info => {
+                    // Set the context info
+                    this._requestDigest = info.GetContextWebInformation.FormDigestValue;
+
+                    // Resolve the request
+                    resolve();
+                }, reject);
+            } else {
+                // Resolve the request
+                resolve();
+            }
+        });
+    }
+
     // Gets the group id
     private getGroupId(groupName: string): PromiseLike<number> {
         // Return a promise
@@ -271,7 +296,7 @@ export class ListSecurity {
             switch (key) {
                 // Default owner's group
                 case ListSecurityDefaultGroups.Owners:
-                    Web(this._props.webUrl).AssociatedOwnerGroup().query({
+                    Web(this._props.webUrl, { requestDigest: this._requestDigest }).AssociatedOwnerGroup().query({
                         Expand: ["Users"]
                     }).execute(group => {
                         this.setGroup(key, group);
@@ -282,7 +307,7 @@ export class ListSecurity {
 
                 // Default member's group
                 case ListSecurityDefaultGroups.Members:
-                    Web(this._props.webUrl).AssociatedMemberGroup().query({
+                    Web(this._props.webUrl, { requestDigest: this._requestDigest }).AssociatedMemberGroup().query({
                         Expand: ["Users"]
                     }).execute(group => {
                         this.setGroup(key, group);
@@ -293,7 +318,7 @@ export class ListSecurity {
 
                 // Default visitor's group
                 case ListSecurityDefaultGroups.Visitors:
-                    Web(this._props.webUrl).AssociatedVisitorGroup().query({
+                    Web(this._props.webUrl, { requestDigest: this._requestDigest }).AssociatedVisitorGroup().query({
                         Expand: ["Users"]
                     }).execute(group => {
                         this.setGroup(key, group);
@@ -305,7 +330,7 @@ export class ListSecurity {
                 // Default
                 default:
                     // Get the group
-                    Web(this._props.webUrl).SiteGroups().getByName(groupName).query({
+                    Web(this._props.webUrl, { requestDigest: this._requestDigest }).SiteGroups().getByName(groupName).query({
                         Expand: ["Users"]
                     }).execute(group => {
                         this.setGroup(key, group);
@@ -321,7 +346,7 @@ export class ListSecurity {
         // Return a promise
         return new Promise(resolve => {
             // Get the definitions
-            Web(this._props.webUrl).RoleDefinitions().query({
+            Web(this._props.webUrl, { requestDigest: this._requestDigest }).RoleDefinitions().query({
                 OrderBy: ["Name"]
             }).execute(roleDefs => {
                 // Clear the permissions and items
@@ -366,7 +391,7 @@ export class ListSecurity {
     // Loads the current user
     private loadCurrentUser() {
         // Load the current user
-        Web(this._props.webUrl).CurrentUser().execute(
+        Web(this._props.webUrl, { requestDigest: this._requestDigest }).CurrentUser().execute(
             // Success
             user => {
                 // Set the user
@@ -612,7 +637,7 @@ export class ListSecurity {
         return new Promise((resolve) => {
             // Parse the list keys
             for (let listName in lists) {
-                let list = Web(this._props.webUrl).Lists(listName);
+                let list = Web(this._props.webUrl, { requestDigest: this._requestDigest }).Lists(listName);
 
                 // Reset the permissions
                 list.resetRoleInheritance().execute();
