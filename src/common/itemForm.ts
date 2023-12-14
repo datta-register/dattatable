@@ -1,5 +1,5 @@
 import { Components, Helper, SPTypes } from "gd-sprest-bs";
-import { CanvasForm, LoadingDialog, Modal } from ".";
+import { CanvasForm, LoadingDialog, Modal, getContextInfo } from ".";
 
 /** Tab */
 export interface IItemFormTab {
@@ -82,6 +82,7 @@ export class ItemForm {
     private static _onShowForm?: (form?: CanvasForm | Modal) => void = null;
     private static _onSave: (values: any) => any | PromiseLike<any> = null;
     private static _onValidation: (values?: any, isValid?: boolean) => boolean | PromiseLike<boolean> = null;
+    private static _requestDigest: string = null;
     private static _tabInfo: IItemFormTabInfo = null;
     private static _updateEvent: Function = null;
 
@@ -237,30 +238,37 @@ export class ItemForm {
                 resolve(null);
             }
 
-            // See if the info already exists
-            if (this._info) {
-                // Form information is already loaded
-                onComplete();
-            } else {
-                // Set the list form properties
-                let listProps: Helper.IListFormProps = {
-                    listName: this.ListName,
-                    itemId,
-                    webUrl
-                };
+            // Get the context information
+            getContextInfo(webUrl).then(requestDigest => {
+                // Set the request digest
+                this._requestDigest = requestDigest;
 
-                // Call the event
-                listProps = this._onGetListInfo ? this._onGetListInfo(listProps) : listProps;
-
-                // Load the form info
-                Helper.ListForm.create(listProps).then(info => {
-                    // Save the information
-                    this._info = info;
-
+                // See if the info already exists
+                if (this._info) {
                     // Form information is already loaded
                     onComplete();
-                }, reject);
-            }
+                } else {
+                    // Set the list form properties
+                    let listProps: Helper.IListFormProps = {
+                        listName: this.ListName,
+                        itemId,
+                        requestDigest,
+                        webUrl
+                    };
+
+                    // Call the event
+                    listProps = this._onGetListInfo ? this._onGetListInfo(listProps) : listProps;
+
+                    // Load the form info
+                    Helper.ListForm.create(listProps).then(info => {
+                        // Save the information
+                        this._info = info;
+
+                        // Form information is already loaded
+                        onComplete();
+                    }, reject);
+                }
+            });
         });
     }
 
