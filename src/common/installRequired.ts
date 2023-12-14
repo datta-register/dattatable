@@ -135,6 +135,38 @@ export class InstallationRequired {
         });
     }
 
+    // Determines if the user is an owner or admin
+    private static isOwnerOrAdmin(): PromiseLike<boolean> {
+        // Return a promise
+        return new Promise(resolve => {
+            // Get the current user
+            Web().CurrentUser().execute(user => {
+                // See if they are an admin
+                if (user.IsSiteAdmin) {
+                    // Resolve the request
+                    resolve(true);
+                } else {
+                    // See if the user is part of the owner's group
+                    Web().AssociatedOwnerGroup().Users().getById(user.Id).execute(
+                        // Is an owner
+                        () => {
+                            // Resolve the request
+                            resolve(true);
+                        },
+                        // Not an owner
+                        () => {
+                            // Resolve the request
+                            resolve(false);
+                        }
+                    );
+                }
+            }, () => {
+                // Resolve the request
+                resolve(false);
+            });
+        });
+    }
+
     // Lists exists
     private static _listsExist: boolean = null;
     static get ListsExist(): boolean { return this._listsExist; }
@@ -217,46 +249,59 @@ export class InstallationRequired {
         this._report = [];
 
         // Return a promise
-        return new Promise((resolve) => {
-            // Ensure this is an array
-            let cfgs: Helper.ISPConfig[] = typeof ((this._cfg as []).length) === "number" ? this._cfg as any : [this._cfg];
+        return new Promise((resolve, reject) => {
+            // Ensure this is an admin or owner
+            this.isOwnerOrAdmin().then(hasPermissions => {
+                // See if they are not an owner or admin
+                if (!hasPermissions) {
+                    // Show the dialog
+                    this.showNoAccessDialog();
 
-            // Parse the configurations
-            Helper.Executor(cfgs, cfg => {
-                // Return a promise
-                return new Promise(resolve => {
-                    let numbOfErrors = this._report.length;
+                    // Reject the request
+                    reject();
+                    return;
+                }
 
-                    // Check the configuration
-                    Promise.all([
-                        // Check the custom actions
-                        this.checkCustomActions(cfg),
-                        // Check the lists
-                        this.checkLists(cfg)
-                    ]).then(() => {
-                        // See if there are errors
-                        if (this._report.length > numbOfErrors) {
-                            // Execute the event
-                            props.onError ? props.onError(cfg) : null;
-                        }
+                // Ensure this is an array
+                let cfgs: Helper.ISPConfig[] = typeof ((this._cfg as []).length) === "number" ? this._cfg as any : [this._cfg];
 
-                        // Execute the event and see if a promise was returned
-                        let returnVal = props.onCompleted ? props.onCompleted() : null;
-                        if (returnVal && typeof (returnVal["then"]) === "function") {
-                            // Wait for the request to complete
-                            returnVal.then(() => {
+                // Parse the configurations
+                Helper.Executor(cfgs, cfg => {
+                    // Return a promise
+                    return new Promise(resolve => {
+                        let numbOfErrors = this._report.length;
+
+                        // Check the configuration
+                        Promise.all([
+                            // Check the custom actions
+                            this.checkCustomActions(cfg),
+                            // Check the lists
+                            this.checkLists(cfg)
+                        ]).then(() => {
+                            // See if there are errors
+                            if (this._report.length > numbOfErrors) {
+                                // Execute the event
+                                props.onError ? props.onError(cfg) : null;
+                            }
+
+                            // Execute the event and see if a promise was returned
+                            let returnVal = props.onCompleted ? props.onCompleted() : null;
+                            if (returnVal && typeof (returnVal["then"]) === "function") {
+                                // Wait for the request to complete
+                                returnVal.then(() => {
+                                    // Resolve the request
+                                    resolve(this._report.length > 0);
+                                });
+                            } else {
                                 // Resolve the request
                                 resolve(this._report.length > 0);
-                            });
-                        } else {
-                            // Resolve the request
-                            resolve(this._report.length > 0);
-                        }
+                            }
+                        });
                     });
+                }).then(() => {
+                    // Resolve the request
+                    resolve(this._report.length > 0);
                 });
-            }).then(() => {
-                // Resolve the request
-                resolve(this._report.length > 0);
             });
         });
     }
@@ -382,6 +427,17 @@ export class InstallationRequired {
 
         // Set the body
         Modal.setBody("The component has not been configured. The SPConfiguration definition hasn't been initialized.");
+
+        // Show the dialog
+        Modal.show();
+    }
+
+    private static showNoAccessDialog() {
+        // Set the header
+        Modal.setHeader("Access Denied");
+
+        // Set the body
+        Modal.setBody("The component has not been configured or you do not have permissions to view the application. Please contact your administrator for additional help.");
 
         // Show the dialog
         Modal.show();
