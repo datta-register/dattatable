@@ -254,9 +254,6 @@ export class InstallationRequired {
             this.isOwnerOrAdmin().then(hasPermissions => {
                 // See if they are not an owner or admin
                 if (!hasPermissions) {
-                    // Show the dialog
-                    this.showNoAccessDialog();
-
                     // Reject the request
                     reject();
                     return;
@@ -427,17 +424,6 @@ export class InstallationRequired {
 
         // Set the body
         Modal.setBody("The component has not been configured. The SPConfiguration definition hasn't been initialized.");
-
-        // Show the dialog
-        Modal.show();
-    }
-
-    private static showNoAccessDialog() {
-        // Set the header
-        Modal.setHeader("Access Denied");
-
-        // Set the body
-        Modal.setBody("The component has not been configured or you do not have permissions to view the application. Please contact your administrator for additional help.");
 
         // Show the dialog
         Modal.show();
