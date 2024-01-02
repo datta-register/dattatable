@@ -50,8 +50,10 @@ export class DataTable implements IDataTable {
         // Render the datatable
         this._datatable = $(table.el).DataTable(this._props.dtProps);
 
-        // Call the render event
-        this._props.onRendered ? this._props.onRendered(this._props.el, this._datatable) : null;
+        // Call the render event in a separate thread to ensure the dashboard object is created
+        setTimeout(() => {
+            this._props.onRendered ? this._props.onRendered(this._props.el, this._datatable) : null;
+        }, 50);
     }
 
     /** Public Interface */
