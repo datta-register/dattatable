@@ -93,9 +93,45 @@ export class Dashboard {
 
         // Let the object get instaniated before calling the event
         setTimeout(() => {
+            // Apply the filters
+            this.applyFilters();
+
             // Call the render event
             props.onRendered ? props.onRendered(this._props.el) : null;
         }, 10);
+    }
+
+    // Applies the default active filters
+    private applyFilters() {
+        // See if filters exist
+        if (this._props.filters?.items) {
+            // Parse the filters
+            for (let i = 0; i < this._props.filters.items.length; i++) {
+                let applyFilter = false;
+                let filter = this._props.filters.items[i];
+                let value: any = filter.multi ? [] : "";
+
+                // Parse the items
+                for (let j = 0; j < filter?.items.length; j++) {
+                    let item = filter.items[j];
+
+                    // See if this one is active
+                    if (item.isSelected) {
+                        // Set the flag
+                        applyFilter = true;
+
+                        // Set the value
+                        filter.multi ? value.push(item.label) : value = item.label;
+                    }
+                }
+
+                // See if we are applying the filter
+                if (applyFilter) {
+                    // Apply the filter
+                    filter.onFilter(value);
+                }
+            }
+        }
     }
 
     // Renders the component
