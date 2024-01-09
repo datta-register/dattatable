@@ -1,4 +1,4 @@
-import { Components, ContextInfo, Helper, SPTypes, Site, Web } from "gd-sprest-bs";
+import { Components, Helper, SPTypes, Site, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
@@ -26,6 +26,7 @@ export interface IShowDialogProps {
 export class InstallationRequired {
     private static _cfg: Helper.ISPConfig | Helper.ISPConfig[] = null;
     private static _report: string[] = null;
+    private static _webUrl: string = null;
 
     // Custom Actions exists
     private static _customActionsExist: boolean = null;
@@ -48,7 +49,7 @@ export class InstallationRequired {
                 }
 
                 // Load the web custom actions
-                let web = Web();
+                let web = Web(this._webUrl);
                 web.UserCustomActions().execute(webCustomActions => {
                     // Parse the web custom actions
                     for (let i = 0; i < cfg._configuration.CustomActionCfg.Web.length; i++) {
@@ -91,7 +92,7 @@ export class InstallationRequired {
                 }
 
                 // Load the site custom actions
-                Site().UserCustomActions().execute(siteCustomActions => {
+                Site(this._webUrl).UserCustomActions().execute(siteCustomActions => {
                     // Parse the site custom actions
                     for (let i = 0; i < cfg._configuration.CustomActionCfg.Site.length; i++) {
                         let customAction = cfg._configuration.CustomActionCfg.Site[i];
@@ -158,7 +159,7 @@ export class InstallationRequired {
                 // Return a promise
                 return new Promise((resolve) => {
                     // Get the list
-                    Web().Lists(listCfg.ListInformation.Title).query({
+                    Web(this._webUrl).Lists(listCfg.ListInformation.Title).query({
                         Expand: ["Fields"]
                     }).execute(
                         // Success
@@ -213,11 +214,11 @@ export class InstallationRequired {
         // Return a promise
         return new Promise(resolve => {
             // Get the current user information
-            Web().CurrentUser().execute(
+            Web(this._webUrl).CurrentUser().execute(
                 // Success
                 user => {
                     // Get the current user permissions
-                    Web().getUserEffectivePermissions(user.LoginName).execute(
+                    Web(this._webUrl).getUserEffectivePermissions(user.LoginName).execute(
                         // Success
                         permissions => {
                             // See if the user has manage web rights
@@ -368,6 +369,10 @@ export class InstallationRequired {
                     Helper.Executor(cfgs, cfg => {
                         // Return a promise
                         return new Promise(resolve => {
+                            // Set the web url
+                            this._webUrl = cfg.getWebUrl();
+
+                            // Add the components
                             cfg.install().then(() => {
                                 // Hide the button
                                 btnInstall.hide();
