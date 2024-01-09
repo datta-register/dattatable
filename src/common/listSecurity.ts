@@ -1,4 +1,4 @@
-import { Components, ContextInfo, Helper, Types, Web } from "gd-sprest-bs";
+import { Components, ContextInfo, Helper, SPTypes, Types, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { getContextInfo } from "./methods";
 import { Modal } from "./modal";
@@ -124,6 +124,27 @@ export class ListSecurity {
                 // Resolve the request
                 resolve();
             }, reject);
+        });
+    }
+
+    // Determines if the user is an owner or admin
+    private checkUserPermissions(): PromiseLike<boolean> {
+        // Return a promise
+        return new Promise(resolve => {
+            // Get the current user permissions
+            Web().getUserEffectivePermissions(this.CurrentUser.LoginName).execute(
+                // Success
+                permissions => {
+                    // See if the user has manage web rights
+                    resolve(Helper.hasPermissions(permissions.GetUserEffectivePermissions, SPTypes.BasePermissionTypes.ManageWeb));
+                },
+
+                // Error
+                () => {
+                    // Resolve the request
+                    resolve(false);
+                }
+            );
         });
     }
 
@@ -635,45 +656,62 @@ export class ListSecurity {
     }
 
     // Shows the modal
-    show(createFl: boolean = true, onComplete?: () => void) {
+    show(createFl: boolean = true, onComplete?: () => void, onError?: () => void) {
         // Show a loading dialog
-        LoadingDialog.setHeader("Loading the Security Information")
-        LoadingDialog.setBody("Loading the security group information...");
+        LoadingDialog.setHeader("Loading the User Permissions")
+        LoadingDialog.setBody("Checking to see if the user can manage this web...");
         LoadingDialog.show();
 
-        // Create the groups
-        this.createGroups(createFl).then(() => {
+        // Check the user permissions
+        this.checkUserPermissions().then(hasPermissions => {
+            // Ensure they have permissions
+            if (!hasPermissions) {
+                // Close the dialog
+                LoadingDialog.hide();
+
+                // Call the event and do nothing
+                onError ? onError() : null;
+                return;
+            }
+
             // Update the loading dialog
-            LoadingDialog.setBody("Waiting for the permission types to be loaded...");
+            LoadingDialog.setHeader("Loading the Security Information")
+            LoadingDialog.setBody("Loading the security group information...");
 
-            // Ensure the permissions are loaded
-            let loopId = setInterval(() => {
-                // See if the permissions exist
-                if (this._ddlItems && this._permissionTypes) {
-                    // Hide the loading dialog
-                    LoadingDialog.hide();
+            // Create the groups
+            this.createGroups(createFl).then(() => {
+                // Update the loading dialog
+                LoadingDialog.setBody("Waiting for the permission types to be loaded...");
 
-                    // Show the modal
-                    this.renderModal(() => {
+                // Ensure the permissions are loaded
+                let loopId = setInterval(() => {
+                    // See if the permissions exist
+                    if (this._ddlItems && this._permissionTypes) {
                         // Hide the loading dialog
                         LoadingDialog.hide();
 
-                        // Call the event
-                        onComplete ? onComplete() : null;
-                    });
+                        // Show the modal
+                        this.renderModal(() => {
+                            // Hide the loading dialog
+                            LoadingDialog.hide();
 
-                    // Stop the loop
-                    clearInterval(loopId);
-                }
-            }, 10);
-        }, () => {
-            // Hide the loading dialog
-            LoadingDialog.hide();
+                            // Call the event
+                            onComplete ? onComplete() : null;
+                        });
 
-            // Show an error
-            Modal.setHeader("Security Groups");
-            Modal.setBody("Error loading/creating the security groups. Please contact your admin.");
-            Modal.show();
+                        // Stop the loop
+                        clearInterval(loopId);
+                    }
+                }, 10);
+            }, () => {
+                // Hide the loading dialog
+                LoadingDialog.hide();
+
+                // Show an error
+                Modal.setHeader("Security Groups");
+                Modal.setBody("Error loading/creating the security groups. Please contact your admin.");
+                Modal.show();
+            });
         });
     }
 }

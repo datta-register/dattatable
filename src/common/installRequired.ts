@@ -1,4 +1,4 @@
-import { Components, Helper, Site, Web } from "gd-sprest-bs";
+import { Components, ContextInfo, Helper, SPTypes, Site, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
@@ -135,38 +135,6 @@ export class InstallationRequired {
         });
     }
 
-    // Determines if the user is an owner or admin
-    private static isOwnerOrAdmin(): PromiseLike<boolean> {
-        // Return a promise
-        return new Promise(resolve => {
-            // Get the current user
-            Web().CurrentUser().execute(user => {
-                // See if they are an admin
-                if (user.IsSiteAdmin) {
-                    // Resolve the request
-                    resolve(true);
-                } else {
-                    // See if the user is part of the owner's group
-                    Web().AssociatedOwnerGroup().Users().getById(user.Id).execute(
-                        // Is an owner
-                        () => {
-                            // Resolve the request
-                            resolve(true);
-                        },
-                        // Not an owner
-                        () => {
-                            // Resolve the request
-                            resolve(false);
-                        }
-                    );
-                }
-            }, () => {
-                // Resolve the request
-                resolve(false);
-            });
-        });
-    }
-
     // Lists exists
     private static _listsExist: boolean = null;
     static get ListsExist(): boolean { return this._listsExist; }
@@ -240,6 +208,39 @@ export class InstallationRequired {
         });
     }
 
+    // Determines if the user is an owner or admin
+    private static checkUserPermissions(): PromiseLike<boolean> {
+        // Return a promise
+        return new Promise(resolve => {
+            // Get the current user information
+            Web().CurrentUser().execute(
+                // Success
+                user => {
+                    // Get the current user permissions
+                    Web().getUserEffectivePermissions(user.LoginName).execute(
+                        // Success
+                        permissions => {
+                            // See if the user has manage web rights
+                            resolve(Helper.hasPermissions(permissions.GetUserEffectivePermissions, SPTypes.BasePermissionTypes.ManageLists));
+                        },
+
+                        // Error
+                        () => {
+                            // Resolve the request
+                            resolve(false);
+                        }
+                    );
+                },
+
+                // Error
+                () => {
+                    // Resolve the request
+                    resolve(false);
+                }
+            );
+        });
+    }
+
     // Checks the configuration to see if an installation is required
     static requiresInstall(props: IInstallProps): PromiseLike<boolean> {
         // Save the configuration
@@ -250,8 +251,8 @@ export class InstallationRequired {
 
         // Return a promise
         return new Promise((resolve, reject) => {
-            // Ensure this is an admin or owner
-            this.isOwnerOrAdmin().then(hasPermissions => {
+            // Check the user permissions
+            this.checkUserPermissions().then(hasPermissions => {
                 // See if they are not an owner or admin
                 if (!hasPermissions) {
                     // Reject the request
