@@ -128,7 +128,7 @@ export class ListSecurity {
     }
 
     // Determines if the user has manage web rights
-    private checkUserPermissions(): PromiseLike<boolean> {
+    checkUserPermissions(): PromiseLike<boolean> {
         // Return a promise
         return new Promise(resolve => {
             // Get the current user permissions
