@@ -127,12 +127,12 @@ export class ListSecurity {
         });
     }
 
-    // Determines if the user is an owner or admin
+    // Determines if the user has manage web rights
     private checkUserPermissions(): PromiseLike<boolean> {
         // Return a promise
         return new Promise(resolve => {
             // Get the current user permissions
-            Web().getUserEffectivePermissions(this.CurrentUser.LoginName).execute(
+            Web(this._props.webUrl).getUserEffectivePermissions(this.CurrentUser.LoginName).execute(
                 // Success
                 permissions => {
                     // See if the user has manage web rights
