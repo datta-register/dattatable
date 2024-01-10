@@ -270,6 +270,9 @@ export class InstallationRequired {
                     return new Promise(resolve => {
                         let numbOfErrors = this._report.length;
 
+                        // Set the web url
+                        this._webUrl = cfg.getWebUrl();
+
                         // Check the configuration
                         Promise.all([
                             // Check the custom actions
