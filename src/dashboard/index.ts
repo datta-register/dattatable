@@ -1,5 +1,6 @@
 import { Components } from "gd-sprest-bs";
 import { ItemForm } from "../common";
+import { Accordion, IAccordion, IAccordionProps } from "./accordion";
 import { FilterSlideout, IFilterItem } from "./filter";
 import { Footer } from "./footer";
 import { Header } from "./header";
@@ -7,6 +8,7 @@ import { Navigation } from "./navigation";
 import { DataTable, IDataTable } from "./table";
 
 // Export the components
+export * from "./accordion";
 export * from "./filter";
 export * from "./footer";
 export * from "./header";
@@ -15,13 +17,22 @@ export * from "./table";
 
 // Dashboard
 export interface IDashboardProps {
+    accordion?: {
+        bodyField?: string;
+        filterField?: string;
+        items: any[];
+        onItemClick?: (el?: HTMLElement, item?: any) => void;
+        onItemRender?: (el?: HTMLElement, item?: any) => void;
+        paginationLimit?: number;
+        titleField?: string;
+    }
     el: HTMLElement;
     footer?: {
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
         onRendering?: (props: Components.INavbarProps) => void;
         onRendered?: (el?: HTMLElement) => void;
-    };
+    }
     filters?: {
         items: IFilterItem[];
         onClear?: () => void;
@@ -31,7 +42,7 @@ export interface IDashboardProps {
         onRendering?: (props: Components.IJumbotronProps) => void;
         onRendered?: (el?: HTMLElement) => void;
         title?: string;
-    },
+    }
     hideFooter?: boolean;
     hideHeader?: boolean;
     hideNavigation?: boolean;
@@ -48,7 +59,7 @@ export interface IDashboardProps {
         onRendered?: (el?: HTMLElement) => void;
         onSearchRendered?: (el: HTMLElement) => void;
         onShowFilter?: () => void;
-    };
+    }
     subNavigation?: {
         showFilter?: boolean;
         showSearch?: boolean;
@@ -60,7 +71,7 @@ export interface IDashboardProps {
         onRendered?: (el?: HTMLElement) => void;
         onSearchRendered?: (el: HTMLElement) => void;
         onShowFilter?: () => void;
-    };
+    }
     table?: {
         columns: Components.ITableColumn[];
         dtProps?: any;
@@ -75,10 +86,13 @@ export interface IDashboardProps {
  * Dashboard
  */
 export class Dashboard {
+    private _accordion: IAccordion = null;
     private _dt: IDataTable = null;
     private _filters: FilterSlideout = null;
     private _navigation: Navigation = null;
     private _props: IDashboardProps = null;
+
+    private IsAccordion(): boolean { return this._props.accordion ? true : false; }
 
     // Constructor
     constructor(props: IDashboardProps) {
@@ -157,7 +171,7 @@ export class Dashboard {
             <div id="sub-navigation" class="col"></div>
         </div>
         <div class="row">
-            <div id="datatable" class="col"></div>
+            <div id="${this.IsAccordion ? "accordion" : "datatable"}" class="col"></div>
         </div>
         <div class="row">
             <div id="footer" class="col"></div>
@@ -278,14 +292,21 @@ export class Dashboard {
             });
         }
 
-        // Render the data table
-        this._dt = new DataTable({
-            columns: this._props.table ? this._props.table.columns : null,
-            dtProps: this._props.table ? this._props.table.dtProps : null,
-            el: this._props.el.querySelector("#datatable"),
-            onRendered: this._props.table ? this._props.table.onRendered : null,
-            rows: this._props.table ? this._props.table.rows : null
-        });
+        // See if we are rendering an accordion
+        if (this.IsAccordion) {
+            // Render the accordion
+            this._accordion = new Accordion({ ...{ el: this._props.el }, ...this._props.accordion });
+        } else {
+            // Render the data table
+            this._dt = new DataTable({
+                columns: this._props.table ? this._props.table.columns : null,
+                dtProps: this._props.table ? this._props.table.dtProps : null,
+                el: this._props.el.querySelector("#datatable"),
+                onRendered: this._props.table ? this._props.table.onRendered : null,
+                rows: this._props.table ? this._props.table.rows : null
+            });
+
+        }
 
         // See if we are hiding the footer
         if (this._props.hideFooter) {
@@ -324,15 +345,28 @@ export class Dashboard {
 
     // Filter the table
     filter(idx: number, value?: string, exactMatchFl?: boolean) {
-        // Filter the table
-        // If no value is specified, then we don't want to filter by exact value
-        exactMatchFl && value ? this._dt.filterExact(idx, value) : this._dt.filter(idx, value);
+        // See if we have an accordion
+        if (this.IsAccordion) {
+            // Filter the accordion
+            this._accordion.filter(value);
+        }
+        // Else, filter the table
+        else {
+            // If no value is specified, then we don't want to filter by exact value
+            exactMatchFl && value ? this._dt.filterExact(idx, value) : this._dt.filter(idx, value);
+        }
     }
 
     // Filter the table by multiple values
     filterMulti(idx: number, values?: string[]) {
-        // Filter the table
-        this._dt.filterMulti(idx, values);
+        // See if we have an accordion
+        if (this.IsAccordion) {
+            // Filter the accordion
+            //this._accordion.filterMulti(value);
+        } else {
+            // Filter the table
+            this._dt.filterMulti(idx, values);
+        }
     }
 
     // Returns a filter checkbox group by its key
@@ -359,8 +393,14 @@ export class Dashboard {
 
     // Search the table
     search(value?: string) {
-        // Search the table
-        this._dt.search(value);
+        // See if we have an accordion
+        if (this.IsAccordion) {
+            // Search the accordion
+            this._accordion.search(value);
+        } else {
+            // Search the table
+            this._dt.search(value);
+        }
     }
 
     // Sets a filter checkbox group value
