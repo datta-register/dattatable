@@ -18,6 +18,7 @@ export interface IFilterItem {
 export interface IFilterProps {
     filters: IFilterItem[];
     onClear?: () => void;
+    onFilter?: (value: string | string[]) => void;
     onRendered?: (el: HTMLElement) => void;
 }
 
@@ -30,11 +31,13 @@ export class FilterSlideout {
     private _filters: IFilterItem[] = null;
     private _items: Array<Components.IAccordionItem> = null;
     private _onClear: () => void;
+    private _onFilter: (value: string | string[]) => void;
 
     constructor(props: IFilterProps) {
         // Save the properties
         this._filters = props.filters || [];
         this._onClear = props.onClear;
+        this._onFilter = props.onFilter;
 
         // Initialize the variables
         this._cbs = [];
@@ -123,12 +126,14 @@ export class FilterSlideout {
 
                             // Execute the event
                             filter.onFilter ? filter.onFilter(values) : null;
+                            this._onFilter ? this._onFilter(values) : null;
                         } else {
                             let item = value as Components.ICheckboxGroupItem;
 
 
                             // Execute the event
                             filter.onFilter ? filter.onFilter(item ? item.label : "") : null;
+                            this._onFilter ? this._onFilter(item ? item.label : "") : null;
                         }
                     }
                 }));

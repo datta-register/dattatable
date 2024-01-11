@@ -154,7 +154,10 @@ export class Dashboard {
         this._filters = new FilterSlideout({
             filters: this._props.filters ? this._props.filters.items : [],
             onClear: this._props.filters ? this._props.filters.onClear : null,
-            onRendered: this._props.filters ? this._props.filters.onRendered : null
+            onRendered: this._props.filters ? this._props.filters.onRendered : null,
+            onFilter: !this.IsAccordion ? null : value => {
+                this._accordion.filter(value);
+            }
         });
 
         // Render the template
@@ -210,8 +213,14 @@ export class Dashboard {
                 },
                 onRendered: navProps.onRendered,
                 onSearch: value => {
-                    // Search the data table
-                    this._dt.search(value);
+                    // See if we are rendering an accordion
+                    if (this.IsAccordion) {
+                        // Search the accordion
+                        this._accordion.search(value);
+                    } else {
+                        // Search the data table
+                        this._dt.search(value);
+                    }
                 },
                 onSearchRendered: navProps.onSearchRendered,
                 onShowFilter: () => {
@@ -282,8 +291,14 @@ export class Dashboard {
                 },
                 onRendered: navProps.onRendered,
                 onSearch: value => {
-                    // Search the data table
-                    this._dt.search(value);
+                    // See if we are rendering an accordion
+                    if (this.IsAccordion) {
+                        // Search the accordion
+                        this._accordion.search(value);
+                    } else {
+                        // Search the data table
+                        this._dt.search(value);
+                    }
                 },
                 onShowFilter: () => {
                     // Show the filter
@@ -295,7 +310,10 @@ export class Dashboard {
         // See if we are rendering an accordion
         if (this.IsAccordion) {
             // Render the accordion
-            this._accordion = new Accordion({ ...{ el: this._props.el }, ...this._props.accordion });
+            this._accordion = new Accordion({
+                ...{ el: this._props.el.querySelector("#accordion") },
+                ...this._props.accordion
+            });
         } else {
             // Render the data table
             this._dt = new DataTable({
@@ -354,6 +372,24 @@ export class Dashboard {
         else {
             // If no value is specified, then we don't want to filter by exact value
             exactMatchFl && value ? this._dt.filterExact(idx, value) : this._dt.filter(idx, value);
+        }
+    }
+
+    // Filter the accordion
+    filterAccordion(value?: string) {
+        // See if we have an accordion
+        if (this.IsAccordion) {
+            // Filter the accordion
+            this._accordion.filter(value);
+        }
+    }
+
+    // Filter the accordion
+    filterAccordionMulti(value?: string[]) {
+        // See if we have an accordion
+        if (this.IsAccordion) {
+            // Filter the accordion
+            //this._accordion.filter(value);
         }
     }
 
