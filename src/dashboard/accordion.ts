@@ -53,23 +53,13 @@ export class Accordion implements IAccordion {
         // Parse all accordion items
         let items = this._props.el.querySelectorAll(".accordion-item");
         for (let i = 0; i < items.length; i++) {
-            let elItem = items[i];
+            let elItem = items[i] as HTMLElement;
+
+            // Clear the item
+            this.clearItem(elItem);
 
             // Show the item
             elItem.classList.remove("d-none");
-
-            // Remove the first/last item classes
-            elItem.classList.remove("first-item");
-            elItem.classList.remove("last-item");
-
-            // See if a class name exists
-            if (className) {
-                // See if this item doesn't matches
-                if (!elItem.classList.contains(className)) {
-                    // Hide the item
-                    elItem.classList.add("d-none");
-                }
-            }
         }
 
         // Render the items
@@ -157,7 +147,6 @@ export class Accordion implements IAccordion {
                     let btn = elItem.querySelector(".accordion-button") as HTMLButtonElement;
                     btn?.click();
                 }
-
 
                 // See if the item doesn't contains the search value
                 if (elItem.innerText.toLowerCase().indexOf(this._activeSearchFilter) < 0 &&

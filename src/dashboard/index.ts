@@ -6,6 +6,7 @@ import { Footer } from "./footer";
 import { Header } from "./header";
 import { Navigation } from "./navigation";
 import { DataTable, IDataTable } from "./table";
+import { Tiles, ITiles } from "./tiles";
 
 // Export the components
 export * from "./accordion";
@@ -14,6 +15,7 @@ export * from "./footer";
 export * from "./header";
 export * from "./navigation";
 export * from "./table";
+export * from "./tiles";
 
 // Dashboard
 export interface IDashboardProps {
@@ -78,6 +80,15 @@ export interface IDashboardProps {
         onRendered?: (el?: HTMLElement, dt?: any) => void;
         rows?: any[];
     }
+    tiles?: {
+        bodyField?: string;
+        filterField?: string;
+        items: any[];
+        onCardRender?: (el?: HTMLElement, item?: any) => void;
+        paginationLimit?: number;
+        subTitleField?: string;
+        titleField?: string;
+    }
     onRendered?: (el?: HTMLElement) => void;
     useModal?: boolean;
 }
@@ -91,8 +102,13 @@ export class Dashboard {
     private _filters: FilterSlideout = null;
     private _navigation: Navigation = null;
     private _props: IDashboardProps = null;
+    private _tiles: ITiles = null;
 
+    // Determines if we are rendering an accordion
     private IsAccordion(): boolean { return this._props.accordion ? true : false; }
+
+    // Determines if we are rendering tiles
+    private IsTiles(): boolean { return this._props.tiles ? true : false; }
 
     // Constructor
     constructor(props: IDashboardProps) {
@@ -155,9 +171,11 @@ export class Dashboard {
             filters: this._props.filters ? this._props.filters.items : [],
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
-            onFilter: !this.IsAccordion ? null : value => {
+            onFilter: this.IsAccordion ? value => {
                 this._accordion.filter(value);
-            }
+            } : (this.IsTiles ? value => {
+                this._tiles.filter(value)
+            } : null)
         });
 
         // Render the template
@@ -174,7 +192,7 @@ export class Dashboard {
             <div id="sub-navigation" class="col"></div>
         </div>
         <div class="row">
-            <div id="${this.IsAccordion ? "accordion" : "datatable"}" class="col"></div>
+            <div id="${this.IsAccordion ? "accordion" : (this.IsTiles ? "tiles" : "datatable")}" class="col"></div>
         </div>
         <div class="row">
             <div id="footer" class="col"></div>
@@ -217,6 +235,11 @@ export class Dashboard {
                     if (this.IsAccordion) {
                         // Search the accordion
                         this._accordion.search(value);
+                    }
+                    // Else, see if we are rendering tiles
+                    else if (this.IsTiles) {
+                        // Search the tiles
+                        this._tiles.search(value);
                     } else {
                         // Search the data table
                         this._dt.search(value);
@@ -295,6 +318,11 @@ export class Dashboard {
                     if (this.IsAccordion) {
                         // Search the accordion
                         this._accordion.search(value);
+                    }
+                    // Else, see if we are rendering tiles
+                    else if (this.IsTiles) {
+                        // Search the tiles
+                        this._tiles.search(value);
                     } else {
                         // Search the data table
                         this._dt.search(value);
@@ -314,6 +342,14 @@ export class Dashboard {
                 ...{ el: this._props.el.querySelector("#accordion") },
                 ...this._props.accordion
             });
+        }
+        // Else, see if we are rendering tiles
+        else if (this.IsTiles) {
+            // Render the tiles
+            this._tiles = new Tiles({
+                ...{ el: this._props.el.querySelector("#tiles") },
+                ...this._props.tiles
+            })
         } else {
             // Render the data table
             this._dt = new DataTable({
@@ -368,8 +404,11 @@ export class Dashboard {
             // Filter the accordion
             this._accordion.filter(value);
         }
-        // Else, filter the table
-        else {
+        // Else, see if we are rendering tiles
+        else if (this.IsTiles) {
+            // Search the tiles
+            this._tiles.search(value);
+        } else {
             // If no value is specified, then we don't want to filter by exact value
             exactMatchFl && value ? this._dt.filterExact(idx, value) : this._dt.filter(idx, value);
         }
@@ -399,9 +438,33 @@ export class Dashboard {
         if (this.IsAccordion) {
             // Filter the accordion
             //this._accordion.filterMulti(value);
-        } else {
+        }
+        // Else, see if we have tiles
+        else if (this.IsTiles) {
+            // Filter the tiles
+            //this._tiles.filterMulti(value);
+        }
+        else {
             // Filter the table
             this._dt.filterMulti(idx, values);
+        }
+    }
+
+    // Filter the tiles
+    filterTiles(value?: string) {
+        // See if we have tiles
+        if (this.IsTiles) {
+            // Filter the tiles
+            this._tiles.filter(value);
+        }
+    }
+
+    // Filter the tiles
+    filterTilesMulti(value?: string[]) {
+        // See if we have tiles
+        if (this.IsTiles) {
+            // Filter the tiles
+            //this._tiles.filterMulti(value);
         }
     }
 
@@ -433,6 +496,11 @@ export class Dashboard {
         if (this.IsAccordion) {
             // Search the accordion
             this._accordion.search(value);
+        }
+        // Else, see if we have tiles
+        else if (this.IsTiles) {
+            // Search the tiles
+            this._tiles.search(value);
         } else {
             // Search the table
             this._dt.search(value);
