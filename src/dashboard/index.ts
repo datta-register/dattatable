@@ -105,10 +105,10 @@ export class Dashboard {
     private _tiles: ITiles = null;
 
     // Determines if we are rendering an accordion
-    private IsAccordion(): boolean { return this._props.accordion ? true : false; }
+    private get IsAccordion(): boolean { return this._props.accordion ? true : false; }
 
     // Determines if we are rendering tiles
-    private IsTiles(): boolean { return this._props.tiles ? true : false; }
+    private get IsTiles(): boolean { return this._props.tiles ? true : false; }
 
     // Constructor
     constructor(props: IDashboardProps) {
