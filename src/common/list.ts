@@ -165,15 +165,6 @@ export class List<T = Types.SP.ListItem> {
         });
     }
 
-    // Displays the new form
-    newForm(props: IItemFormCreateProps) {
-        // Clear the modal/canvas
-        this.clear();
-
-        // Display the form
-        ItemForm.create(props).then(null, this._onLoadFormError);
-    }
-
     // Displays the edit form
     editForm(props: IItemFormEditProps) {
         // Clear the modal/canvas
@@ -181,6 +172,23 @@ export class List<T = Types.SP.ListItem> {
 
         // Display the form
         ItemForm.edit(props).then(null, this._onLoadFormError);
+    }
+
+    // Gets a list field by internal or title
+    getField(name: string) {
+        // Parse the fields
+        for (let i = 0; i < this.ListFields.length; i++) {
+            let field = this.ListFields[i];
+
+            // See if this is the target field
+            if (field.InternalName == name || field.Title == name) {
+                // Return the field
+                return field;
+            }
+        }
+
+        // Not found
+        return null;
     }
 
     // Initializes the list component
@@ -341,6 +349,15 @@ export class List<T = Types.SP.ListItem> {
                 reject(...args);
             }, true);
         });
+    }
+
+    // Displays the new form
+    newForm(props: IItemFormCreateProps) {
+        // Clear the modal/canvas
+        this.clear();
+
+        // Display the form
+        ItemForm.create(props).then(null, this._onLoadFormError);
     }
 
     // Refresh the data

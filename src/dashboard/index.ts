@@ -1,6 +1,6 @@
 import { Components } from "gd-sprest-bs";
 import { ItemForm } from "../common";
-import { Accordion, IAccordion, IAccordionProps } from "./accordion";
+import { Accordion, IAccordion } from "./accordion";
 import { FilterSlideout, IFilterItem } from "./filter";
 import { Footer } from "./footer";
 import { Header } from "./header";
