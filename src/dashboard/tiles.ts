@@ -10,7 +10,10 @@ export interface ITilesProps {
     el: HTMLElement;
     filterField?: string;
     items: any[];
+    onBodyRender?: (el?: HTMLElement, item?: any) => void;
     onCardRender?: (el?: HTMLElement, item?: any) => void;
+    onSubTitleRender?: (el?: HTMLElement, item?: any) => void;
+    onTitleRender?: (el?: HTMLElement, item?: any) => void;
     paginationLimit?: number;
     subTitleField?: string;
     titleField?: string;
@@ -93,7 +96,13 @@ export class Tiles implements ITiles {
                     data: filters,
                     subTitle: item[this._props.subTitleField] || "",
                     title: item[this._props.titleField || "Title"] || "",
-                    onRender: this._props.onCardRender
+                    onRender: (el) => {
+                        // Call the events
+                        this._props.onBodyRender ? this._props.onBodyRender(el.querySelector(".card-text")) : null;
+                        this._props.onCardRender ? this._props.onCardRender(el.querySelector(".card-body")) : null;
+                        this._props.onSubTitleRender ? this._props.onSubTitleRender(el.querySelector(".card-subtitle")) : null;
+                        this._props.onTitleRender ? this._props.onTitleRender(el.querySelector(".card-title")) : null;
+                    }
                 }]
             });
         }
