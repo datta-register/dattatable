@@ -93,15 +93,17 @@ export class Tiles implements ITiles {
                 className: itemClassNames.join(" "),
                 body: [{
                     content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
-                    data: filters,
+                    data: item,
                     subTitle: item[this._props.subTitleField] || "",
                     title: item[this._props.titleField || "Title"] || "",
-                    onRender: (el) => {
+                    onRender: (el, card) => {
+                        let item = card.data;
+
                         // Call the events
-                        this._props.onBodyRender ? this._props.onBodyRender(el.querySelector(".card-text")) : null;
-                        this._props.onCardRender ? this._props.onCardRender(el.querySelector(".card-body")) : null;
-                        this._props.onSubTitleRender ? this._props.onSubTitleRender(el.querySelector(".card-subtitle")) : null;
-                        this._props.onTitleRender ? this._props.onTitleRender(el.querySelector(".card-title")) : null;
+                        this._props.onTitleRender ? this._props.onTitleRender(el.querySelector(".card-title"), item) : null;
+                        this._props.onSubTitleRender ? this._props.onSubTitleRender(el.querySelector(".card-subtitle"), item) : null;
+                        this._props.onBodyRender ? this._props.onBodyRender(el.querySelector(".card-text"), item) : null;
+                        this._props.onCardRender ? this._props.onCardRender(el.querySelector(".card-body"), item) : null;
                     }
                 }]
             });
