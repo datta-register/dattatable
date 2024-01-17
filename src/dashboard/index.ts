@@ -84,7 +84,10 @@ export interface IDashboardProps {
         bodyField?: string;
         filterField?: string;
         items: any[];
+        onBodyRender?: (el?: HTMLElement, item?: any) => void;
         onCardRender?: (el?: HTMLElement, item?: any) => void;
+        onSubTitleRender?: (el?: HTMLElement, item?: any) => void;
+        onTitleRender?: (el?: HTMLElement, item?: any) => void;
         paginationLimit?: number;
         subTitleField?: string;
         titleField?: string;
@@ -353,13 +356,9 @@ export class Dashboard {
         } else {
             // Render the data table
             this._dt = new DataTable({
-                columns: this._props.table ? this._props.table.columns : null,
-                dtProps: this._props.table ? this._props.table.dtProps : null,
-                el: this._props.el.querySelector("#datatable"),
-                onRendered: this._props.table ? this._props.table.onRendered : null,
-                rows: this._props.table ? this._props.table.rows : null
+                ...{ el: this._props.el.querySelector("#datatable") },
+                ...this._props.table
             });
-
         }
 
         // See if we are hiding the footer
