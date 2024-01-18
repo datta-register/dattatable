@@ -82,6 +82,7 @@ export interface IDashboardProps {
     }
     tiles?: {
         bodyField?: string;
+        colSize?: number;
         filterField?: string;
         items: any[];
         onBodyRender?: (el?: HTMLElement, item?: any) => void;

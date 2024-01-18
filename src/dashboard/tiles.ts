@@ -7,6 +7,7 @@ export interface ITiles {
 
 export interface ITilesProps {
     bodyField?: string;
+    colSize?: number;
     el: HTMLElement;
     filterField?: string;
     items: any[];
