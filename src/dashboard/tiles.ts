@@ -44,13 +44,11 @@ export class Tiles implements ITiles {
         let className = value ? value.toLowerCase().replace(/ /g, "-") : null;
         this._activeFilterClass = className;
 
-        // Parse all tile items
-        let items = this._props.el.querySelectorAll(".card");
-        for (let i = 0; i < items.length; i++) {
-            let elItem = items[i];
-
-            // Hide the item
-            elItem.classList.add("d-none");
+        // Parse all tile
+        let tiles = this._props.el.querySelectorAll(".card");
+        for (let i = 0; i < tiles.length; i++) {
+            // Hide the tile
+            tiles[i].parentElement.classList.add("d-none");
         }
 
         // Update the tiles
@@ -146,7 +144,7 @@ export class Tiles implements ITiles {
                 // See if the item doesn't contains the search value
                 if (elItem.innerText.toLowerCase().indexOf(this._activeSearchFilter) < 0) {
                     // Hide the item
-                    elItem.classList.add("d-none");
+                    elItem.parentElement.classList.add("d-none");
 
                     // Exclude the item from the array
                     elItems.splice(i, 1);
@@ -161,7 +159,7 @@ export class Tiles implements ITiles {
             // Ensure the item exists
             if (elItem) {
                 // Show the item
-                elItem.classList.remove("d-none");
+                elItem.parentElement.classList.remove("d-none");
             } else {
                 // Break from the loop
                 break;
@@ -173,7 +171,7 @@ export class Tiles implements ITiles {
             let elItem = elItems[i] as HTMLElement;
 
             // Hide the item
-            elItem.classList.add("d-none");
+            elItem.parentElement.classList.add("d-none");
         }
 
         // Render the pagination
@@ -187,7 +185,7 @@ export class Tiles implements ITiles {
                     let elItem = elItems[i] as HTMLElement;
 
                     // Hide the item
-                    elItem.classList.add("d-none");
+                    elItem.parentElement.classList.add("d-none");
                 }
 
                 // Parse the items to show
@@ -196,7 +194,7 @@ export class Tiles implements ITiles {
                     let elItem = elItems[i];
 
                     // Show the item
-                    elItem.classList.remove("d-none");
+                    elItem.parentElement.classList.remove("d-none");
                 }
             }
         });
