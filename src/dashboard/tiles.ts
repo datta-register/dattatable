@@ -75,7 +75,7 @@ export class Tiles implements ITiles {
 
             // Get the filters
             let filters = item[this._props.filterField] || [];
-            filters = filters["results"] || filters;
+            filters = filters["results"] || [filters];
 
             // See if the filter field is specified
             if (this._props.filterField) {

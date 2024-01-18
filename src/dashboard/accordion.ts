@@ -87,7 +87,7 @@ export class Accordion implements IAccordion {
             if (this._props.filterField) {
                 // Parse the selected filters
                 let filters = item[this._props.filterField] || [];
-                filters = filters["results"] || filters;
+                filters = filters["results"] || [filters];
                 for (let j = 0; j < filters.length; j++) {
                     let filter = filters[j].toLowerCase().replace(/ /g, '-');
 
