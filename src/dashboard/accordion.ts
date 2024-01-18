@@ -57,9 +57,6 @@ export class Accordion implements IAccordion {
 
             // Clear the item
             this.clearItem(elItem);
-
-            // Show the item
-            elItem.classList.remove("d-none");
         }
 
         // Render the items

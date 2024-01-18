@@ -48,8 +48,8 @@ export class Tiles implements ITiles {
         for (let i = 0; i < items.length; i++) {
             let elItem = items[i];
 
-            // Show the item
-            elItem.classList.remove("d-none");
+            // Hide the item
+            elItem.classList.add("d-none");
         }
 
         // Update the tiles
@@ -161,9 +161,6 @@ export class Tiles implements ITiles {
                 // Show the item
                 elItem.classList.remove("d-none");
             } else {
-                // Set the class for the last item
-                if (elItems[i - 1]) { elItems[i - 1].classList.add("last-item"); }
-
                 // Break from the loop
                 break;
             }
