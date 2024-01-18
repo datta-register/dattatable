@@ -131,20 +131,24 @@ export class ListSecurity {
     checkUserPermissions(): PromiseLike<boolean> {
         // Return a promise
         return new Promise(resolve => {
-            // Get the current user permissions
-            Web(this._props.webUrl).getUserEffectivePermissions(this.CurrentUser.LoginName).execute(
-                // Success
-                permissions => {
-                    // See if the user has manage web rights
-                    resolve(Helper.hasPermissions(permissions.GetUserEffectivePermissions, SPTypes.BasePermissionTypes.ManageWeb));
-                },
+            // Ensure this class has been initialized
+            this.hasInit().then(() => {
+                // Get the current user permissions
+                Web(this._props.webUrl).getUserEffectivePermissions(this.CurrentUser.LoginName).execute(
+                    // Success
+                    permissions => {
+                        // See if the user has manage web rights
+                        resolve(Helper.hasPermissions(permissions.GetUserEffectivePermissions, SPTypes.BasePermissionTypes.ManageWeb));
+                    },
 
-                // Error
-                () => {
-                    // Resolve the request
-                    resolve(false);
-                }
-            );
+                    // Error
+                    () => {
+                        // Resolve the request
+                        resolve(false);
+                    }
+                );
+
+            });
         });
     }
 
@@ -374,6 +378,24 @@ export class ListSecurity {
                 // Resolve the request
                 resolve();
             });
+        });
+    }
+
+    // Method to ensure this class has initialized
+    private hasInit() {
+        // Return a promise
+        return new Promise(resolve => {
+            // Set a loop
+            let loopId = setInterval(() => {
+                // Ensure this class has initialized
+                if (this.CurrentUser) {
+                    // Stop the loop
+                    clearInterval(loopId);
+
+                    // Resolve the request
+                    resolve(null);
+                }
+            }, 10);
         });
     }
 
