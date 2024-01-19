@@ -12,6 +12,7 @@ export interface IAccordionProps {
     items: any[];
     onItemClick?: (el?: HTMLElement, item?: any) => void;
     onItemRender?: (el?: HTMLElement, item?: any) => void;
+    onPaginationRender?: (el?: HTMLElement) => void;
     paginationLimit?: number;
     titleField?: string;
 }
@@ -248,6 +249,9 @@ export class Accordion implements IAccordion {
                 elItems[lastIdx < elItems.length ? lastIdx : elItems.length - 1].classList.add("last-item");
             }
         });
+
+        // Call the event
+        this._props.onPaginationRender ? this._props.onPaginationRender(elPagination) : null;
     }
 
     // Searches the accordion

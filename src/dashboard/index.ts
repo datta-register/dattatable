@@ -25,6 +25,7 @@ export interface IDashboardProps {
         items: any[];
         onItemClick?: (el?: HTMLElement, item?: any) => void;
         onItemRender?: (el?: HTMLElement, item?: any) => void;
+        onPaginationRender?: (el?: HTMLElement) => void;
         paginationLimit?: number;
         titleField?: string;
     }
@@ -87,6 +88,7 @@ export interface IDashboardProps {
         items: any[];
         onBodyRender?: (el?: HTMLElement, item?: any) => void;
         onCardRender?: (el?: HTMLElement, item?: any) => void;
+        onPaginationRender?: (el?: HTMLElement) => void;
         onSubTitleRender?: (el?: HTMLElement, item?: any) => void;
         onTitleRender?: (el?: HTMLElement, item?: any) => void;
         paginationLimit?: number;

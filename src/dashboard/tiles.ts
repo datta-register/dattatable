@@ -13,6 +13,7 @@ export interface ITilesProps {
     items: any[];
     onBodyRender?: (el?: HTMLElement, item?: any) => void;
     onCardRender?: (el?: HTMLElement, item?: any) => void;
+    onPaginationRender?: (el?: HTMLElement) => void;
     onSubTitleRender?: (el?: HTMLElement, item?: any) => void;
     onTitleRender?: (el?: HTMLElement, item?: any) => void;
     paginationLimit?: number;
@@ -102,7 +103,7 @@ export class Tiles implements ITiles {
                         this._props.onTitleRender ? this._props.onTitleRender(el.querySelector(".card-title"), item) : null;
                         this._props.onSubTitleRender ? this._props.onSubTitleRender(el.querySelector(".card-subtitle"), item) : null;
                         this._props.onBodyRender ? this._props.onBodyRender(el.querySelector(".card-text"), item) : null;
-                        this._props.onCardRender ? this._props.onCardRender(el.querySelector(".card-body"), item) : null;
+                        this._props.onCardRender ? this._props.onCardRender(el, item) : null;
                     }
                 }]
             });
@@ -198,6 +199,9 @@ export class Tiles implements ITiles {
                 }
             }
         });
+
+        // Call the event
+        this._props.onPaginationRender ? this._props.onPaginationRender(elPagination) : null;
     }
 
     // Searches the tile
