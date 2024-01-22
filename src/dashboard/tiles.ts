@@ -20,6 +20,8 @@ export interface ITilesProps {
     onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
     onTitleRendered?: (el?: HTMLElement, item?: any) => void;
     paginationLimit?: number;
+    showFooter?: boolean;
+    showHeader?: boolean;
     subTitleField?: string;
     titleField?: string;
 }
@@ -95,8 +97,6 @@ export class Tiles implements ITiles {
             let cardProps: Components.ICardProps = {
                 className: itemClassNames.join(" "),
                 onRender: this._props.onCardRendered,
-                header: { onRender: this._props.onHeaderRendered },
-                footer: { onRender: this._props.onFooterRendered },
                 body: [{
                     content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
                     data: item,
@@ -112,6 +112,18 @@ export class Tiles implements ITiles {
                     }
                 }]
             };
+
+            // See if we are showing the header
+            let showHeader = typeof (this._props.showHeader) === "boolean" ? this._props.showHeader : true;
+            if (showHeader) {
+                cardProps.header = { onRender: this._props.onHeaderRendered };
+            }
+
+            // See if we are showing the footer
+            let showFooter = typeof (this._props.showFooter) === "boolean" ? this._props.showFooter : true;
+            if (showFooter) {
+                cardProps.footer = { onRender: this._props.onFooterRendered };
+            }
 
             // Call the event
             this._props.onCardRendering ? this._props.onCardRendering(cardProps) : null;
