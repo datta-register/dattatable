@@ -11,11 +11,14 @@ export interface ITilesProps {
     el: HTMLElement;
     filterField?: string;
     items: any[];
-    onBodyRender?: (el?: HTMLElement, item?: any) => void;
-    onCardRender?: (el?: HTMLElement, item?: any) => void;
-    onPaginationRender?: (el?: HTMLElement) => void;
-    onSubTitleRender?: (el?: HTMLElement, item?: any) => void;
-    onTitleRender?: (el?: HTMLElement, item?: any) => void;
+    onBodyRendered?: (el?: HTMLElement, item?: any) => void;
+    onCardRendered?: (el?: HTMLElement, item?: any) => void;
+    onCardRendering?: (item?: Components.ICardProps) => void;
+    onFooterRendered?: (el?: HTMLElement, item?: any) => void;
+    onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
+    onPaginationRendered?: (el?: HTMLElement) => void;
+    onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
+    onTitleRendered?: (el?: HTMLElement, item?: any) => void;
     paginationLimit?: number;
     subTitleField?: string;
     titleField?: string;
@@ -88,10 +91,12 @@ export class Tiles implements ITiles {
                 }
             }
 
-            // Add an tile
-            cards.push({
+            // Set the card props
+            let cardProps: Components.ICardProps = {
                 className: itemClassNames.join(" "),
-                onRender: this._props.onCardRender,
+                onRender: this._props.onCardRendered,
+                header: { onRender: this._props.onHeaderRendered },
+                footer: { onRender: this._props.onFooterRendered },
                 body: [{
                     content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
                     data: item,
@@ -101,12 +106,18 @@ export class Tiles implements ITiles {
                         let item = card.data;
 
                         // Call the events
-                        this._props.onTitleRender ? this._props.onTitleRender(el.querySelector(".card-title"), item) : null;
-                        this._props.onSubTitleRender ? this._props.onSubTitleRender(el.querySelector(".card-subtitle"), item) : null;
-                        this._props.onBodyRender ? this._props.onBodyRender(el, item) : null;
+                        this._props.onTitleRendered ? this._props.onTitleRendered(el.querySelector(".card-title"), item) : null;
+                        this._props.onSubTitleRendered ? this._props.onSubTitleRendered(el.querySelector(".card-subtitle"), item) : null;
+                        this._props.onBodyRendered ? this._props.onBodyRendered(el, item) : null;
                     }
                 }]
-            });
+            };
+
+            // Call the event
+            this._props.onCardRendering ? this._props.onCardRendering(cardProps) : null;
+
+            // Add an tile
+            cards.push(cardProps);
         }
 
         // Render the tiles
@@ -201,7 +212,7 @@ export class Tiles implements ITiles {
         });
 
         // Call the event
-        this._props.onPaginationRender ? this._props.onPaginationRender(elPagination) : null;
+        this._props.onPaginationRendered ? this._props.onPaginationRendered(elPagination) : null;
     }
 
     // Searches the tile
