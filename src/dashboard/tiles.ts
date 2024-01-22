@@ -91,6 +91,7 @@ export class Tiles implements ITiles {
             // Add an tile
             cards.push({
                 className: itemClassNames.join(" "),
+                onRender: this._props.onCardRender,
                 body: [{
                     content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
                     data: item,
@@ -102,8 +103,7 @@ export class Tiles implements ITiles {
                         // Call the events
                         this._props.onTitleRender ? this._props.onTitleRender(el.querySelector(".card-title"), item) : null;
                         this._props.onSubTitleRender ? this._props.onSubTitleRender(el.querySelector(".card-subtitle"), item) : null;
-                        this._props.onBodyRender ? this._props.onBodyRender(el.querySelector(".card-text"), item) : null;
-                        this._props.onCardRender ? this._props.onCardRender(el, item) : null;
+                        this._props.onBodyRender ? this._props.onBodyRender(el, item) : null;
                     }
                 }]
             });
