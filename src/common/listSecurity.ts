@@ -89,9 +89,6 @@ export class ListSecurity {
         // Save the properties
         this._props = props;
 
-        // Default the web url
-        this._props.webUrl = this._props.webUrl || ContextInfo.webServerRelativeUrl;
-
         // Get the context information
         getContextInfo(this._props.webUrl).then(requestDigest => {
             // Set the request digest value
