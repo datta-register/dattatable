@@ -70,66 +70,81 @@ export class Tiles implements ITiles {
         this.updateTiles();
     }
 
+    // Generate the card properties
+    private generateCard(item: any): Components.ICardProps {
+        let itemClassNames = [];
+
+        // Get the filters
+        let filters = item[this._props.filterField] || [];
+        filters = filters["results"] || [filters];
+
+        // See if the filter field is specified
+        if (this._props.filterField) {
+            // Parse the selected filters
+            for (let j = 0; j < filters.length; j++) {
+                let filter = filters[j].toLowerCase().replace(/ /g, '-');
+
+                // Add the filter as a class name
+                if (filter) { itemClassNames.push(filter); }
+            }
+        }
+
+        // Set the card props
+        let cardProps: Components.ICardProps = {
+            className: itemClassNames.join(" "),
+            onRender: this._props.onCardRendered,
+            body: [{
+                content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
+                data: item,
+                subTitle: item[this._props.subTitleField] || "",
+                title: item[this._props.titleField || "Title"] || "",
+                onRender: (el, card) => {
+                    let item = card.data;
+
+                    // Call the events
+                    this._props.onTitleRendered ? this._props.onTitleRendered(el.querySelector(".card-title"), item) : null;
+                    this._props.onSubTitleRendered ? this._props.onSubTitleRendered(el.querySelector(".card-subtitle"), item) : null;
+                    this._props.onBodyRendered ? this._props.onBodyRendered(el, item) : null;
+                }
+            }]
+        };
+
+        // See if we are showing the header
+        let showHeader = typeof (this._props.showHeader) === "boolean" ? this._props.showHeader : true;
+        if (showHeader) {
+            cardProps.header = {
+                onRender: (el) => {
+                    this._props.onHeaderRendered ? this._props.onHeaderRendered(el, item) : null;
+                }
+            };
+        }
+
+        // See if we are showing the footer
+        let showFooter = typeof (this._props.showFooter) === "boolean" ? this._props.showFooter : true;
+        if (showFooter) {
+            cardProps.footer = {
+                onRender: (el) => {
+                    this._props.onFooterRendered ? this._props.onFooterRendered(el, item) : null;
+                }
+            };
+        }
+
+        // Call the event
+        this._props.onCardRendering ? this._props.onCardRendering(cardProps) : null;
+
+        // Return the card properties
+        return cardProps;
+    }
+
     // Renders the tiles
     private renderTiles() {
         // Parse the items
         let cards: Array<Components.ICardProps> = [];
         for (let i = 0; i < this._props.items.length; i++) {
             let item = this._props.items[i];
-            let itemClassNames = [];
-
-            // Get the filters
-            let filters = item[this._props.filterField] || [];
-            filters = filters["results"] || [filters];
-
-            // See if the filter field is specified
-            if (this._props.filterField) {
-                // Parse the selected filters
-                for (let j = 0; j < filters.length; j++) {
-                    let filter = filters[j].toLowerCase().replace(/ /g, '-');
-
-                    // Add the filter as a class name
-                    if (filter) { itemClassNames.push(filter); }
-                }
-            }
-
-            // Set the card props
-            let cardProps: Components.ICardProps = {
-                className: itemClassNames.join(" "),
-                onRender: this._props.onCardRendered,
-                body: [{
-                    content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
-                    data: item,
-                    subTitle: item[this._props.subTitleField] || "",
-                    title: item[this._props.titleField || "Title"] || "",
-                    onRender: (el, card) => {
-                        let item = card.data;
-
-                        // Call the events
-                        this._props.onTitleRendered ? this._props.onTitleRendered(el.querySelector(".card-title"), item) : null;
-                        this._props.onSubTitleRendered ? this._props.onSubTitleRendered(el.querySelector(".card-subtitle"), item) : null;
-                        this._props.onBodyRendered ? this._props.onBodyRendered(el, item) : null;
-                    }
-                }]
-            };
-
-            // See if we are showing the header
-            let showHeader = typeof (this._props.showHeader) === "boolean" ? this._props.showHeader : true;
-            if (showHeader) {
-                cardProps.header = { onRender: this._props.onHeaderRendered };
-            }
-
-            // See if we are showing the footer
-            let showFooter = typeof (this._props.showFooter) === "boolean" ? this._props.showFooter : true;
-            if (showFooter) {
-                cardProps.footer = { onRender: this._props.onFooterRendered };
-            }
-
-            // Call the event
-            this._props.onCardRendering ? this._props.onCardRendering(cardProps) : null;
 
             // Add an tile
-            cards.push(cardProps);
+            cards.push(this.generateCard(item));
         }
 
         // Render the tiles
