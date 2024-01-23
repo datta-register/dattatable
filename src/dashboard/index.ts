@@ -95,6 +95,8 @@ export interface IDashboardProps {
         onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
         onTitleRendered?: (el?: HTMLElement, item?: any) => void;
         paginationLimit?: number;
+        showFooter?: boolean;
+        showHeader?: boolean;
         subTitleField?: string;
         titleField?: string;
     }
