@@ -6,6 +6,7 @@ import {
 
 /** List Properties */
 export interface IListProps<T = Types.SP.ListItem> {
+    camlQuery?: string;
     itemQuery?: Types.IODataQuery;
     listName: string;
     viewName?: string;
@@ -23,6 +24,10 @@ export interface IListProps<T = Types.SP.ListItem> {
  */
 export class List<T = Types.SP.ListItem> {
     /** Public Properties */
+
+    // CAML query
+    private _camlQuery: string = null;
+    get CAMLQuery(): string { return this._camlQuery; }
 
     // Reference to the edit form
     get EditForm() { return ItemForm.EditForm; }
@@ -106,6 +111,7 @@ export class List<T = Types.SP.ListItem> {
     // Constructor
     constructor(props: IListProps<T>) {
         // Save the properties
+        this._camlQuery = props.camlQuery;
         this._listName = props.listName;
         this._odata = props.itemQuery;
         this._onInitError = props.onInitError;
@@ -299,14 +305,39 @@ export class List<T = Types.SP.ListItem> {
 
     // Loads the items
     private loadItems(query?: Types.IODataQuery) {
-        // See if the view xml exists
-        if (this.ViewXml) {
+        // See if the caml query exists
+        if (this.CAMLQuery) {
+            return this.loadItemsByCAMLQuery();
+        }
+        // Else, see if the view xml exists
+        else if (this.ViewXml) {
             // Get the items by the view name
             return this.loadItemsByView();
         } else {
             // Get the items by odata
             return this.loadItemsByQuery(query);
         }
+    }
+
+    // Loads the items by CAML query
+    private loadItemsByCAMLQuery(): PromiseLike<T[]> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // See if the items already exist
+            if (this._items) { resolve(this._items); return; }
+
+            // Query the items
+            Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).getItemsByQuery(this.CAMLQuery).execute(items => {
+                // Save the items
+                this._items = items.results as any;
+
+                // Resolve the request
+                resolve(this._items);
+            }, (...args) => {
+                // Reject the request
+                reject(...args);
+            }, true);
+        });
     }
 
     // Loads the items by odata query
