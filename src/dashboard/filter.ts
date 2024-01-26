@@ -9,7 +9,7 @@ export interface IFilterItem {
     header: string;
     items: Components.ICheckboxGroupItem[];
     multi?: boolean;
-    onFilter?: (value: string | string[]) => void;
+    onFilter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
 }
 
 /**
@@ -18,7 +18,7 @@ export interface IFilterItem {
 export interface IFilterProps {
     filters: IFilterItem[];
     onClear?: () => void;
-    onFilter?: (value: string | string[]) => void;
+    onFilter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
     onRendered?: (el: HTMLElement) => void;
 }
 
@@ -31,7 +31,7 @@ export class FilterSlideout {
     private _filters: IFilterItem[] = null;
     private _items: Array<Components.IAccordionItem> = null;
     private _onClear: () => void;
-    private _onFilter: (value: string | string[]) => void;
+    private _onFilter: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
 
     constructor(props: IFilterProps) {
         // Save the properties
@@ -125,15 +125,15 @@ export class FilterSlideout {
                             }
 
                             // Execute the event
-                            filter.onFilter ? filter.onFilter(values) : null;
-                            this._onFilter ? this._onFilter(values) : null;
+                            filter.onFilter ? filter.onFilter(values, item) : null;
+                            this._onFilter ? this._onFilter(values, item) : null;
                         } else {
                             let item = value as Components.ICheckboxGroupItem;
 
 
                             // Execute the event
-                            filter.onFilter ? filter.onFilter(item ? item.label : "") : null;
-                            this._onFilter ? this._onFilter(item ? item.label : "") : null;
+                            filter.onFilter ? filter.onFilter(item ? item.label : "", item) : null;
+                            this._onFilter ? this._onFilter(item ? item.label : "", item) : null;
                         }
                     }
                 }));

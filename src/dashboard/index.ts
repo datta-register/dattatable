@@ -182,10 +182,10 @@ export class Dashboard {
             filters: this._props.filters ? this._props.filters.items : [],
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
-            onFilter: this.IsAccordion ? value => {
-                this._accordion.filter(value);
-            } : (this.IsTiles ? value => {
-                this._tiles.filter(value)
+            onFilter: this.IsAccordion ? (value, item) => {
+                this._accordion.filter(value, item);
+            } : (this.IsTiles ? (value, item) => {
+                this._tiles.filter(value, item)
             } : null)
         });
 

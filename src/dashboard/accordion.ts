@@ -1,7 +1,7 @@
 import { Components } from "gd-sprest-bs";
 
 export interface IAccordion {
-    filter?: (string) => void;
+    filter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
     search?: (value: string) => void;
 }
 
