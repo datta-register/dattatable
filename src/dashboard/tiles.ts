@@ -31,8 +31,8 @@ export interface ITilesProps {
  */
 export class Tiles implements ITiles {
     private _tiles: Components.ICardGroup = null;
-    private _activeFilterClass: string = null;
-    private _activeSearchFilter: string = null;
+    private _activeFilterValue: string = null;
+    private _activeSearchValue: string = null;
     private _pagination: Components.IPagination = null;
     private _props: ITilesProps;
 
@@ -47,8 +47,7 @@ export class Tiles implements ITiles {
 
     // Filters the tile
     filter(value: string) {
-        let className = value ? value.toLowerCase().replace(/ /g, "-") : null;
-        this._activeFilterClass = className;
+        this._activeFilterValue = value || "";
 
         // Parse all tile
         let tiles = this._props.el.querySelectorAll(".card");
@@ -72,27 +71,27 @@ export class Tiles implements ITiles {
 
     // Generate the card properties
     private generateCard(item: any): Components.ICardProps {
-        let itemClassNames = [];
-
-        // Get the filters
-        let filters = item[this._props.filterField] || [];
-        filters = filters["results"] || [filters];
+        let filterValues = [];
 
         // See if the filter field is specified
         if (this._props.filterField) {
-            // Parse the selected filters
-            for (let j = 0; j < filters.length; j++) {
-                let filter = filters[j].toLowerCase().replace(/ /g, '-');
-
-                // Add the filter as a class name
-                if (filter) { itemClassNames.push(filter); }
-            }
+            // Get the filters
+            let filters = item[this._props.filterField] || [];
+            filterValues = filters["results"] || [filters];
         }
 
         // Set the card props
         let cardProps: Components.ICardProps = {
-            className: itemClassNames.join(" "),
-            onRender: this._props.onCardRendered,
+            onRender: (el, card) => {
+                // See if filters exist
+                if (filterValues && filterValues.length > 0) {
+                    // Set the data filter value
+                    el.setAttribute("data-filter", filterValues.join('|'));
+                }
+
+                // Call the event
+                this._props.onCardRendered ? this._props.onCardRendered(el, card) : null;
+            },
             body: [{
                 content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
                 data: item,
@@ -172,21 +171,41 @@ export class Tiles implements ITiles {
         }
 
         // Get the elements as an array
-        let elItems = Array.from(this._tiles.el.querySelectorAll(this._activeFilterClass ? "." + this._activeFilterClass : ".card"));
+        let elItems = Array.from(this._tiles.el.querySelectorAll(".card"));
 
-        // See if a search value exists
-        if (this._activeSearchFilter) {
-            // Parse the items
-            for (let i = elItems.length - 1; i >= 0; i--) {
-                let elItem = elItems[i] as HTMLElement;
+        // Parse the items
+        for (let i = elItems.length - 1; i >= 0; i--) {
+            let elItem = elItems[i] as HTMLElement;
 
-                // See if the item doesn't contains the search value
-                if (elItem.innerText.toLowerCase().indexOf(this._activeSearchFilter) < 0) {
+            // See if a filter value exists
+            if (this._activeFilterValue) {
+                let filterValues = (elItem.dataset.filter || "").split('|');
+
+                // See if the item doesn't contains the filter value
+                if (filterValues.indexOf(this._activeFilterValue) < 0) {
                     // Hide the item
                     elItem.parentElement.classList.add("d-none");
 
                     // Exclude the item from the array
                     elItems.splice(i, 1);
+
+                    // Continue the loop
+                    continue;
+                }
+            }
+
+            // See if a search value exists
+            if (this._activeSearchValue) {
+                // See if the item doesn't contains the search value
+                if (elItem.innerText.toLowerCase().indexOf(this._activeSearchValue.toLowerCase()) < 0) {
+                    // Hide the item
+                    elItem.parentElement.classList.add("d-none");
+
+                    // Exclude the item from the array
+                    elItems.splice(i, 1);
+
+                    // Continue the loop
+                    continue;
                 }
             }
         }
@@ -245,7 +264,7 @@ export class Tiles implements ITiles {
     // Searches the tile
     search(value: string) {
         // Set the search value
-        this._activeSearchFilter = (value || "").toLowerCase();
+        this._activeSearchValue = value || "";
 
         // Update the tiles
         this.updateTiles();

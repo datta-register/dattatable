@@ -22,8 +22,8 @@ export interface IAccordionProps {
  */
 export class Accordion implements IAccordion {
     private _accordion: Components.IAccordion = null;
-    private _activeFilterClass: string = null;
-    private _activeSearchFilter: string = null;
+    private _activeFilterValue: string = null;
+    private _activeSearchValue: string = null;
     private _pagination: Components.IPagination = null;
     private _props: IAccordionProps;
 
@@ -48,8 +48,7 @@ export class Accordion implements IAccordion {
 
     // Filters the accordion
     filter(value: string) {
-        let className = value ? value.toLowerCase().replace(/ /g, "-") : null;
-        this._activeFilterClass = className;
+        this._activeFilterValue = value || "";
 
         // Parse all accordion items
         let items = this._props.el.querySelectorAll(".accordion-item");
@@ -79,28 +78,30 @@ export class Accordion implements IAccordion {
         let accordionItems: Array<Components.IAccordionItem> = [];
         for (let i = 0; i < this._props.items.length; i++) {
             let item = this._props.items[i];
-            let itemClassNames = [];
+            let filterValues = [];
 
             // See if the filter field is specified
             if (this._props.filterField) {
-                // Parse the selected filters
+                // Set the filter values
                 let filters = item[this._props.filterField] || [];
-                filters = filters["results"] || [filters];
-                for (let j = 0; j < filters.length; j++) {
-                    let filter = filters[j].toLowerCase().replace(/ /g, '-');
-
-                    // Add the filter as a class name
-                    if (filter) { itemClassNames.push(filter); }
-                }
+                filterValues = filters["results"] || [filters];
             }
 
             // Add an accordion item
             accordionItems.push({
-                className: itemClassNames.join(" "),
                 content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
                 header: item[this._props.titleField || "Title"] || "",
                 onClick: this._props.onItemClick,
-                onRender: this._props.onItemRender,
+                onRender: (el, item) => {
+                    // See if filters exist
+                    if (filterValues && filterValues.length > 0) {
+                        // Set the data filter value
+                        el.setAttribute("data-filter", filterValues.join('|'));
+                    }
+
+                    // Call the event
+                    this._props.onItemRender ? this._props.onItemRender(el, item) : null
+                },
                 showFl: i == 0,
             });
         }
@@ -130,30 +131,50 @@ export class Accordion implements IAccordion {
         }
 
         // Get the elements as an array
-        let elItems = Array.from(this._accordion.el.querySelectorAll(this._activeFilterClass ? "." + this._activeFilterClass : ".accordion-item"));
+        let elItems = Array.from(this._accordion.el.querySelectorAll(this._activeFilterValue ? "." + this._activeFilterValue : ".accordion-item"));
 
-        // See if a search value exists
-        if (this._activeSearchFilter) {
-            // Parse the items
-            for (let i = elItems.length - 1; i >= 0; i--) {
-                let elItem = elItems[i] as HTMLElement;
-                let elContent = elItem.querySelector(".accordion-body") as HTMLElement;
+        // Parse the items
+        for (let i = elItems.length - 1; i >= 0; i--) {
+            let elItem = elItems[i] as HTMLElement;
+            let elContent = elItem.querySelector(".accordion-body") as HTMLElement;
 
-                // See if this item is expanded
-                if (elItem.querySelector(".accordion-collapse.show")) {
-                    // Collapse the item
-                    let btn = elItem.querySelector(".accordion-button") as HTMLButtonElement;
-                    btn?.click();
+            // See if this item is expanded
+            if (elItem.querySelector(".accordion-collapse.show")) {
+                // Collapse the item
+                let btn = elItem.querySelector(".accordion-button") as HTMLButtonElement;
+                btn?.click();
+            }
+
+            // See if there is an active filter
+            if (this._activeFilterValue) {
+                let filterValues = (elItem.dataset.filter || "").split('|');
+
+                // See if the item doesn't contains the filter value
+                if (filterValues.indexOf(this._activeFilterValue) < 0) {
+                    // Hide the item
+                    elItem.parentElement.classList.add("d-none");
+
+                    // Exclude the item from the array
+                    elItems.splice(i, 1);
+
+                    // Continue the loop
+                    continue;
                 }
+            }
 
+            // See if a search value exists
+            if (this._activeSearchValue) {
                 // See if the item doesn't contains the search value
-                if (elItem.innerText.toLowerCase().indexOf(this._activeSearchFilter) < 0 &&
-                    elContent.innerText.toLowerCase().indexOf(this._activeSearchFilter) < 0) {
+                if (elItem.innerText.toLowerCase().indexOf(this._activeSearchValue) < 0 &&
+                    elContent.innerText.toLowerCase().indexOf(this._activeSearchValue) < 0) {
                     // Clear the item
                     this.clearItem(elItem);
 
                     // Exclude the item from the array
                     elItems.splice(i, 1);
+
+                    // Continue the loop
+                    continue;
                 }
             }
         }
@@ -257,7 +278,7 @@ export class Accordion implements IAccordion {
     // Searches the accordion
     search(value: string) {
         // Set the search value
-        this._activeSearchFilter = (value || "").toLowerCase();
+        this._activeSearchValue = (value || "").toLowerCase();
 
         // Render the items
         this.renderItems();
