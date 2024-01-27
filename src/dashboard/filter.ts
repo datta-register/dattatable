@@ -10,6 +10,7 @@ export interface IFilterItem {
     items: Components.ICheckboxGroupItem[];
     multi?: boolean;
     onFilter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
+    onSetFilterValue?: (value?: string | string[]) => string | string[];
 }
 
 /**
@@ -115,7 +116,7 @@ export class FilterSlideout {
                     onChange: (value: Components.ICheckboxGroupItem | Components.ICheckboxGroupItem[]) => {
                         // See if this is a single item
                         if (filter.multi) {
-                            let values = [];
+                            let values: string[] = [];
 
                             // Parse the items
                             let items = (value || []) as Components.ICheckboxGroupItem[];
@@ -124,16 +125,18 @@ export class FilterSlideout {
                                 values.push(items[i].label);
                             }
 
-                            // Execute the event
+                            // Execute the events
+                            values = filter.onSetFilterValue ? filter.onSetFilterValue(values) as string[] : values;
                             filter.onFilter ? filter.onFilter(values, item) : null;
                             this._onFilter ? this._onFilter(values, item) : null;
                         } else {
                             let item = value as Components.ICheckboxGroupItem;
+                            let filterValue: string = item ? item.label : "";
 
-
-                            // Execute the event
-                            filter.onFilter ? filter.onFilter(item ? item.label : "", item) : null;
-                            this._onFilter ? this._onFilter(item ? item.label : "", item) : null;
+                            // Execute the events
+                            filterValue = filter.onSetFilterValue ? filter.onSetFilterValue(filterValue) as string : filterValue;
+                            filter.onFilter ? filter.onFilter(filterValue, item) : null;
+                            this._onFilter ? this._onFilter(filterValue, item) : null;
                         }
                     }
                 }));

@@ -40,7 +40,6 @@ export interface IDashboardProps {
         items: IFilterItem[];
         onClear?: () => void;
         onRendered?: (el?: HTMLElement) => void;
-        onSetFilterValue?: (value?: string | string[]) => string | string[];
     }
     header?: {
         onRendering?: (props: Components.IJumbotronProps) => void;
@@ -184,16 +183,11 @@ export class Dashboard {
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
             onFilter: this.IsAccordion || this.IsTiles ? (value, item) => {
-                // Call the event
-                value = this._props.filters?.onSetFilterValue ? this._props.filters.onSetFilterValue(value) : value;
-
                 // See if this is an accordion
                 if (this.IsAccordion) {
                     // Filter the accordion
                     this._accordion.filter(value, item);
-                }
-                // Else, see if we are using tiles
-                else if (this.IsTiles) {
+                } else{
                     // Filter the tiles
                     this._tiles.filter(value, item)
                 }
