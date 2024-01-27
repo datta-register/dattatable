@@ -10,7 +10,7 @@ export interface IFilterItem {
     items: Components.ICheckboxGroupItem[];
     multi?: boolean;
     onFilter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
-    onSetFilterValue?: (value?: string | string[]) => string | string[];
+    onSetFilterValue?: (value?: string | string[], item?: Components.ICheckboxGroupItem | Components.ICheckboxGroupItem[]) => string | string[];
 }
 
 /**
@@ -126,7 +126,7 @@ export class FilterSlideout {
                             }
 
                             // Execute the events
-                            values = filter.onSetFilterValue ? filter.onSetFilterValue(values) as string[] : values;
+                            values = filter.onSetFilterValue ? filter.onSetFilterValue(values, value) as string[] : values;
                             filter.onFilter ? filter.onFilter(values, item) : null;
                             this._onFilter ? this._onFilter(values, item) : null;
                         } else {
@@ -134,7 +134,7 @@ export class FilterSlideout {
                             let filterValue: string = item ? item.label : "";
 
                             // Execute the events
-                            filterValue = filter.onSetFilterValue ? filter.onSetFilterValue(filterValue) as string : filterValue;
+                            filterValue = filter.onSetFilterValue ? filter.onSetFilterValue(filterValue, value) as string : filterValue;
                             filter.onFilter ? filter.onFilter(filterValue, item) : null;
                             this._onFilter ? this._onFilter(filterValue, item) : null;
                         }
