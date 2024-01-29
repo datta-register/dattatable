@@ -20,14 +20,16 @@ export * from "./tiles";
 // Dashboard
 export interface IDashboardProps {
     accordion?: {
-        bodyField?: string;
-        filterField?: string;
+        bodyFields?: [string];
+        bodyTemplate?: string;
+        filterFields?: [string];
         items: any[];
         onItemClick?: (el?: HTMLElement, item?: any) => void;
         onItemRender?: (el?: HTMLElement, item?: any) => void;
         onPaginationRender?: (el?: HTMLElement) => void;
         paginationLimit?: number;
-        titleField?: string;
+        titleFields?: [string];
+        titleTemplate?: string;
     }
     el: HTMLElement;
     footer?: {
@@ -82,9 +84,10 @@ export interface IDashboardProps {
         rows?: any[];
     }
     tiles?: {
-        bodyField?: string;
+        bodyFields?: [string];
+        bodyTemplate?: string;
         colSize?: number;
-        filterField?: string;
+        filterFields?: [string];
         items: any[];
         onBodyRendered?: (el?: HTMLElement, item?: any) => void;
         onCardRendered?: (el?: HTMLElement, item?: any) => void;
@@ -97,8 +100,10 @@ export interface IDashboardProps {
         paginationLimit?: number;
         showFooter?: boolean;
         showHeader?: boolean;
-        subTitleField?: string;
-        titleField?: string;
+        subTitleFields?: [string];
+        subTitleTemplate?: string;
+        titleFields?: [string];
+        titleTemplate?: string;
     }
     onRendered?: (el?: HTMLElement) => void;
     useModal?: boolean;
@@ -187,7 +192,7 @@ export class Dashboard {
                 if (this.IsAccordion) {
                     // Filter the accordion
                     this._accordion.filter(value, item);
-                } else{
+                } else {
                     // Filter the tiles
                     this._tiles.filter(value, item)
                 }
