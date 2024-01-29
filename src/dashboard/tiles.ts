@@ -23,6 +23,7 @@ export interface ITilesProps {
     paginationLimit?: number;
     showFooter?: boolean;
     showHeader?: boolean;
+    showPagination?: boolean;
     subTitleFields?: [string];
     subTitleTemplate?: string;
     titleFields?: [string];
@@ -315,33 +316,37 @@ export class Tiles implements ITiles {
             elItem.parentElement.classList.add("d-none");
         }
 
-        // Render the pagination
-        this._pagination = Components.Pagination({
-            el: elPagination,
-            className: "d-flex justify-content-end pt-2",
-            numberOfPages: Math.ceil(elItems.length / paginationLimit),
-            onClick: (pageNumber) => {
-                // Parse the items
-                for (let i = 0; i < elItems.length; i++) {
-                    let elItem = elItems[i] as HTMLElement;
+        // See if we are showing pagination
+        let showPagination = typeof (this._props.showPagination) === "boolean" ? this._props.showPagination : true;
+        if (showPagination) {
+            // Render the pagination
+            this._pagination = Components.Pagination({
+                el: elPagination,
+                className: "d-flex justify-content-end pt-2",
+                numberOfPages: Math.ceil(elItems.length / paginationLimit),
+                onClick: (pageNumber) => {
+                    // Parse the items
+                    for (let i = 0; i < elItems.length; i++) {
+                        let elItem = elItems[i] as HTMLElement;
 
-                    // Hide the item
-                    elItem.parentElement.classList.add("d-none");
+                        // Hide the item
+                        elItem.parentElement.classList.add("d-none");
+                    }
+
+                    // Parse the items to show
+                    let startIdx = (pageNumber - 1) * paginationLimit;
+                    for (let i = startIdx; i < startIdx + paginationLimit && i < elItems.length; i++) {
+                        let elItem = elItems[i];
+
+                        // Show the item
+                        elItem.parentElement.classList.remove("d-none");
+                    }
                 }
+            });
 
-                // Parse the items to show
-                let startIdx = (pageNumber - 1) * paginationLimit;
-                for (let i = startIdx; i < startIdx + paginationLimit && i < elItems.length; i++) {
-                    let elItem = elItems[i];
-
-                    // Show the item
-                    elItem.parentElement.classList.remove("d-none");
-                }
-            }
-        });
-
-        // Call the event
-        this._props.onPaginationRendered ? this._props.onPaginationRendered(elPagination) : null;
+            // Call the event
+            this._props.onPaginationRendered ? this._props.onPaginationRendered(elPagination) : null;
+        }
     }
 
     // Searches the tile

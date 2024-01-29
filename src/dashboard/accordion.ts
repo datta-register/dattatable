@@ -15,6 +15,7 @@ export interface IAccordionProps {
     onItemRender?: (el?: HTMLElement, item?: any) => void;
     onPaginationRender?: (el?: HTMLElement) => void;
     paginationLimit?: number;
+    showPagination?: boolean;
     titleFields?: [string];
     titleTemplate?: string;
 }
@@ -287,54 +288,58 @@ export class Accordion implements IAccordion {
             elItems[lastIdx < elItems.length ? lastIdx : elItems.length - 1].classList.add("last-item");
         }
 
-        // Render the pagination
-        this._pagination = Components.Pagination({
-            el: elPagination,
-            className: "d-flex justify-content-end pt-2",
-            numberOfPages: Math.ceil(elItems.length / paginationLimit),
-            onClick: (pageNumber) => {
-                // Parse the items
-                for (let i = 0; i < elItems.length; i++) {
-                    let elItem = elItems[i] as HTMLElement;
+        // See if we are showing pagination
+        let showPagination = typeof (this._props.showPagination) === "boolean" ? this._props.showPagination : true;
+        if (showPagination) {
+            // Render the pagination
+            this._pagination = Components.Pagination({
+                el: elPagination,
+                className: "d-flex justify-content-end pt-2",
+                numberOfPages: Math.ceil(elItems.length / paginationLimit),
+                onClick: (pageNumber) => {
+                    // Parse the items
+                    for (let i = 0; i < elItems.length; i++) {
+                        let elItem = elItems[i] as HTMLElement;
 
-                    // See if this item is expanded
-                    if (elItem.querySelector(".accordion-collapse.show")) {
-                        // Hide the button
-                        let btn = elItem.querySelector(".accordion-button") as HTMLButtonElement;
-                        btn?.click();
+                        // See if this item is expanded
+                        if (elItem.querySelector(".accordion-collapse.show")) {
+                            // Hide the button
+                            let btn = elItem.querySelector(".accordion-button") as HTMLButtonElement;
+                            btn?.click();
+                        }
+
+                        // Clear the item
+                        this.clearItem(elItem);
                     }
 
-                    // Clear the item
-                    this.clearItem(elItem);
-                }
+                    // Parse the items to show
+                    let startIdx = (pageNumber - 1) * paginationLimit;
+                    for (let i = startIdx; i < startIdx + paginationLimit && i < elItems.length; i++) {
+                        let elItem = elItems[i];
 
-                // Parse the items to show
-                let startIdx = (pageNumber - 1) * paginationLimit;
-                for (let i = startIdx; i < startIdx + paginationLimit && i < elItems.length; i++) {
-                    let elItem = elItems[i];
+                        // Show the item
+                        elItem.classList.remove("d-none");
 
-                    // Show the item
-                    elItem.classList.remove("d-none");
+                        // See if this is the first item
+                        if (i == startIdx) {
+                            // Set the first item class
+                            elItem.classList.add("first-item");
 
-                    // See if this is the first item
-                    if (i == startIdx) {
-                        // Set the first item class
-                        elItem.classList.add("first-item");
-
-                        // Expand the item
-                        let btn = elItem.querySelector(".accordion-button") as HTMLButtonElement;
-                        btn?.click();
+                            // Expand the item
+                            let btn = elItem.querySelector(".accordion-button") as HTMLButtonElement;
+                            btn?.click();
+                        }
                     }
+
+                    // Set the last item class
+                    let lastIdx = startIdx + paginationLimit - 1;
+                    elItems[lastIdx < elItems.length ? lastIdx : elItems.length - 1].classList.add("last-item");
                 }
+            });
 
-                // Set the last item class
-                let lastIdx = startIdx + paginationLimit - 1;
-                elItems[lastIdx < elItems.length ? lastIdx : elItems.length - 1].classList.add("last-item");
-            }
-        });
-
-        // Call the event
-        this._props.onPaginationRender ? this._props.onPaginationRender(elPagination) : null;
+            // Call the event
+            this._props.onPaginationRender ? this._props.onPaginationRender(elPagination) : null;
+        }
     }
 
     // Searches the accordion
