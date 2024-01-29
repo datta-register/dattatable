@@ -223,9 +223,9 @@ export class Dashboard {
         this._props.el.appendChild(elTemplate);
 
         // Set/Default the visibility flags
-        let headerIsVisible = (this._props.hideHeader == null || this._props.hideHeader == true) && this._props.header == null ? false : true;
-        let navIsVisible = this._props.hideNavigation ? false : true;
-        let subNavIsVisible = (this._props.hideSubNavigation == null || this._props.hideSubNavigation == true) && this._props.subNavigation == null ? false : true;
+        let headerIsVisible = typeof (this._props.hideHeader) === "boolean" ? !this._props.hideHeader : (this._props.header == null ? false : true);
+        let navIsVisible = typeof (this._props.hideNavigation) === "boolean" ? !this._props.hideNavigation : true;
+        let subNavIsVisible = typeof (this._props.hideSubNavigation) === "boolean" ? !this._props.hideSubNavigation : (this._props.subNavigation == null ? false : true);
 
         // See if we are hiding the navigation
         if (!navIsVisible) {
