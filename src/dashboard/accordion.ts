@@ -6,15 +6,17 @@ export interface IAccordion {
 }
 
 export interface IAccordionProps {
-    bodyField?: string;
+    bodyFields?: [string];
+    bodyTemplate?: string;
     el: HTMLElement;
-    filterField?: string;
+    filterFields?: [string];
     items: any[];
     onItemClick?: (el?: HTMLElement, item?: any) => void;
     onItemRender?: (el?: HTMLElement, item?: any) => void;
     onPaginationRender?: (el?: HTMLElement) => void;
     paginationLimit?: number;
-    titleField?: string;
+    titleFields?: [string];
+    titleTemplate?: string;
 }
 
 /**
@@ -81,16 +83,64 @@ export class Accordion implements IAccordion {
             let filterValues = [];
 
             // See if the filter field is specified
-            if (this._props.filterField) {
-                // Set the filter values
-                let filters = item[this._props.filterField] || [];
-                filterValues = filters["results"] || [filters];
+            if (this._props.filterFields) {
+                // Parse the fields
+                for (let i = 0; i < this._props.filterFields.length; i++) {
+                    let filterField = this._props.filterFields[i];
+
+                    // Get the filter values
+                    let filters = item[filterField] || [];
+                    filters = filters["results"] || [filters];
+
+                    // Append the values
+                    filterValues = filterValues.concat(filters);
+                }
+            }
+
+            // See if the body fields exist
+            let bodyContent = this._props.bodyTemplate || "";
+            if (this._props.bodyFields) {
+                // Parse the fields
+                for (let i = 0; i < this._props.bodyFields.length; i++) {
+                    let field = this._props.bodyFields[i];
+                    let value = item[field] || "";
+
+                    // See if there is a template
+                    if (this._props.bodyTemplate) {
+                        // Replace the values
+                        let pattern = new RegExp("({" + field + "})", "g")
+                        bodyContent = bodyContent.replace(pattern, value);
+                    } else {
+                        // Append the value
+                        bodyContent += value;
+                    }
+                }
+            }
+
+            // See if the sub-title fields exist
+            let titleContent = this._props.titleTemplate || "";
+            if (this._props.titleFields) {
+                // Parse the fields
+                for (let i = 0; i < this._props.titleFields.length; i++) {
+                    let field = this._props.titleFields[i];
+                    let value = item[field] || "";
+
+                    // See if there is a template
+                    if (this._props.titleTemplate) {
+                        // Replace the values
+                        let pattern = new RegExp("({" + field + "})", "g")
+                        titleContent = titleContent.replace(pattern, value);
+                    } else {
+                        // Append the value
+                        titleContent += value;
+                    }
+                }
             }
 
             // Add an accordion item
             accordionItems.push({
-                content: (this._props.bodyField ? item[this._props.bodyField || "Description"] : null) || "",
-                header: item[this._props.titleField || "Title"] || "",
+                content: bodyContent,
+                header: titleContent,
                 onClick: this._props.onItemClick,
                 onRender: (el, item) => {
                     // See if filters exist
