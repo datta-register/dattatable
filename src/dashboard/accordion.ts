@@ -49,8 +49,8 @@ export class Accordion implements IAccordion {
     }
 
     // Filters the accordion
-    filter(value: string) {
-        this._activeFilterValue = value || "";
+    filter(values: string[] = []) {
+        this._activeFilterValue = values.join('|');
 
         // Parse all accordion items
         let items = this._props.el.querySelectorAll(".accordion-item");

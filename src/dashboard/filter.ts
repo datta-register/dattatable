@@ -113,28 +113,28 @@ export class FilterSlideout {
                     items: filter.items,
                     multi: filter.multi,
                     type: Components.CheckboxGroupTypes.Switch,
-                    onChange: (value: Components.ICheckboxGroupItem | Components.ICheckboxGroupItem[]) => {
+                    onChange: (selectedCheckboxes: Components.ICheckboxGroupItem | Components.ICheckboxGroupItem[]) => {
                         // See if this is a single item
                         if (filter.multi) {
                             let values: string[] = [];
 
                             // Parse the items
-                            let items = (value || []) as Components.ICheckboxGroupItem[];
+                            let items = (selectedCheckboxes || []) as Components.ICheckboxGroupItem[];
                             for (let i = 0; i < items.length; i++) {
                                 // Append the value
                                 values.push(items[i].label);
                             }
 
                             // Execute the events
-                            values = filter.onSetFilterValue ? filter.onSetFilterValue(values, value) as string[] : values;
+                            values = filter.onSetFilterValue ? filter.onSetFilterValue(values, selectedCheckboxes) as string[] : values;
                             filter.onFilter ? filter.onFilter(values, item) : null;
                             this._onFilter ? this._onFilter(values, item) : null;
                         } else {
-                            let item = value as Components.ICheckboxGroupItem;
+                            let item = selectedCheckboxes as Components.ICheckboxGroupItem;
                             let filterValue: string = item ? item.label : "";
 
                             // Execute the events
-                            filterValue = filter.onSetFilterValue ? filter.onSetFilterValue(filterValue, value) as string : filterValue;
+                            filterValue = filter.onSetFilterValue ? filter.onSetFilterValue(filterValue, selectedCheckboxes) as string : filterValue;
                             filter.onFilter ? filter.onFilter(filterValue, item) : null;
                             this._onFilter ? this._onFilter(filterValue, item) : null;
                         }

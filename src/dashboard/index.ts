@@ -432,20 +432,11 @@ export class Dashboard {
     }
 
     // Filter the accordion
-    filterAccordion(value?: string) {
+    filterAccordion(values?: string | string[]) {
         // See if we have an accordion
         if (this.IsAccordion) {
             // Filter the accordion
-            this._accordion.filter(value);
-        }
-    }
-
-    // Filter the accordion
-    filterAccordionMulti(value?: string[]) {
-        // See if we have an accordion
-        if (this.IsAccordion) {
-            // Filter the accordion
-            //this._accordion.filter(value);
+            this._accordion.filter(typeof (values) === "string" ? [values] : values);
         }
     }
 
@@ -468,20 +459,11 @@ export class Dashboard {
     }
 
     // Filter the tiles
-    filterTiles(value?: string) {
+    filterTiles(values?: string | string[]) {
         // See if we have tiles
         if (this.IsTiles) {
             // Filter the tiles
-            this._tiles.filter(value);
-        }
-    }
-
-    // Filter the tiles
-    filterTilesMulti(value?: string[]) {
-        // See if we have tiles
-        if (this.IsTiles) {
-            // Filter the tiles
-            //this._tiles.filterMulti(value);
+            this._tiles.filter(typeof (values) === "string" ? [values] : values);
         }
     }
 
