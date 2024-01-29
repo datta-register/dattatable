@@ -252,8 +252,20 @@ export class Tiles implements ITiles {
             if (this._activeFilterValue) {
                 let filterValues = (elItem.dataset.filter || "").split('|');
 
-                // See if the item doesn't contains the filter value
-                if (filterValues.indexOf(this._activeFilterValue) < 0) {
+                // Parse the active filters
+                let activeFilters = this._activeFilterValue.split('|');
+                let showItem = false;
+                for (let j = 0; j < activeFilters.length; j++) {
+                    // See if the item contains the filter value
+                    if (filterValues.indexOf(activeFilters[j]) >= 0) {
+                        // Set the flag and break from the loop
+                        showItem = true;
+                        break;
+                    }
+                }
+
+                // See if we are hiding the item
+                if (!showItem) {
                     // Hide the item
                     elItem.parentElement.classList.add("d-none");
 

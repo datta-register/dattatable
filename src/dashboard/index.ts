@@ -423,8 +423,8 @@ export class Dashboard {
         }
         // Else, see if we are rendering tiles
         else if (this.IsTiles) {
-            // Search the tiles
-            this._tiles.search(value);
+            // Filter the tiles
+            this._tiles.filter(value);
         } else {
             // If no value is specified, then we don't want to filter by exact value
             exactMatchFl && value ? this._dt.filterExact(idx, value) : this._dt.filter(idx, value);
@@ -445,12 +445,12 @@ export class Dashboard {
         // See if we have an accordion
         if (this.IsAccordion) {
             // Filter the accordion
-            //this._accordion.filterMulti(value);
+            this._accordion.filter(values);
         }
         // Else, see if we have tiles
         else if (this.IsTiles) {
             // Filter the tiles
-            //this._tiles.filterMulti(value);
+            this._tiles.filter(values);
         }
         else {
             // Filter the table
