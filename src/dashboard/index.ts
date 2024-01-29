@@ -28,6 +28,7 @@ export interface IDashboardProps {
         onItemRender?: (el?: HTMLElement, item?: any) => void;
         onPaginationRender?: (el?: HTMLElement) => void;
         paginationLimit?: number;
+        showPagination?: boolean;
         titleFields?: [string];
         titleTemplate?: string;
     }
@@ -100,6 +101,7 @@ export interface IDashboardProps {
         paginationLimit?: number;
         showFooter?: boolean;
         showHeader?: boolean;
+        showPagination?: boolean;
         subTitleFields?: [string];
         subTitleTemplate?: string;
         titleFields?: [string];
