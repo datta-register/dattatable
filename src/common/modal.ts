@@ -178,7 +178,16 @@ export class Modal {
     static setType(type) { this._modal.setType(type); }
 
     // Shows the modal
-    static show() { this._modal.show(); }
+    static show() {
+        // See if the footer is empty
+        if (!this.FooterElement.hasChildNodes) {
+            // Hide the footer
+            this.FooterElement.classList.add("d-none");
+        }
+
+        // Show the modal
+        this._modal.show();
+    }
 }
 
 // Create an instance of the modal
