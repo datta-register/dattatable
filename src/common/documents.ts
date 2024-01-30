@@ -59,6 +59,7 @@ export interface IDocumentsProps {
     onActionsRendered?: (el: HTMLElement, col: Components.ITableColumn, file: Types.SP.Attachment | Types.SP.File) => void;
     onFileAdded?: (file?: Types.SP.Attachment | Types.SP.File) => void;
     onFileAdding?: (fileInfo?: Helper.IListFormAttachmentInfo) => PromiseLike<boolean> | boolean;
+    onFileError?: (err?: any) => void;
     onFilterRendered?: (el: HTMLElement) => void;
     onItemFormEditing?: {
         onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
@@ -1124,7 +1125,10 @@ export class Documents {
                                             this.refresh();
                                         },
                                         // Error
-                                        () => {
+                                        (err) => {
+                                            // Call the event
+                                            this._props.onFileError ? this._props.onFileError(err) : null;
+
                                             // Hide the dialog
                                             LoadingDialog.hide();
                                         }
