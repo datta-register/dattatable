@@ -53,6 +53,7 @@ export interface IDocumentsProps {
     itemId?: number;
     el: HTMLElement;
     enableSearch?: boolean;
+    fileExtensions?: string[];
     listName: string;
     query?: Types.IODataQuery;
     onActionsRendered?: (el: HTMLElement, col: Components.ITableColumn, file: Types.SP.Attachment | Types.SP.File) => void;
@@ -1101,7 +1102,7 @@ export class Documents {
                         type: Components.ButtonTypes.OutlineSecondary,
                         onClick: () => {
                             // Show the file upload dialog
-                            Helper.ListForm.showFileDialog().then(fileInfo => {
+                            Helper.ListForm.showFileDialog(this._props.fileExtensions).then(fileInfo => {
                                 // Code to run after the event
                                 let onCompleted = (fileInfo: Helper.IListFormAttachmentInfo) => {
                                     // Show a loading dialog
