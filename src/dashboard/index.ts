@@ -24,7 +24,9 @@ export interface IDashboardProps {
         bodyTemplate?: string;
         filterFields?: [string];
         items: any[];
+        onItemBodyRender?: (el?: HTMLElement, item?: any) => void;
         onItemClick?: (el?: HTMLElement, item?: any) => void;
+        onItemHeaderRender?: (el?: HTMLElement, item?: any) => void;
         onItemRender?: (el?: HTMLElement, item?: any) => void;
         onPaginationRender?: (el?: HTMLElement) => void;
         paginationLimit?: number;
@@ -190,7 +192,7 @@ export class Dashboard {
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
             onFilter: this.IsAccordion || this.IsTiles ? (value, item) => {
-                let values = typeof(value) === "string" ? [value] : value;
+                let values = typeof (value) === "string" ? [value] : value;
 
                 // See if this is an accordion
                 if (this.IsAccordion) {

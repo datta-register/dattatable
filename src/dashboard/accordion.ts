@@ -11,7 +11,9 @@ export interface IAccordionProps {
     el: HTMLElement;
     filterFields?: [string];
     items: any[];
+    onItemBodyRender?: (el?: HTMLElement, item?: any) => void;
     onItemClick?: (el?: HTMLElement, item?: any) => void;
+    onItemHeaderRender?: (el?: HTMLElement, item?: any) => void;
     onItemRender?: (el?: HTMLElement, item?: any) => void;
     onPaginationRender?: (el?: HTMLElement) => void;
     paginationLimit?: number;
@@ -130,6 +132,8 @@ export class Accordion implements IAccordion {
             content: bodyContent,
             header: titleContent,
             onClick: this._props.onItemClick,
+            onRenderBody: this._props.onItemBodyRender,
+            onRenderHeader: this._props.onItemHeaderRender,
             onRender: (el, item) => {
                 // See if filters exist
                 if (filterValues && filterValues.length > 0) {
