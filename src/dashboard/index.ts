@@ -190,13 +190,15 @@ export class Dashboard {
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
             onFilter: this.IsAccordion || this.IsTiles ? (value, item) => {
+                let values = typeof(value) === "string" ? [value] : value;
+
                 // See if this is an accordion
                 if (this.IsAccordion) {
                     // Filter the accordion
-                    this._accordion.filter(value, item);
+                    this._accordion.filter(values, item);
                 } else {
                     // Filter the tiles
-                    this._tiles.filter(value, item)
+                    this._tiles.filter(values, item)
                 }
             } : null
         });
