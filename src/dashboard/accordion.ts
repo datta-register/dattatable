@@ -182,7 +182,7 @@ export class Accordion implements IAccordion {
         }
 
         // Get the elements as an array
-        let elItems = Array.from(this._accordion.el.querySelectorAll(this._activeFilterValue ? "." + this._activeFilterValue : ".accordion-item"));
+        let elItems = Array.from(this._accordion.el.querySelectorAll(".accordion-item"));
 
         // Parse the items
         for (let i = elItems.length - 1; i >= 0; i--) {
