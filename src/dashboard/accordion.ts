@@ -225,8 +225,8 @@ export class Accordion implements IAccordion {
 
                 // See if we are hiding the item
                 if (!showItem) {
-                    // Hide the item
-                    elItem.parentElement.classList.add("d-none");
+                    // Clear the item
+                    this.clearItem(elItem);
 
                     // Exclude the item from the array
                     elItems.splice(i, 1);
