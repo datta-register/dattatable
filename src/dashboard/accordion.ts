@@ -161,11 +161,8 @@ export class Accordion implements IAccordion {
         // Parse the items
         let accordionItems: Array<Components.IAccordionItem> = [];
         for (let i = 0; i < this._props.items.length; i++) {
-            let item = this.generateItem(this._props.items[i]);
-            item.showFl = i == 0;
-
             // Add an accordion item
-            accordionItems.push(item);
+            accordionItems.push(this.generateItem(this._props.items[i]));
         }
 
         // Render the accordion
