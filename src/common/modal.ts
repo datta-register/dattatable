@@ -19,6 +19,14 @@ export class Modal {
     private static _elHeader: HTMLElement = null;
     static get HeaderElement(): HTMLElement { return this._elHeader; }
 
+    // Hides the footer if it's empty
+    private static _hideEmptyFooter: boolean = true;
+    static get HideEmptyFooter(): boolean { return this._hideEmptyFooter; }
+
+    // Hides the header if it's empty
+    private static _hideEmptyHeader: boolean = false;
+    static get HideEmptyHeader(): boolean { return this._hideEmptyHeader; }
+
     // Constructor
     constructor() {
         // Render the canvas
@@ -37,6 +45,8 @@ export class Modal {
         this.setBackdrop(true);
         this.setCloseButtonVisibility(true);
         this.setCloseEvent(null);
+        this.setHideEmptyFooter(true);
+        this.setHideEmptyHeader(false);
         this.setFocus(false);
         this.setIsCentered(true);
         this.setKeyboard(true);
@@ -126,6 +136,12 @@ export class Modal {
     // Sets the close event
     static setCloseEvent(event) { this._onCloseEvent = event; }
 
+    // Sets the flag to hide the empty footer
+    static setHideEmptyFooter(value: boolean) { this._hideEmptyFooter = value; }
+
+    // Sets the flag to hide the empty header
+    static setHideEmptyHeader(value: boolean) { this._hideEmptyHeader = value; }
+
     // Sets the focus option
     static setFocus(value: boolean) { this._modal.setFocus(value); }
 
@@ -179,8 +195,14 @@ export class Modal {
 
     // Shows the modal
     static show() {
-        // See if the footer is empty
-        if (!this.FooterElement.hasChildNodes) {
+        // See if we are hiding the header
+        if (this.HideEmptyHeader && this.HeaderElement.innerText.trim().length == 0) {
+            // Hide the header
+            this.HeaderElement.classList.add("d-none");
+        }
+
+        // See if we are hiding the footer
+        if (this.HideEmptyFooter && this.FooterElement.innerText.trim().length == 0) {
             // Hide the footer
             this.FooterElement.classList.add("d-none");
         }
