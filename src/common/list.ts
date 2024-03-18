@@ -47,6 +47,9 @@ export class List<T = Types.SP.ListItem> {
     private _listInfo: Types.SP.List = null;
     get ListInfo(): Types.SP.List { return this._listInfo; }
 
+    // List Settings Url
+    get ListSettingsUrl(): string { return `${this.WebUrl}/${ContextInfo.layoutsUrl}/listedit.aspx?List=${this.ListInfo.Id}`; }
+
     // List Url
     private _listUrl: string = null;
     get ListUrl(): string { return this._listUrl; }
