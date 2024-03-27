@@ -116,14 +116,21 @@ export class ListSecurity {
                 return;
             }
 
-            // Add the user to the group
-            this._groups[groupName].Users().addUserById(userId).execute(user => {
+            // Get the group
+            let group = this.getGroup(groupName);
+            if (group) {
                 // Add the user to the group
-                this.addUser(user, groupName);
+                group.Users().addUserById(userId).execute(user => {
+                    // Add the user to the group
+                    this.addUser(user, groupName);
 
-                // Resolve the request
-                resolve();
-            }, reject);
+                    // Resolve the request
+                    resolve();
+                }, reject);
+            } else {
+                // Group doesn't exist
+                reject("Group '" + groupName + "' doesn't exist.");
+            }
         });
     }
 
@@ -504,14 +511,21 @@ export class ListSecurity {
                 return;
             }
 
-            // Remove the user from the group
-            this._groups[groupName].Users().removeById(userId).execute(() => {
-                // Add the user to the group
-                this.removeUser(userId, groupName);
+            // Get the group
+            let group = this.getGroup(groupName);
+            if (group) {
+                // Remove the user from the group
+                group.Users().removeById(userId).execute(() => {
+                    // Add the user to the group
+                    this.removeUser(userId, groupName);
 
-                // Resolve the request
-                resolve();
-            }, reject);
+                    // Resolve the request
+                    resolve();
+                }, reject);
+            } else {
+                // Group doesn't exist
+                reject("Group '" + groupName + "' doesn't exist.");
+            }
         });
     }
 
