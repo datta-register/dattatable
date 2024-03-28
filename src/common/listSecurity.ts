@@ -42,9 +42,9 @@ export class ListSecurity {
     get CurrentUser(): Types.SP.User { return this._currentUser; }
 
     // Security group information
-    private _groups: { [key: string]: Types.SP.Group | Types.SP.GroupOData } = {};
-    getGroup(groupName: string): Types.SP.Group | Types.SP.GroupOData { return this._groups[groupName.toLowerCase()]; }
-    private setGroup(key: string, group: Types.SP.GroupOData | Types.SP.Group) {
+    private _groups: { [key: string]: Types.SP.GroupOData } = {};
+    getGroup(groupName: string): Types.SP.GroupOData { return this._groups[groupName.toLowerCase()]; }
+    private setGroup(key: string, group: Types.SP.GroupOData) {
         // Save the info
         this._groups[key] = group;
         this._groupUsers[key] = [];
@@ -268,11 +268,14 @@ export class ListSecurity {
                             Web(this._props.webUrl, { requestDigest: this._requestDigest }).SiteGroups().add(props).execute(
                                 // Successfully created the group
                                 group => {
-                                    // Set the group id
-                                    this.setGroup(groupInfo.Title.toLowerCase(), group);
-
                                     // Call the event
                                     this._props.onGroupCreated ? this._props.onGroupCreated(group) : null;
+
+                                    // Expand the users
+                                    Web(this._props.webUrl, { requestDigest: this._requestDigest }).SiteGroups(group.Id).query({ Expand: ["Users"] }).execute(group => {
+                                        // Set the group id
+                                        this.setGroup(groupInfo.Title.toLowerCase(), group);
+                                    });
 
                                     // Check the next group
                                     resolve(group);
