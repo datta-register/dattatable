@@ -9,7 +9,7 @@ export interface IListSecurity {
     listItems: IListSecurityItem[];
     onGroupCreating?: (props: Types.SP.GroupCreationInformation) => Types.SP.GroupCreationInformation;
     onGroupCreated?: (group: Types.SP.Group) => void;
-    onGroupsLoaded?: (groups?: { [key: string]: Types.SP.Group }) => void;
+    onGroupsLoaded?: (groups?: { [key: string]: Types.SP.Group | Types.SP.GroupOData }) => void;
     webUrl?: string;
 }
 
@@ -42,11 +42,11 @@ export class ListSecurity {
     get CurrentUser(): Types.SP.User { return this._currentUser; }
 
     // Security group information
-    private _groups: { [key: string]: Types.SP.Group } = {};
-    getGroup(groupName: string): Types.SP.Group { return this._groups[groupName.toLowerCase()]; }
+    private _groups: { [key: string]: Types.SP.Group | Types.SP.GroupOData } = {};
+    getGroup(groupName: string): Types.SP.Group | Types.SP.GroupOData { return this._groups[groupName.toLowerCase()]; }
     private setGroup(key: string, group: Types.SP.GroupOData | Types.SP.Group) {
         // Save the info
-        this._groups[key] = group as Types.SP.Group;
+        this._groups[key] = group;
         this._groupUsers[key] = [];
 
         // See if the users exist
@@ -120,7 +120,7 @@ export class ListSecurity {
             let group = this.getGroup(groupName);
             if (group) {
                 // Add the user to the group
-                group.Users().addUserById(userId).execute(user => {
+                (group as Types.SP.GroupOData).Users.addUserById(userId).execute(user => {
                     // Add the user to the group
                     this.addUser(user, groupName);
 
@@ -515,7 +515,7 @@ export class ListSecurity {
             let group = this.getGroup(groupName);
             if (group) {
                 // Remove the user from the group
-                group.Users().removeById(userId).execute(() => {
+                (group as Types.SP.GroupOData).Users.removeById(userId).execute(() => {
                     // Add the user to the group
                     this.removeUser(userId, groupName);
 
