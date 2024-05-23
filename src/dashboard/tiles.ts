@@ -222,7 +222,7 @@ export class Tiles implements ITiles {
         this._tiles = Components.CardGroup({
             el: this._props.el,
             cards,
-            colSize: this._props.colSize
+            colSize: this._props.colSize || 4
         });
     }
 
