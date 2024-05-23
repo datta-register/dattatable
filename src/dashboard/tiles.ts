@@ -6,11 +6,11 @@ export interface ITiles {
 }
 
 export interface ITilesProps {
-    bodyFields?: [string];
+    bodyFields?: string[];
     bodyTemplate?: string;
     colSize?: number;
     el: HTMLElement;
-    filterFields?: [string];
+    filterFields?: string[];
     items: any[];
     onBodyRendered?: (el?: HTMLElement, item?: any) => void;
     onCardRendered?: (el?: HTMLElement, item?: any) => void;
@@ -24,9 +24,9 @@ export interface ITilesProps {
     showFooter?: boolean;
     showHeader?: boolean;
     showPagination?: boolean;
-    subTitleFields?: [string];
+    subTitleFields?: string[];
     subTitleTemplate?: string;
-    titleFields?: [string];
+    titleFields?: string[];
     titleTemplate?: string;
 }
 

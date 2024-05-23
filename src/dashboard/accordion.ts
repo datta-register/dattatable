@@ -6,10 +6,10 @@ export interface IAccordion {
 }
 
 export interface IAccordionProps {
-    bodyFields?: [string];
+    bodyFields?: string[];
     bodyTemplate?: string;
     el: HTMLElement;
-    filterFields?: [string];
+    filterFields?: string[];
     items: any[];
     onItemBodyRender?: (el?: HTMLElement, item?: any) => void;
     onItemClick?: (el?: HTMLElement, item?: any) => void;
@@ -18,7 +18,7 @@ export interface IAccordionProps {
     onPaginationRender?: (el?: HTMLElement) => void;
     paginationLimit?: number;
     showPagination?: boolean;
-    titleFields?: [string];
+    titleFields?: string[];
     titleTemplate?: string;
 }
 

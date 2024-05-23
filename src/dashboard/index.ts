@@ -20,9 +20,9 @@ export * from "./tiles";
 // Dashboard
 export interface IDashboardProps {
     accordion?: {
-        bodyFields?: [string];
+        bodyFields?: string[];
         bodyTemplate?: string;
-        filterFields?: [string];
+        filterFields?: string[];
         items: any[];
         onItemBodyRender?: (el?: HTMLElement, item?: any) => void;
         onItemClick?: (el?: HTMLElement, item?: any) => void;
@@ -31,7 +31,7 @@ export interface IDashboardProps {
         onPaginationRender?: (el?: HTMLElement) => void;
         paginationLimit?: number;
         showPagination?: boolean;
-        titleFields?: [string];
+        titleFields?: string[];
         titleTemplate?: string;
     }
     el: HTMLElement;
@@ -87,10 +87,10 @@ export interface IDashboardProps {
         rows?: any[];
     }
     tiles?: {
-        bodyFields?: [string];
+        bodyFields?: string[];
         bodyTemplate?: string;
         colSize?: number;
-        filterFields?: [string];
+        filterFields?: string[];
         items: any[];
         onBodyRendered?: (el?: HTMLElement, item?: any) => void;
         onCardRendered?: (el?: HTMLElement, item?: any) => void;
@@ -104,9 +104,9 @@ export interface IDashboardProps {
         showFooter?: boolean;
         showHeader?: boolean;
         showPagination?: boolean;
-        subTitleFields?: [string];
+        subTitleFields?: string[];
         subTitleTemplate?: string;
-        titleFields?: [string];
+        titleFields?: string[];
         titleTemplate?: string;
     }
     onRendered?: (el?: HTMLElement) => void;
