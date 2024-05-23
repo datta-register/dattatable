@@ -106,7 +106,7 @@ export class FilterSlideout {
         // Create the item
         let item: Components.IAccordionItem = {
             header: filter.header,
-            onRender: el => {
+            onRenderBody: el => {
                 // Render the checkbox group
                 this._cbs.push(Components.CheckboxGroup({
                     el,
