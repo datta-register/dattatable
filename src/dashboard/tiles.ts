@@ -15,6 +15,7 @@ export interface ITilesProps {
     onBodyRendered?: (el?: HTMLElement, item?: any) => void;
     onCardRendered?: (el?: HTMLElement, item?: any) => void;
     onCardRendering?: (item?: Components.ICardProps) => void;
+    onColumnRendered?: (el?: HTMLElement, item?: any) => void;
     onFooterRendered?: (el?: HTMLElement, item?: any) => void;
     onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
     onPaginationRendered?: (el?: HTMLElement) => void;
@@ -222,7 +223,8 @@ export class Tiles implements ITiles {
         this._tiles = Components.CardGroup({
             el: this._props.el,
             cards,
-            colSize: this._props.colSize || 4
+            colSize: this._props.colSize || 4,
+            onColRender: this._props.onColumnRendered
         });
     }
 
