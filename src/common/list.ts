@@ -12,7 +12,7 @@ export interface IListProps<T = Types.SP.ListItem> {
     viewName?: string;
     onInitError?: (...args) => void;
     onInitialized?: () => void;
-    onItemLoading?: (item?: T) => void;
+    onItemLoading?: (item?: T) => T;
     onItemsLoaded?: (items?: T[]) => void;
     onLoadFormError?: (...args) => void;
     onRefreshItems?: (items?: T[]) => void | PromiseLike<any>;
@@ -98,7 +98,7 @@ export class List<T = Types.SP.ListItem> {
     private _onInitialized?: () => void = null;
 
     // Items loading event
-    private _onItemLoading?: (item?: T) => void = null;
+    private _onItemLoading?: (item?: T) => T = null;
 
     // Items loaded event
     private _onItemsLoaded?: (items?: T[]) => void = null;
@@ -288,7 +288,7 @@ export class List<T = Types.SP.ListItem> {
                     // See if this is the item
                     if (itemId == item.Id) {
                         // Call the event
-                        this._onItemLoading ? this._onItemLoading(newItem as T) : null;
+                        newItem = this._onItemLoading ? this._onItemLoading(newItem as T) as any : null;
 
                         // Replace the item
                         this._items[i] = newItem as T;
@@ -344,7 +344,7 @@ export class List<T = Types.SP.ListItem> {
                     // Parse the items
                     for (let i = 0; i < items.results.length; i++) {
                         // Call the event
-                        this._onItemLoading(items.results[i] as T);
+                        items.results[i] = this._onItemLoading(items.results[i] as T) as any;
                     }
                 }
 
@@ -374,7 +374,7 @@ export class List<T = Types.SP.ListItem> {
                     // Parse the items
                     for (let i = 0; i < items.results.length; i++) {
                         // Call the event
-                        this._onItemLoading(items.results[i] as T);
+                        items.results[i] = this._onItemLoading(items.results[i] as T) as any;
                     }
                 }
 
@@ -404,7 +404,7 @@ export class List<T = Types.SP.ListItem> {
                     // Parse the items
                     for (let i = 0; i < items.results.length; i++) {
                         // Call the event
-                        this._onItemLoading(items.results[i] as T);
+                        items.results[i] = this._onItemLoading(items.results[i] as T) as any;
                     }
                 }
 
