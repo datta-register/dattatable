@@ -12,6 +12,7 @@ export interface IListProps<T = Types.SP.ListItem> {
     viewName?: string;
     onInitError?: (...args) => void;
     onInitialized?: () => void;
+    onItemLoading?: (item?: T) => void;
     onItemsLoaded?: (items?: T[]) => void;
     onLoadFormError?: (...args) => void;
     onRefreshItems?: (items?: T[]) => void | PromiseLike<any>;
@@ -96,6 +97,9 @@ export class List<T = Types.SP.ListItem> {
     // Event triggered when the component is initialized
     private _onInitialized?: () => void = null;
 
+    // Items loading event
+    private _onItemLoading?: (item?: T) => void = null;
+
     // Items loaded event
     private _onItemsLoaded?: (items?: T[]) => void = null;
 
@@ -119,6 +123,7 @@ export class List<T = Types.SP.ListItem> {
         this._odata = props.itemQuery;
         this._onInitError = props.onInitError;
         this._onInitialized = props.onInitialized;
+        this._onItemLoading = props.onItemLoading;
         this._onItemsLoaded = props.onItemsLoaded;
         this._onLoadFormError = props.onLoadFormError;
         this._onRefreshItems = props.onRefreshItems;
@@ -282,6 +287,9 @@ export class List<T = Types.SP.ListItem> {
 
                     // See if this is the item
                     if (itemId == item.Id) {
+                        // Call the event
+                        this._onItemLoading ? this._onItemLoading(newItem as T) : null;
+
                         // Replace the item
                         this._items[i] = newItem as T;
 
@@ -331,6 +339,15 @@ export class List<T = Types.SP.ListItem> {
 
             // Query the items
             Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).getItemsByQuery(this.CAMLQuery).execute(items => {
+                // See if the event exists
+                if (this._onItemLoading) {
+                    // Parse the items
+                    for (let i = 0; i < items.results.length; i++) {
+                        // Call the event
+                        this._onItemLoading(items.results[i] as T);
+                    }
+                }
+
                 // Save the items
                 this._items = items.results as any;
 
@@ -352,6 +369,15 @@ export class List<T = Types.SP.ListItem> {
 
             // Query the items
             Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).Items().query(query).execute(items => {
+                // See if the event exists
+                if (this._onItemLoading) {
+                    // Parse the items
+                    for (let i = 0; i < items.results.length; i++) {
+                        // Call the event
+                        this._onItemLoading(items.results[i] as T);
+                    }
+                }
+
                 // Save the items
                 this._items = items.results as any;
 
@@ -373,6 +399,15 @@ export class List<T = Types.SP.ListItem> {
 
             // Query the items
             Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).getItems(this.ViewXml).execute(items => {
+                // See if the event exists
+                if (this._onItemLoading) {
+                    // Parse the items
+                    for (let i = 0; i < items.results.length; i++) {
+                        // Call the event
+                        this._onItemLoading(items.results[i] as T);
+                    }
+                }
+
                 // Save the items
                 this._items = items.results as any;
 
