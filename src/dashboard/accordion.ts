@@ -2,6 +2,7 @@ import { Components } from "gd-sprest-bs";
 
 export interface IAccordion {
     filter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
+    refresh?: (items: any[]) => void;
     search?: (value: string) => void;
 }
 
@@ -38,7 +39,7 @@ export class Accordion implements IAccordion {
         this._props = props;
 
         // Render the accordion
-        this.render();
+        this.refresh(this._props.items);
     }
 
     // Clears an item
@@ -147,22 +148,31 @@ export class Accordion implements IAccordion {
         };
     }
 
-    // Renders the dashboard
-    private render() {
+    // Method to reload the data
+    refresh(items: any[] = []) {
+        // Clear the datatable element
+        while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
+
         // Render the accordion
-        this.renderAccordion();
+        this.render(items);
+    }
+
+    // Renders the dashboard
+    private render(items: any[]) {
+        // Render the accordion
+        this.renderAccordion(items);
 
         // Render the items
         this.renderItems();
     }
 
     // Renders the accordion
-    private renderAccordion() {
+    private renderAccordion(items: any[]) {
         // Parse the items
         let accordionItems: Array<Components.IAccordionItem> = [];
-        for (let i = 0; i < this._props.items.length; i++) {
+        for (let i = 0; i < items.length; i++) {
             // Add an accordion item
-            accordionItems.push(this.generateItem(this._props.items[i]));
+            accordionItems.push(this.generateItem(items[i]));
         }
 
         // Render the accordion

@@ -485,8 +485,19 @@ export class Dashboard {
 
     // Refresh the table
     refresh(rows: any[]) {
-        // Refresh the table
-        this._dt.refresh(rows);
+        // See if we have an accordion
+        if (this.IsAccordion) {
+            // Refresh the table
+            this._accordion.refresh(rows);
+        }
+        // Else, see if we have tiles
+        else if (this.IsTiles) {
+            // Refresh the table
+            this._tiles.refresh(rows);
+        } else {
+            // Refresh the table
+            this._dt.refresh(rows);
+        }
 
         // See if a search value exists
         let searchValue = this._navigation ? this._navigation.getSearchValue() : "";

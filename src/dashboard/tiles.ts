@@ -2,6 +2,7 @@ import { Components } from "gd-sprest-bs";
 
 export interface ITiles {
     filter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
+    refresh?: (items: any[]) => void;
     search?: (value: string) => void;
 }
 
@@ -47,7 +48,7 @@ export class Tiles implements ITiles {
         this._props = props;
 
         // Render the tile
-        this.render();
+        this.render(this._props.items);
     }
 
     // Filters the tile
@@ -60,15 +61,6 @@ export class Tiles implements ITiles {
             // Hide the tile
             tiles[i].parentElement.classList.add("d-none");
         }
-
-        // Update the tiles
-        this.updateTiles();
-    }
-
-    // Renders the dashboard
-    private render() {
-        // Render the tile
-        this.renderTiles();
 
         // Update the tiles
         this.updateTiles();
@@ -208,12 +200,30 @@ export class Tiles implements ITiles {
         return cardProps;
     }
 
+    // Method to reload the data
+    refresh(items: any[] = []) {
+        // Clear the datatable element
+        while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
+
+        // Render the accordion
+        this.render(items);
+    }
+
+    // Renders the dashboard
+    private render(items: any[]) {
+        // Render the tile
+        this.renderTiles(items);
+
+        // Update the tiles
+        this.updateTiles();
+    }
+
     // Renders the tiles
-    private renderTiles() {
+    private renderTiles(items: any[]) {
         // Parse the items
         let cards: Array<Components.ICardProps> = [];
-        for (let i = 0; i < this._props.items.length; i++) {
-            let item = this._props.items[i];
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
 
             // Add an tile
             cards.push(this.generateCard(item));
