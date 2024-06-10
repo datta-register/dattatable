@@ -19,6 +19,7 @@ export interface ITilesProps {
     onColumnRendered?: (el?: HTMLElement, item?: any) => void;
     onFooterRendered?: (el?: HTMLElement, item?: any) => void;
     onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
+    onPaginationClick?: (pageNumber?: number) => void;
     onPaginationRendered?: (el?: HTMLElement) => void;
     onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
     onTitleRendered?: (el?: HTMLElement, item?: any) => void;
@@ -353,6 +354,9 @@ export class Tiles implements ITiles {
                         // Show the item
                         elItem.parentElement.classList.remove("d-none");
                     }
+
+                    // Call the event
+                    this._props.onPaginationClick ? this._props.onPaginationClick(pageNumber) : null;
                 }
             });
 

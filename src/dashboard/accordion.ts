@@ -16,6 +16,7 @@ export interface IAccordionProps {
     onItemClick?: (el?: HTMLElement, item?: any) => void;
     onItemHeaderRender?: (el?: HTMLElement, item?: any) => void;
     onItemRender?: (el?: HTMLElement, item?: any) => void;
+    onPaginationClick?: (pageNumber?: number) => void;
     onPaginationRender?: (el?: HTMLElement) => void;
     paginationLimit?: number;
     showPagination?: boolean;
@@ -352,6 +353,9 @@ export class Accordion implements IAccordion {
                     // Set the last item class
                     let lastIdx = startIdx + paginationLimit - 1;
                     elItems[lastIdx < elItems.length ? lastIdx : elItems.length - 1].classList.add("last-item");
+
+                    // Call the event
+                    this._props.onPaginationClick ? this._props.onPaginationClick(pageNumber) : null;
                 }
             });
 

@@ -28,6 +28,7 @@ export interface IDashboardProps {
         onItemClick?: (el?: HTMLElement, item?: any) => void;
         onItemHeaderRender?: (el?: HTMLElement, item?: any) => void;
         onItemRender?: (el?: HTMLElement, item?: any) => void;
+        onPaginationClick?: (pageNumber?: number) => void;
         onPaginationRender?: (el?: HTMLElement) => void;
         paginationLimit?: number;
         showPagination?: boolean;
@@ -98,6 +99,7 @@ export interface IDashboardProps {
         onColumnRendered?: (el?: HTMLElement, item?: any) => void;
         onFooterRendered?: (el?: HTMLElement, item?: any) => void;
         onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
+        onPaginationClick?: (pageNumber?: number) => void;
         onPaginationRendered?: (el?: HTMLElement) => void;
         onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
         onTitleRendered?: (el?: HTMLElement, item?: any) => void;
