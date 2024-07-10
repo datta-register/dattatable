@@ -21,6 +21,7 @@ export interface IItemFormTabInfo {
 
 /** Create Item Properties */
 export interface IItemFormCreateProps {
+    elForm?: HTMLElement;
     info?: Helper.IListFormResult;
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
@@ -38,6 +39,7 @@ export interface IItemFormCreateProps {
 
 /** Edit Item Properties */
 export interface IItemFormEditProps {
+    elForm?: HTMLElement;
     info?: Helper.IListFormResult;
     itemId: number;
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
@@ -56,6 +58,7 @@ export interface IItemFormEditProps {
 
 /** View Item Properties */
 export interface IItemFormViewProps {
+    elForm?: HTMLElement;
     info?: Helper.IListFormResult;
     itemId: number;
     onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
@@ -73,6 +76,7 @@ export interface IItemFormViewProps {
  * Item Form
  */
 export class ItemForm {
+    private static _elForm: HTMLElement = null;
     private static _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
     private static _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
     private static _onFormButtonsRendering: (buttons: Components.IButtonProps[]) => Components.IButtonProps[] = null;
@@ -143,6 +147,7 @@ export class ItemForm {
     static create(props: IItemFormCreateProps = {}): PromiseLike<void> {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
+        this._elForm = props.elForm;
         this._info = props.info;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
@@ -164,6 +169,7 @@ export class ItemForm {
     static edit(props: IItemFormEditProps): PromiseLike<void> {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Edit;
+        this._elForm = props.elForm;
         this._info = props.info;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
@@ -200,6 +206,7 @@ export class ItemForm {
     static view(props: IItemFormViewProps): PromiseLike<void> {
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
+        this._elForm = props.elForm;
         this._info = props.info;
         this._onCreateViewForm = props.onCreateViewForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
@@ -400,38 +407,50 @@ export class ItemForm {
 
     // Renders the form
     private static renderForm() {
-        // Clear the form
-        (this._useModal ? Modal : CanvasForm).clear();
+        // See if we are not rendering to a custom element
+        if (this._elForm == null) {
+            // Clear the form
+            (this._useModal ? Modal : CanvasForm).clear();
 
-        // Set the header
-        (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
+            // Set the header
+            (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
 
-        // Call the header event
-        this._onSetHeader ? this._onSetHeader(this._useModal ? Modal.HeaderElement : CanvasForm.HeaderElement) : null;
+            // Call the header event
+            this._onSetHeader ? this._onSetHeader(this._useModal ? Modal.HeaderElement : CanvasForm.HeaderElement) : null;
 
-        // See if we are rendering tabs
-        if (this._tabInfo) {
-            // Render the tabs
-            this.renderTabs();
+            // See if we are rendering tabs
+            if (this._tabInfo) {
+                // Render the tabs
+                this.renderTabs();
+            } else {
+                // Render the form based on the type
+                let elForm = this.IsDisplay ? this.renderDisplayForm() : this.renderEditForm();
+
+                // Update the body
+                (this._useModal ? Modal : CanvasForm).setBody(elForm);
+            }
+
+            // Render the footer
+            this.renderFooter();
+
+            // Call the event
+            this._onShowForm ? this._onShowForm(this._useModal ? Modal : CanvasForm) : null;
+
+            // Show the form
+            (this._useModal ? Modal : CanvasForm).show();
         } else {
             // Render the form based on the type
             let elForm = this.IsDisplay ? this.renderDisplayForm() : this.renderEditForm();
 
-            // Update the body
-            (this._useModal ? Modal : CanvasForm).setBody(elForm);
+            // Copy the elements
+            for (let i = 0; i < elForm.children.length; i++) {
+                // Append the element
+                this._elForm.appendChild(elForm.children[i]);
+            }
         }
-
-        // Render the footer
-        this.renderFooter();
-
-        // Call the event
-        this._onShowForm ? this._onShowForm(this._useModal ? Modal : CanvasForm) : null;
 
         // Close the dialog
         LoadingDialog.hide();
-
-        // Show the form
-        (this._useModal ? Modal : CanvasForm).show();
     }
 
     // Generates a tab
