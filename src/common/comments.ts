@@ -182,7 +182,7 @@ export class Comments {
     }
 
     // Displays the new comment form
-    static new(item: any, showCanvasFl: boolean = true) {
+    static new(item: any, el: HTMLElement) {
         // Set the header
         this._elModalHeader.innerHTML = "Add Comment";
 
@@ -217,7 +217,7 @@ export class Comments {
                                 // Add the comment
                                 this.add(item, form.getValues()["comment"]).then(() => {
                                     // View the comments
-                                    this.view(item);
+                                    this.view(item, el);
                                 });
                             }
                         }
@@ -233,7 +233,7 @@ export class Comments {
                             this._modal.hide();
 
                             // Show the canvas form
-                            showCanvasFl ? CanvasForm.show() : null;
+                            el ? null : CanvasForm.show();
                         }
                     }
                 }
@@ -296,6 +296,9 @@ export class Comments {
         LoadingDialog.setBody("This dialog will close after the comments are loaded.");
         LoadingDialog.show();
 
+        // Clear the element
+        while (el.firstChild) { el.removeChild(el.firstChild); }
+
         // Load the items
         this.load(item).then(comments => {
             // See if we are not rendering to an element
@@ -317,7 +320,7 @@ export class Comments {
                         el ? null : CanvasForm.hide();
 
                         // Display a modal to add the comment
-                        this.new(item, el ? true : false);
+                        this.new(item, el);
                     }
                 }]
             });
