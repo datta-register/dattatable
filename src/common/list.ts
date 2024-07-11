@@ -208,6 +208,22 @@ export class List<T = Types.SP.ListItem> {
         return null;
     }
 
+    // Gets a list item by id
+    getItem(id: number): T {
+        // Parse the items
+        for (let i = 0; i < this.Items.length; i++) {
+            let item = this.Items[i];
+
+            // See if this is the target item
+            if (item["Id"] == id || item["ID"] == id) {
+                // Return the item
+                return item;
+            }
+        }
+
+        // Not found
+        return null;
+    }
     // Initializes the list component
     private init(): PromiseLike<void> {
         // Return a promise
