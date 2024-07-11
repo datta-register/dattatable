@@ -148,19 +148,22 @@ export class Comments {
     }
 
     // Displays the new comment form
-    static new(item: any) {
-        // Clear the modal dialog
-        Modal.clear();
+    static new(item: any, el?: HTMLElement) {
+        // See if we are not rendering to an element
+        if (el == null) {
+            // Clear the modal dialog
+            Modal.clear();
 
-        // Hide the close button
-        Modal.setCloseButtonVisibility(false);
+            // Hide the close button
+            Modal.setCloseButtonVisibility(false);
 
-        // Set the header
-        Modal.setHeader("Add Comment");
+            // Set the header
+            Modal.setHeader("Add Comment");
+        }
 
         // Create the form
         let form = Components.Form({
-            el: Modal.BodyElement,
+            el: el || Modal.BodyElement,
             controls: [{
                 name: "comment",
                 label: "Comment",
@@ -173,7 +176,7 @@ export class Comments {
 
         // Set the footer
         Components.TooltipGroup({
-            el: Modal.FooterElement,
+            el: el || Modal.FooterElement,
             tooltips: [
                 {
                     content: "Click to add a comment to the request.",
@@ -213,7 +216,7 @@ export class Comments {
         });
 
         // Show the form
-        Modal.show();
+        el ? null : Modal.show();
     }
 
     // Security configuration
@@ -262,7 +265,7 @@ export class Comments {
     }
 
     // Displays the comments in a canvas form
-    static view(item: any) {
+    static view(item: any, el?: HTMLElement) {
         // Display a loading dialog
         LoadingDialog.setHeader("Loading Comments");
         LoadingDialog.setBody("This dialog will close after the comments are loaded.");
@@ -270,15 +273,18 @@ export class Comments {
 
         // Load the items
         this.load(item).then(comments => {
-            // Clear the form
-            CanvasForm.clear();
+            // See if we are not rendering to an element
+            if (el == null) {
+                // Clear the form
+                CanvasForm.clear();
 
-            // Set the header
-            CanvasForm.setHeader("<h5>Comments</h5>");
+                // Set the header
+                CanvasForm.setHeader("<h5>Comments</h5>");
+            }
 
             // Render a nav
             Components.Navbar({
-                el: CanvasForm.BodyElement,
+                el: el || CanvasForm.BodyElement,
                 itemsEnd: [{
                     text: "+ Add Comment",
                     onClick: () => {
@@ -297,7 +303,7 @@ export class Comments {
 
                 // Render a toast
                 Components.Toast({
-                    el: CanvasForm.BodyElement,
+                    el: el || CanvasForm.BodyElement,
                     headerText: comment.Author.Title,
                     mutedText: moment(new Date(comment.Created)).toString(),
                     body: (comment.Comment || "").replace(/\r?\n/g, '<br />'),
@@ -312,7 +318,7 @@ export class Comments {
             LoadingDialog.hide();
 
             // Show the canvas form
-            CanvasForm.show();
+            el ? null : CanvasForm.show();
         });
     }
 }
