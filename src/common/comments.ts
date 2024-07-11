@@ -186,6 +186,10 @@ export class Comments {
         // Set the header
         this._elModalHeader.innerHTML = "Add Comment";
 
+        // Clear the body and footer
+        while (this._elModalBody.firstChild) { this._elModalBody.removeChild(this._elModalBody.firstChild); }
+        while (this._elModalFooter.firstChild) { this._elModalFooter.removeChild(this._elModalFooter.firstChild); }
+
         // Create the form
         let form = Components.Form({
             el: this._elModalBody,
