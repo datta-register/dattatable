@@ -2,7 +2,6 @@ import { Components, Helper, SPTypes, Web } from "gd-sprest-bs";
 import * as moment from "moment";
 import { CanvasForm } from "./canvas";
 import { LoadingDialog } from "./loadingDialog";
-import { Modal } from "./modal";
 
 // List Name
 const LIST_NAME = "Comments";
@@ -20,7 +19,11 @@ export interface ICommentsItem {
  * Comments
  */
 export class Comments {
+    private static _elModalBody: HTMLElement = null;
+    private static _elModalFooter: HTMLElement = null;
+    private static _elModalHeader: HTMLElement = null;
     private static _listId: string = null;
+    private static _modal: Components.IModal = null;
     private static _webUrl: string = null;
 
     // Comment's List Id
@@ -100,6 +103,37 @@ export class Comments {
 
     // Initialization of the component
     static init(listName: string, webUrl?: string): PromiseLike<void> {
+        // Create the modal element
+        let el = document.createElement("div");
+        el.id = "comments-modal";
+
+        // Ensure the body exists
+        if (document.body) {
+            // Append the element
+            document.body.appendChild(el);
+        } else {
+            // Create an event
+            window.addEventListener("load", () => {
+                // Append the element
+                document.body.appendChild(el);
+            });
+        }
+
+        // Render the canvas
+        this._modal = Components.Modal({
+            el,
+            type: Components.ModalTypes.Medium,
+            options: {
+                autoClose: false,
+                backdrop: true,
+                centered: true,
+                keyboard: true
+            },
+            onRenderBody: el => { this._elModalBody = el; },
+            onRenderFooter: el => { this._elModalFooter = el; },
+            onRenderHeader: el => { this._elModalHeader = el.querySelector(".modal-title");; }
+        });
+
         // Save the web url
         this._webUrl = webUrl;
 
@@ -148,22 +182,13 @@ export class Comments {
     }
 
     // Displays the new comment form
-    static new(item: any, el?: HTMLElement) {
-        // See if we are not rendering to an element
-        if (el == null) {
-            // Clear the modal dialog
-            Modal.clear();
-
-            // Hide the close button
-            Modal.setCloseButtonVisibility(false);
-
-            // Set the header
-            Modal.setHeader("Add Comment");
-        }
+    static new(item: any, showCanvasFl: boolean = true) {
+        // Set the header
+        this._elModalHeader.innerHTML = "Add Comment";
 
         // Create the form
         let form = Components.Form({
-            el: el || Modal.BodyElement,
+            el: this._elModalBody,
             controls: [{
                 name: "comment",
                 label: "Comment",
@@ -176,7 +201,7 @@ export class Comments {
 
         // Set the footer
         Components.TooltipGroup({
-            el: el || Modal.FooterElement,
+            el: this._elModalFooter,
             tooltips: [
                 {
                     content: "Click to add a comment to the request.",
@@ -187,7 +212,7 @@ export class Comments {
                             // Ensure the form is valid
                             if (form.isValid()) {
                                 // Hide the modal
-                                Modal.hide();
+                                this._modal.hide();
 
                                 // Add the comment
                                 this.add(item, form.getValues()["comment"]).then(() => {
@@ -205,10 +230,10 @@ export class Comments {
                         type: Components.ButtonTypes.OutlineDanger,
                         onClick: () => {
                             // Hide the modal
-                            Modal.hide();
+                            this._modal.hide();
 
                             // Show the canvas form
-                            CanvasForm.show();
+                            showCanvasFl ? CanvasForm.show() : null;
                         }
                     }
                 }
@@ -216,7 +241,7 @@ export class Comments {
         });
 
         // Show the form
-        el ? null : Modal.show();
+        this._modal.show();
     }
 
     // Security configuration
@@ -289,10 +314,10 @@ export class Comments {
                     text: "+ Add Comment",
                     onClick: () => {
                         // Hide the form
-                        CanvasForm.hide();
+                        el ? null : CanvasForm.hide();
 
                         // Display a modal to add the comment
-                        this.new(item);
+                        this.new(item, el ? true : false);
                     }
                 }]
             });
