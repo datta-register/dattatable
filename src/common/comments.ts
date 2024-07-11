@@ -318,6 +318,8 @@ export class Comments {
             Components.Navbar({
                 el: el || CanvasForm.BodyElement,
                 itemsEnd: [{
+                    className: "btn-outline-light",
+                    isButton: true,
                     text: "+ Add Comment",
                     onClick: () => {
                         // Hide the form
