@@ -86,7 +86,7 @@ export class Modal {
             });
         }
 
-        // Render the canvas
+        // Render the modal
         this._modal = Components.Modal({
             el,
             type: Components.ModalTypes.Large,

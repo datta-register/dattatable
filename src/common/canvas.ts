@@ -5,6 +5,7 @@ import { Components } from "gd-sprest-bs";
  */
 export class CanvasForm {
     private static _canvas: Components.IOffcanvas = null;
+    private static _onCloseEvent: Function = null;
 
     // Modal Body
     private static _elBody: HTMLElement = null;
@@ -28,6 +29,7 @@ export class CanvasForm {
 
         // Set the default properties
         this.setAutoClose(true);
+        this.setCloseEvent(null);
         this.setSize(0);
         this.setType(Components.OffcanvasTypes.End);
 
@@ -40,7 +42,12 @@ export class CanvasForm {
     static get el(): HTMLElement { return this._canvas.el as HTMLElement; }
 
     // Hides the canvas
-    static hide() { this._canvas.hide(); }
+    static hide() {
+        this._canvas.hide();
+
+        // Call the close event
+        this._onCloseEvent ? this._onCloseEvent() : null;
+    }
 
     // Renders the canvas
     private static render() {
@@ -71,12 +78,19 @@ export class CanvasForm {
                 scroll: true
             },
             onRenderBody: el => { this._elBody = el; },
-            onRenderHeader: el => { this._elHeader = el; }
+            onRenderHeader: el => { this._elHeader = el; },
+            onClose: () => {
+                // Call the close event
+                this._onCloseEvent ? this._onCloseEvent() : null;
+            }
         });
     }
 
     // Sets the auto close flag
     static setAutoClose(value: boolean) { this._canvas.setAutoClose(value); }
+
+    // Sets the close event
+    static setCloseEvent(event) { this._onCloseEvent = event; }
 
     // Sets the body
     static setBody(content) {
