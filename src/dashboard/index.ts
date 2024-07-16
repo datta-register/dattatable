@@ -396,6 +396,7 @@ export class Dashboard {
             // Render the footer
             let footer = this._props.footer || {};
             new Footer({
+                className: "bg-sharepoint rounded-bottom",
                 el: this._props.el.querySelector("#footer"),
                 items: footer.items,
                 itemsEnd: footer.itemsEnd,

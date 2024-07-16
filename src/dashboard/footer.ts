@@ -4,6 +4,7 @@ import { Components } from "gd-sprest-bs";
  * Footer
  */
 export interface IFooterProps {
+    className?: string;
     el: HTMLElement;
     items?: Components.INavbarItem[];
     itemsEnd?: Components.INavbarItem[];
@@ -33,6 +34,7 @@ export class Footer {
     private render() {
         // Define the default props
         let props: Components.INavbarProps = {
+            className: this._props.className,
             el: this._props.el,
             items: this._props.items,
             itemsEnd: this._props.itemsEnd
