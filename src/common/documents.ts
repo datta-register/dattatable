@@ -1164,7 +1164,7 @@ export class Documents {
         let navProps: Components.INavbarProps = {
             el: this._el,
             brand: "Documents",
-            className: "mt-3 rounded",
+            className: "rounded",
             itemsEnd,
             type: Components.NavbarTypes.Primary,
             searchBox: this._props.enableSearch ? {
