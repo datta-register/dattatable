@@ -134,7 +134,10 @@ export class Modal {
     static setCloseButtonVisibility(showFl: boolean) { this._modal.setCloseButtonVisibility(showFl); }
 
     // Sets the close event
-    static setCloseEvent(event) { this._onCloseEvent = event; }
+    static setCloseEvent(event) {
+        // Set the event in its own thread
+        setTimeout(() => { this._onCloseEvent = event; }, 10);
+    }
 
     // Sets the flag to hide the empty footer
     static setHideEmptyFooter(value: boolean) { this._hideEmptyFooter = value; }

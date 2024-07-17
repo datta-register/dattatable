@@ -90,7 +90,10 @@ export class CanvasForm {
     static setAutoClose(value: boolean) { this._canvas.setAutoClose(value); }
 
     // Sets the close event
-    static setCloseEvent(event) { this._onCloseEvent = event; }
+    static setCloseEvent(event) {
+        // Set the event in its own thread
+        setTimeout(() => { this._onCloseEvent = event; }, 10);
+    }
 
     // Sets the body
     static setBody(content) {
