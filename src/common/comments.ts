@@ -317,6 +317,11 @@ export class Comments {
             // Render a nav
             Components.Navbar({
                 el: el || CanvasForm.BodyElement,
+                onRendered: el => {
+                    // Update the collapse visibility
+                    el.classList.remove("navbar-expand-lg");
+                    el.classList.add("navbar-expand-sm");
+                },
                 itemsEnd: [{
                     className: "btn-outline-light",
                     isButton: true,

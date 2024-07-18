@@ -53,6 +53,11 @@ export class Navigation {
                 onChange: this._props.onSearch,
                 onSearch: this._props.onSearch,
                 placeholder: this._props.searchPlaceholder || "Search this app",
+            },
+            onRendered: el => {
+                // Update the collapse visibility
+                el.classList.remove("navbar-expand-lg");
+                el.classList.add("navbar-expand-sm");
             }
         };
 

@@ -1177,7 +1177,12 @@ export class Documents {
                     // Search the data table
                     this._dt.search(value);
                 }
-            } : null
+            } : null,
+            onRendered: el => {
+                // Update the collapse visibility
+                el.classList.remove("navbar-expand-lg");
+                el.classList.add("navbar-expand-sm");
+            }
         };
 
         // Call the rendering event
