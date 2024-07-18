@@ -37,7 +37,12 @@ export class Footer {
             className: this._props.className,
             el: this._props.el,
             items: this._props.items,
-            itemsEnd: this._props.itemsEnd
+            itemsEnd: this._props.itemsEnd,
+            onRendered: el => {
+                // Update the collapse visibility
+                el.classList.remove("navbar-expand-lg");
+                el.classList.add("navbar-expand-sm");
+            }
         };
 
         // Call the rendering event
