@@ -159,11 +159,12 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Clears the modal or canvas
-    private clear(el?: HTMLElement) {
-        // Ensure we rendering to a modal/canvas
-        if (el == null) {
+    private clear(props: IItemFormCreateProps | IItemFormEditProps | IItemFormViewProps) {
+        // Ensure we are not rendering to a specified element
+        if (props.elForm == null) {
             // Clear the modal/form
-            ItemForm.UseModal ? Modal.clear() : CanvasForm.clear();
+            let useModal = typeof (props.useModal) === "boolean" ? props.useModal : ItemForm.UseModal;
+            useModal ? Modal.clear() : CanvasForm.clear();
         }
 
         // Set the list name
@@ -185,7 +186,7 @@ export class List<T = Types.SP.ListItem> {
     // Displays the edit form
     editForm(props: IItemFormEditProps) {
         // Clear the modal/canvas
-        this.clear(props.elForm);
+        this.clear(props);
 
         // Display the form
         ItemForm.edit(props).then(null, this._onLoadFormError);
@@ -442,7 +443,7 @@ export class List<T = Types.SP.ListItem> {
     // Displays the new form
     newForm(props: IItemFormCreateProps) {
         // Clear the modal/canvas
-        this.clear(props.elForm);
+        this.clear(props);
 
         // Display the form
         ItemForm.create(props).then(null, this._onLoadFormError);
@@ -510,7 +511,7 @@ export class List<T = Types.SP.ListItem> {
     // Displays the view form
     viewForm(props: IItemFormViewProps) {
         // Clear the modal/canvas
-        this.clear(props.elForm);
+        this.clear(props);
 
         // Display the form
         ItemForm.view(props).then(null, this._onLoadFormError);
