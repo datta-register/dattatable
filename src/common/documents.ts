@@ -503,33 +503,6 @@ export class Documents {
         return (file as Types.SP.File).Name || (file as Types.SP.Attachment).FileName;
     }
 
-    // Determines if the document can be viewed in office online servers
-    static isWopi(filename: string) {
-        switch (getFileExt(filename)) {
-            // Excel
-            case "csv":
-            case "doc":
-            case "docx":
-            case "dot":
-            case "dotx":
-            case "pot":
-            case "potx":
-            case "pps":
-            case "ppsx":
-            case "ppt":
-            case "pptx":
-            case "xls":
-            case "xlsx":
-            case "xlt":
-            case "xltx":
-                return true;
-            // Default
-            default: {
-                return false;
-            }
-        }
-    }
-
     // Loads the data
     private load(): PromiseLike<void> {
         // Return a promise
@@ -708,6 +681,7 @@ export class Documents {
                         type: Components.ButtonTypes.OutlineSecondary,
                         onClick: () => {
                             if (this.CanView) {
+                                // Open the document
                                 window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/download.aspx?SourceUrl=" + file.ServerRelativeUrl, "_blank");
                             }
                         }
@@ -727,7 +701,7 @@ export class Documents {
                         onClick: () => {
                             if (isWopi && this.CanEdit) {
                                 // Open the file in a new tab
-                                window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + file.ServerRelativeUrl + "&action=edit");
+                                Documents.open(file.ServerRelativeUrl, true);
                             }
                         }
                     },
@@ -877,8 +851,8 @@ export class Documents {
                         type: Components.ButtonTypes.OutlineSecondary,
                         onClick: () => {
                             if (this.CanView) {
-                                // Open the file in a new tab
-                                window.open(isWopi ? ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + file.ServerRelativeUrl + "&action=view" : file.ServerRelativeUrl, "_blank");
+                                // Open the file
+                                Documents.open(file.ServerRelativeUrl);
                             }
                         }
                     },
@@ -1259,6 +1233,48 @@ export class Documents {
     generateActionButton(btnType: number, file: Types.SP.File): HTMLElement {
         // Return the button
         return this.generateButton(btnType, file);
+    }
+
+    // Determines if the document can be viewed in office online servers
+    static isWopi(filename: string) {
+        switch (getFileExt(filename)) {
+            // Excel
+            case "csv":
+            case "doc":
+            case "docx":
+            case "dot":
+            case "dotx":
+            case "pot":
+            case "potx":
+            case "pps":
+            case "ppsx":
+            case "ppt":
+            case "pptx":
+            case "xls":
+            case "xlsx":
+            case "xlt":
+            case "xltx":
+                return true;
+            // Default
+            default: {
+                return false;
+            }
+        }
+    }
+
+    // Opens the document
+    static open(fileUrl: string, edit: boolean = false) {
+        let fileData = fileUrl.split('/');
+        let fileName = fileData[fileData.length - 1];
+
+        // See if this is an office doc
+        if (this.isWopi(fileName)) {
+            // Open the document
+            window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + fileUrl + "&action=" + (edit ? "edit" : "view"), "_blank");
+        } else {
+            // Open the document
+            window.open(fileUrl, "_blank");
+        }
     }
 
     // Refreshes the documents
