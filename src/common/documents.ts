@@ -386,7 +386,6 @@ export class Documents {
         this._tblProps = {
             el: null,
             dtProps: this._props.table && this._props.table.dtProps ? this._props.table.dtProps : {
-                dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
                 columnDefs,
                 drawCallback: function (settings) {
                     let api = new jQuery.fn.dataTable.Api(settings) as any;
