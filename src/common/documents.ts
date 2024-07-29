@@ -388,23 +388,45 @@ export class Documents {
             dtProps: this._props.table && this._props.table.dtProps ? this._props.table.dtProps : {
                 dom: 'rt<"row"<"col-sm-4"l><"col-sm-4"i><"col-sm-4"p>>',
                 columnDefs,
-                createdRow: function (row, data, index) {
-                    jQuery('td', row).addClass('align-middle');
-                },
-                // Add some classes to the dataTable elements
                 drawCallback: function (settings) {
                     let api = new jQuery.fn.dataTable.Api(settings) as any;
-                    let div = api.table().container() as HTMLDivElement;
-                    let table = api.table().node() as HTMLTableElement;
-                    div.querySelector(".dataTables_info").classList.add("text-center");
-                    div.querySelector(".dataTables_length").classList.add("pt-2");
-                    div.querySelector(".dataTables_paginate").classList.add("pt-03");
-                    table.classList.remove("no-footer");
-                    table.classList.add("tbl-footer");
-                    table.classList.add("table-striped");
+
+                    // Styling option for striped rows
+                    jQuery(api.context[0].nTable).addClass('table-striped');
+
+                    // Align the text to be centered
+                    jQuery(api.context[0].nTableWrapper).find('.dt-info').parent().removeClass('col-md d-md-flex justify-content-between align-items-center');
+                    jQuery(api.context[0].nTableWrapper).find('.dt-info').addClass('text-center');
+
+                    // Remove the label spacing to align with paging
+                    jQuery(api.context[0].nTableWrapper).find('.dt-length label').addClass('d-none');
+
+                    // Push paging to the end
+                    jQuery(api.context[0].nTableWrapper).find('.dt-paging').addClass('d-flex justify-content-end mx-0 px-0');
+
+                    // Add spacing for the footer
+                    jQuery(api.context[0].nTableWrapper).find('.row:last-child').addClass('mb-1');
                 },
-                headerCallback: function (thead, data, start, end, display) {
-                    jQuery('th', thead).addClass('align-middle');
+                language: {
+                    lengthMenu: "_MENU_",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                layout: {
+                    top: null,
+                    topStart: null,
+                    topEnd: null,
+                    bottom: "info",
+                    bottomStart: "pageLength",
+                    bottomEnd: {
+                        paging: {
+                            type: "full_numbers"
+                        }
+                    }
                 },
                 // Order by the 1st column by default; ascending
                 order: [[1, "asc"]]
