@@ -84,6 +84,7 @@ export interface IDashboardProps {
     table?: {
         columns: Components.ITableColumn[];
         dtProps?: any;
+        onRendering?: (dtProps: any) => any;
         onRendered?: (el?: HTMLElement, dt?: any) => void;
         rows?: any[];
     }

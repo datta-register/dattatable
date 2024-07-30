@@ -13,6 +13,7 @@ export interface IDataTable {
     filter: (idx: number, value?: string) => void;
     filterExact: (idx: number, value?: string) => void;
     filterMulti: (idx: number, values?: string[]) => void;
+    onRendering?: (dtProps: any) => any;
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     refresh: (rows: any[]) => void;
     search: (value?: string) => void;
