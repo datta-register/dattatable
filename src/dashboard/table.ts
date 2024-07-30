@@ -25,6 +25,7 @@ export interface IDataTableProps {
     columns: Components.ITableColumn[];
     dtProps?: any;
     el: HTMLElement;
+    onRendering?: (dtProps: any) => any;
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     rows?: any[];
 }
@@ -47,10 +48,13 @@ export class DataTable implements IDataTable {
 
     // Applies the datatables.net plugin
     private applyPlugin(table: Components.ITable) {
+        // Call the rendering event
+        this._props.dtProps = this._props.onRendering ? this._props.onRendering(this._props.dtProps) : this._props.dtProps;
+
         // Render the datatable
         this._datatable = $(table.el).DataTable(this._props.dtProps);
 
-        // Call the render event in a separate thread to ensure the dashboard object is created
+        // Call the rendered event in a separate thread to ensure the dashboard object is created
         setTimeout(() => {
             this._props.onRendered ? this._props.onRendered(this._props.el, this._datatable) : null;
         }, 50);
