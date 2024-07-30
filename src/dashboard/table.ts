@@ -43,6 +43,50 @@ export class DataTable implements IDataTable {
         // Save the properties
         this._props = props;
 
+        // Set the default properties
+        this._props.dtProps = this._props.dtProps || {
+            drawCallback: function (settings) {
+                let api = new $.fn.dataTable.Api(settings) as any;
+
+                // Styling option for striped rows
+                $(api.context[0].nTable).addClass('table-striped');
+
+                // Align the text to be centered
+                $(api.context[0].nTableWrapper).find('.dt-info').parent().removeClass('col-md d-md-flex justify-content-between align-items-center');
+                $(api.context[0].nTableWrapper).find('.dt-info').addClass('text-center');
+
+                // Remove the label spacing to align with paging
+                $(api.context[0].nTableWrapper).find('.dt-length label').addClass('d-none');
+
+                // Push paging to the end
+                $(api.context[0].nTableWrapper).find('.dt-paging').addClass('d-flex justify-content-end mx-0 px-0');
+
+                // Add spacing for the footer
+                $(api.context[0].nTableWrapper).find('.row:last-child').addClass('mb-1');
+            },
+            language: {
+                lengthMenu: "_MENU_",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "Next",
+                    previous: "Previous"
+                }
+            },
+            layout: {
+                top: null,
+                topStart: null,
+                topEnd: null,
+                bottom: "info",
+                bottomStart: "pageLength",
+                bottomEnd: {
+                    paging: {
+                        type: "full_numbers"
+                    }
+                }
+            }
+        };
+
         // Render the table
         this.refresh(props.rows);
     }
