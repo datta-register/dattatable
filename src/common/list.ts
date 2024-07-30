@@ -194,19 +194,26 @@ export class List<T = Types.SP.ListItem> {
 
     // Gets a list field by internal or title
     getField(name: string) {
+        let titleField = null;
+
         // Parse the fields
         for (let i = 0; i < this.ListFields.length; i++) {
             let field = this.ListFields[i];
 
-            // See if this is the target field
-            if (field.InternalName == name || field.Title == name) {
-                // Return the field
+            // Try to find the field by internal name first
+            if (field.InternalName == name) {
+                // Return the field if we match by internal
                 return field;
+            }
+            // Else, see if the title field matches and save a reference
+            else if (field.Title == name) {
+                // Save the field reference
+                titleField = field;
             }
         }
 
-        // Not found
-        return null;
+        // Return the title field if it was found
+        return titleField;
     }
 
     // Gets a list item by id
