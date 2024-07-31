@@ -236,7 +236,10 @@ export class List<T = Types.SP.ListItem> {
     private init(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            let list = Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName);
+            let list = Web(this.WebUrl, {
+                disableCache: true,
+                requestDigest: this._requestDigest
+            }).Lists(this.ListName);
 
             // Query the list content types
             list.execute(list => {
@@ -301,7 +304,10 @@ export class List<T = Types.SP.ListItem> {
         // Return a promise
         return new Promise((resolve, reject) => {
             // Query the items
-            Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).Items(itemId).query({
+            Web(this.WebUrl, {
+                disableCache: true,
+                requestDigest: this._requestDigest
+            }).Lists(this.ListName).Items(itemId).query({
                 Custom: query ? query.Custom : null,
                 Expand: query ? query.Expand : null,
                 Select: query ? query.Select : null
@@ -365,7 +371,10 @@ export class List<T = Types.SP.ListItem> {
             if (this._items) { resolve(this._items); return; }
 
             // Query the items
-            Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).getItemsByQuery(this.CAMLQuery).execute(items => {
+            Web(this.WebUrl, {
+                disableCache: true,
+                requestDigest: this._requestDigest
+            }).Lists(this.ListName).getItemsByQuery(this.CAMLQuery).execute(items => {
                 // See if the event exists
                 if (this._onItemLoading) {
                     // Parse the items
@@ -425,7 +434,10 @@ export class List<T = Types.SP.ListItem> {
             if (this._items) { resolve(this._items); return; }
 
             // Query the items
-            Web(this.WebUrl, { requestDigest: this._requestDigest }).Lists(this.ListName).getItems(this.ViewXml).execute(items => {
+            Web(this.WebUrl, {
+                disableCache: true,
+                requestDigest: this._requestDigest
+            }).Lists(this.ListName).getItems(this.ViewXml).execute(items => {
                 // See if the event exists
                 if (this._onItemLoading) {
                     // Parse the items
