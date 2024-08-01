@@ -197,8 +197,11 @@ export class List<T = Types.SP.ListItem> {
             }
         }
 
-        // Delete the item
-        return this.ListInfo.Items(itemId).delete().execute();
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Delete the item
+            this.ListInfo.Items(itemId).delete().execute(resolve, reject);
+        });
     }
 
     // Displays the edit form
