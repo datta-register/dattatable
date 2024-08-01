@@ -183,6 +183,24 @@ export class List<T = Types.SP.ListItem> {
         });
     }
 
+    // Deletes the item and removes it from the internal items array
+    deleteItem(itemId: number): PromiseLike<void> {
+        // Parse the items
+        for (let i = 0; i < this.Items.length; i++) {
+            let item = this.Items[i];
+
+            // See if this is the target item
+            if (item["Id"] == itemId || item["ID"] == itemId) {
+                // Remove the item
+                this.Items.splice(i, 1);
+                break;
+            }
+        }
+
+        // Delete the item
+        return this.ListInfo.Items(itemId).delete().execute();
+    }
+
     // Displays the edit form
     editForm(props: IItemFormEditProps) {
         // Clear the modal/canvas
