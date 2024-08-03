@@ -702,8 +702,8 @@ export class Documents {
                         type: Components.ButtonTypes.OutlineSecondary,
                         onClick: () => {
                             if (this.CanView) {
-                                // Open the document
-                                window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/download.aspx?SourceUrl=" + file.ServerRelativeUrl, "_blank");
+                                // Download the document
+                                Documents.download(file.ServerRelativeUrl, this._props.webUrl);
                             }
                         }
                     },
@@ -722,7 +722,7 @@ export class Documents {
                         onClick: () => {
                             if (isWopi && this.CanEdit) {
                                 // Open the file in a new tab
-                                Documents.open(file.ServerRelativeUrl, true);
+                                Documents.open(file.ServerRelativeUrl, true, this._props.webUrl);
                             }
                         }
                     },
@@ -873,7 +873,7 @@ export class Documents {
                         onClick: () => {
                             if (this.CanView) {
                                 // Open the file
-                                Documents.open(file.ServerRelativeUrl);
+                                Documents.open(file.ServerRelativeUrl, false, this._props.webUrl);
                             }
                         }
                     },
@@ -1250,6 +1250,11 @@ export class Documents {
 
     /** Public Methods */
 
+    // Downloads the document
+    static download(fileUrl: string, webUrl: string = ContextInfo.webServerRelativeUrl) {
+        window.open(webUrl + "/_layouts/15/download.aspx?SourceUrl=" + fileUrl, "_blank");
+    }
+
     // Generates an action button
     generateActionButton(btnType: number, file: Types.SP.File): HTMLElement {
         // Return the button
@@ -1284,14 +1289,14 @@ export class Documents {
     }
 
     // Opens the document
-    static open(fileUrl: string, edit: boolean = false) {
+    static open(fileUrl: string, edit: boolean = false, webUrl: string = ContextInfo.webServerRelativeUrl) {
         let fileData = fileUrl.split('/');
         let fileName = fileData[fileData.length - 1];
 
         // See if this is an office doc
         if (this.isWopi(fileName)) {
             // Open the document
-            window.open(ContextInfo.webServerRelativeUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + fileUrl + "&action=" + (edit ? "edit" : "view"), "_blank");
+            window.open(webUrl + "/_layouts/15/WopiFrame.aspx?sourcedoc=" + fileUrl + "&action=" + (edit ? "edit" : "view"), "_blank");
         } else {
             // Open the document
             window.open(fileUrl, "_blank");
