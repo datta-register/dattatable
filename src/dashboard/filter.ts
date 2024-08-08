@@ -21,6 +21,7 @@ export interface IFilterProps {
     onClear?: () => void;
     onFilter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
     onRendered?: (el: HTMLElement) => void;
+    onShowFilter?: () => void;
 }
 
 /**
@@ -33,12 +34,14 @@ export class FilterSlideout {
     private _items: Array<Components.IAccordionItem> = null;
     private _onClear: () => void;
     private _onFilter: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
+    private _onShowFilter: () => void;
 
     constructor(props: IFilterProps) {
         // Save the properties
         this._filters = props.filters || [];
         this._onClear = props.onClear;
         this._onFilter = props.onFilter;
+        this._onShowFilter = props.onShowFilter;
 
         // Initialize the variables
         this._cbs = [];
@@ -194,6 +197,9 @@ export class FilterSlideout {
         // Set the header and body
         CanvasForm.setHeader('<h5 class="m-0">Filters</h5>');
         CanvasForm.setBody(this._el || "<p>Loading the Filters...</p>");
+
+        // Call the event
+        this._onShowFilter ? this._onShowFilter() : null;
 
         // Show the filters
         CanvasForm.show();

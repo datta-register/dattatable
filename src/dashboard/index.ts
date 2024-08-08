@@ -46,6 +46,7 @@ export interface IDashboardProps {
         items: IFilterItem[];
         onClear?: () => void;
         onRendered?: (el?: HTMLElement) => void;
+        onShowFilter?: () => void;
     }
     header?: {
         onRendering?: (props: Components.IJumbotronProps) => void;
@@ -195,6 +196,7 @@ export class Dashboard {
             filters: this._props.filters ? this._props.filters.items : [],
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
+            onShowFilter: this._props.filters ? this._props.filters.onShowFilter : null,
             onFilter: this.IsAccordion || this.IsTiles ? (value, item) => {
                 let values = typeof (value) === "string" ? [value] : value;
 
