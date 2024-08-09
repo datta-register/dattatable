@@ -6,7 +6,7 @@ export interface IItemFormTab {
     title: string;
     fields?: string[];
     excludeFields?: string[];
-    onCreateForm: (props: Components.IListFormDisplayProps | Components.IListFormEditProps) => Components.IListFormDisplayProps | Components.IListFormEditProps;
+    onCreateForm?: (props: Components.IListFormDisplayProps | Components.IListFormEditProps) => Components.IListFormDisplayProps | Components.IListFormEditProps;
     onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void;
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     onRendering?: (item?: Components.IListGroupItem) => object;
