@@ -6,6 +6,7 @@ export interface IItemFormTab {
     title: string;
     fields?: string[];
     excludeFields?: string[];
+    onCreateForm: (props: Components.IListFormDisplayProps | Components.IListFormEditProps) => Components.IListFormDisplayProps | Components.IListFormEditProps;
     onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void;
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
     onRendering?: (item?: Components.IListGroupItem) => object;
@@ -295,6 +296,12 @@ export class ItemForm {
             rowClassName: "mb-3"
         };
 
+        // See if we are rendering a tab
+        if (tab && tab.onCreateForm) {
+            // Call the event
+            props = tab.onCreateForm(props);
+        }
+
         // Call the event if it exists
         props = this._onCreateViewForm ? this._onCreateViewForm(props) : props;
 
@@ -335,6 +342,12 @@ export class ItemForm {
             rowClassName: "mb-3",
             controlMode: this.IsNew ? SPTypes.ControlMode.New : SPTypes.ControlMode.Edit
         };
+
+        // See if we are rendering a tab
+        if (tab && tab.onCreateForm) {
+            // Call the event
+            props = tab.onCreateForm(props);
+        }
 
         // Call the event if it exists
         props = this._onCreateEditForm ? this._onCreateEditForm(props) : props;
