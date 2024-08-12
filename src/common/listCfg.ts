@@ -302,7 +302,8 @@ export class ListConfig {
                 if (lookupField.LookupList?.indexOf(props.srcList.Id) >= 0) { return; }
 
                 // See if we have already checked this list
-                if (lookupLists[lookupField.LookupList]) { return; }
+                let listId = (lookupField.LookupList || "").replace(/{}/g, '');
+                if (lookupLists[listId]) { return; }
 
                 // Updated the loading dialog
                 props.showDialog ? LoadingDialog.setBody("Getting the lookup list for: " + lookupField.InternalName) : null;
