@@ -98,6 +98,7 @@ export interface IDashboardProps {
         onBodyRendered?: (el?: HTMLElement, item?: any) => void;
         onCardRendered?: (el?: HTMLElement, item?: any) => void;
         onCardRendering?: (item?: Components.ICardProps) => void;
+        onClick?: (el?: HTMLElement, item?: any) => void;
         onColumnRendered?: (el?: HTMLElement, item?: any) => void;
         onFooterRendered?: (el?: HTMLElement, item?: any) => void;
         onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
