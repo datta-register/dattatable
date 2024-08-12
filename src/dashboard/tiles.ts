@@ -166,7 +166,7 @@ export class Tiles implements ITiles {
                 title: titleContent,
                 onClick: (card, ev) => {
                     // Call the event
-                    this._props.onClick ? this._props.onClick(ev.currentTarget as any, card.body[0].data) : null;
+                    this._props.onClick ? this._props.onClick(ev.currentTarget as any, card) : null;
                 },
                 onRender: (el, card) => {
                     let item = card.data;
