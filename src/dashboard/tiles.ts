@@ -16,6 +16,7 @@ export interface ITilesProps {
     onBodyRendered?: (el?: HTMLElement, item?: any) => void;
     onCardRendered?: (el?: HTMLElement, item?: any) => void;
     onCardRendering?: (item?: Components.ICardProps) => void;
+    onClick?: (el?: HTMLElement, item?: any) => void;
     onColumnRendered?: (el?: HTMLElement, item?: any) => void;
     onFooterRendered?: (el?: HTMLElement, item?: any) => void;
     onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
@@ -163,6 +164,10 @@ export class Tiles implements ITiles {
                 data: item,
                 subTitle: subTitleContent,
                 title: titleContent,
+                onClick: (card, ev) => {
+                    // Call the event
+                    this._props.onClick ? this._props.onClick(ev.currentTarget as any, card.body[0].data) : null;
+                },
                 onRender: (el, card) => {
                     let item = card.data;
 
