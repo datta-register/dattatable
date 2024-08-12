@@ -291,6 +291,9 @@ export class ListConfig {
             LoadingDialog.show();
         }
 
+        // Keep track of the lookup lists we are searching for
+        let lookupLists: { [key: string]: boolean } = {};
+
         // Return a promise
         return new Promise((resolve, reject) => {
             // Parse the lookup fields
@@ -298,12 +301,27 @@ export class ListConfig {
                 // Ensure this lookup isn't to the source list
                 if (lookupField.LookupList?.indexOf(props.srcList.Id) >= 0) { return; }
 
+                // See if we have already checked this list
+                if (lookupLists[lookupField.LookupList]) { return; }
+
+                // Updated the loading dialog
+                props.showDialog ? LoadingDialog.setBody("Getting the lookup list for: " + lookupField.InternalName) : null;
+
                 // Return a promise
                 return new Promise((resolve, reject) => {
                     // Get the source list
                     Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(list => {
+                        // Updated the loading dialog
+                        props.showDialog ? LoadingDialog.setBody("Checking the destination web for: " + list.Title) : null;
+
                         // Ensure the list exists in the destination
-                        Web(props.dstUrl).Lists(list.Title).execute(resolve, () => {
+                        Web(props.dstUrl).Lists(list.Title).execute(() => {
+                            // Set the flag
+                            lookupLists[list.Id] = true;
+
+                            // Check the next list
+                            resolve(null);
+                        }, () => {
                             // Generate the lookup list configuration
                             this.generate({
                                 srcList: list,
@@ -312,6 +330,9 @@ export class ListConfig {
                             }).then(
                                 // Success
                                 cfg => {
+                                    // Set the flag
+                                    lookupLists[list.Id] = true;
+
                                     // Append the list configuration
                                     props.cfg.ListCfg.push(cfg.cfg.ListCfg[0]);
 
