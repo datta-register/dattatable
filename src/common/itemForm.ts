@@ -213,6 +213,12 @@ export class ItemForm {
         });
     }
 
+    // Renders the footer for a form
+    static renderFooter(elForm: HTMLElement) {
+        // Render the form footer
+        this.renderFormFooter(elForm);
+    }
+
     // Views the task
     static view(props: IItemFormViewProps): PromiseLike<void> {
         // Set the properties
@@ -384,18 +390,26 @@ export class ItemForm {
     }
 
     // Renders the footer
-    private static renderFooter() {
+    private static renderFormFooter(elFooter?: HTMLElement) {
         // Render the form buttons
         let elButtons = document.createElement("div");
 
-        // Add styling if not using a modal
-        if (!this._useModal) {
-            elButtons.classList.add("float-end");
-            elButtons.style.padding = "1rem 0";
+        // See if we are rendering to the canvas
+        if (elFooter == null && !this._useModal) {
+            // Add the classes
+            elButtons.classList.add("d-flex");
+            elButtons.classList.add("justify-content-end");
+            elButtons.classList.add("my-2");
         }
 
-        // Append the create/update button
-        this._useModal ? Modal.setFooter(elButtons) : CanvasForm.BodyElement.appendChild(elButtons);
+        // See if we are using a custom element
+        if (elFooter) {
+            // Append the buttons
+            elFooter.appendChild(elButtons);
+        } else {
+            // Append the create/update button
+            this._useModal ? Modal.setFooter(elButtons) : CanvasForm.BodyElement.appendChild(elButtons);
+        }
 
         // See if we are rendering a display form
         if (this.IsDisplay) {
@@ -425,7 +439,7 @@ export class ItemForm {
         }
 
         // Call the footer event
-        this._onSetFooter ? this._onSetFooter(this._useModal ? Modal.FooterElement : elButtons) : null;
+        this._onSetFooter ? this._onSetFooter(elFooter || (this._useModal ? Modal.FooterElement : elButtons)) : null;
     }
 
     // Renders the form
@@ -456,8 +470,8 @@ export class ItemForm {
                 (this._useModal ? Modal : CanvasForm).setBody(elForm);
             }
 
-            // Render the footer
-            this.renderFooter();
+            // Render the form footer
+            this.renderFormFooter();
 
             // Call the event
             this._onShowForm ? this._onShowForm(this._useModal ? Modal : CanvasForm) : null;
