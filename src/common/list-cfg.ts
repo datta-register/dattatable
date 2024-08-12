@@ -10,7 +10,6 @@ export interface IListConfig {
 
 // List Configuration Properties
 export interface IListConfigProps {
-    addLookupLists: boolean;
     showDialog?: boolean;
     srcList: Types.SP.List;
     srcWebUrl: string;
@@ -18,6 +17,7 @@ export interface IListConfigProps {
 
 // Lookup List Validation Properties
 export interface IValidateLookupsProps {
+    cfg: Helper.ISPConfigProps;
     dstUrl: string;
     lookupFields: Types.SP.FieldLookup[];
     showDialog?: boolean;
@@ -282,9 +282,7 @@ export class ListConfig {
     }
 
     // Validates the lookup fields
-    static validateLookups(props: IValidateLookupsProps): PromiseLike<Helper.ISPConfigProps[]> {
-        let listConfigs: Helper.ISPConfigProps[] = [];
-
+    static validateLookups(props: IValidateLookupsProps): PromiseLike<Helper.ISPConfigProps> {
         // See if we are showing a loading dialog
         if (props.showDialog) {
             // Show a loading dialog
@@ -308,7 +306,6 @@ export class ListConfig {
                         Web(props.dstUrl).Lists(list.Title).execute(resolve, () => {
                             // Generate the lookup list configuration
                             this.generate({
-                                addLookupLists: true,
                                 srcList: list,
                                 srcWebUrl: props.srcWebUrl,
                                 showDialog: props.showDialog
@@ -316,9 +313,9 @@ export class ListConfig {
                                 // Success
                                 cfg => {
                                     // Append the list configuration
-                                    listConfigs.push(cfg.cfg);
+                                    props.cfg.ListCfg.push(cfg.cfg.ListCfg[0]);
 
-                                    // Resolve the request
+                                    // Check the next list
                                     resolve(null);
                                 },
 
@@ -327,7 +324,7 @@ export class ListConfig {
                                     // Reject the reqeust
                                     reject("Lookup list '" + list.Title + "' for field '" + lookupField.InternalName + "' does not exist in the configuration. Please add the lists in the appropriate order.");
                                 }
-                            )
+                            );
                         });
 
                     }, () => {
@@ -337,7 +334,7 @@ export class ListConfig {
                 });
             }).then(() => {
                 // Resolve the request
-                resolve(listConfigs);
+                resolve(props.cfg);
             }, reject);
         });
     }
