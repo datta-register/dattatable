@@ -515,7 +515,7 @@ export class ItemForm {
 
         // Render the tabs
         this._tabs = Components.ListGroup({
-            el: this._elForm || this.UseModal ? Modal.BodyElement : CanvasForm.BodyElement,
+            el: this._elForm || (this.UseModal ? Modal.BodyElement : CanvasForm.BodyElement),
             colWidth: this._tabInfo.isVertical ? 4 : 12,
             isTabs: true,
             isHorizontal: this._tabInfo.isVertical != true,
