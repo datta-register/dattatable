@@ -8,6 +8,23 @@ export interface IListConfig {
     lookupFields: Types.SP.FieldLookup[];
 }
 
+// List Configuration Properties
+export interface IListConfigProps {
+    addLookupLists: boolean;
+    showDialog?: boolean;
+    srcList: Types.SP.List;
+    srcWebUrl: string;
+}
+
+// Lookup List Validation Properties
+export interface IValidateLookupsProps {
+    dstUrl: string;
+    lookupFields: Types.SP.FieldLookup[];
+    showDialog?: boolean;
+    srcList: Types.SP.List;
+    srcWebUrl: string;
+}
+
 /**
  * List Configuration Generator
  */
@@ -18,9 +35,9 @@ export class ListConfig {
     ]
 
     // Generates the list configuration
-    static generate(srcWebUrl: string, srcList: Types.SP.List, showDialog: boolean = true): PromiseLike<IListConfig> {
+    static generate(props: IListConfigProps): PromiseLike<IListConfig> {
         // See if we are showing a loading dialog
-        if (showDialog) {
+        if (props.showDialog) {
             // Show a loading dialog
             LoadingDialog.setHeader("Loading List");
             LoadingDialog.setBody("Getting the source list configuration...");
@@ -31,8 +48,8 @@ export class ListConfig {
         return new Promise((resolve, reject) => {
             // Get the list information
             var list = new List({
-                listName: srcList.Title,
-                webUrl: srcWebUrl,
+                listName: props.srcList.Title,
+                webUrl: props.srcWebUrl,
                 itemQuery: { Filter: "Id eq 0" },
                 onInitError: () => {
                     // Reject the request
@@ -53,7 +70,7 @@ export class ListConfig {
                                 AllowContentTypes: list.ListInfo.AllowContentTypes,
                                 BaseTemplate: list.ListInfo.BaseTemplate,
                                 ContentTypesEnabled: list.ListInfo.ContentTypesEnabled,
-                                Title: srcList.Title,
+                                Title: props.srcList.Title,
                                 Hidden: list.ListInfo.Hidden,
                                 NoCrawl: list.ListInfo.NoCrawl
                             },
@@ -179,7 +196,7 @@ export class ListConfig {
                         // Return a promise
                         return new Promise((resolve) => {
                             // Get the lookup list
-                            Web(srcWebUrl).Lists().getById(lookupField.LookupList).execute(
+                            Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(
                                 list => {
                                     // Add the lookup list field
                                     fields[lookupField.InternalName] = true;
@@ -251,7 +268,7 @@ export class ListConfig {
                         }
 
                         // Hide the loading dialog
-                        showDialog ? LoadingDialog.hide() : null;
+                        props.showDialog ? LoadingDialog.hide() : null;
 
                         // Resolve the request
                         resolve({
@@ -261,6 +278,67 @@ export class ListConfig {
                     });
                 }
             });
+        });
+    }
+
+    // Validates the lookup fields
+    static validateLookups(props: IValidateLookupsProps): PromiseLike<Helper.ISPConfigProps[]> {
+        let listConfigs: Helper.ISPConfigProps[] = [];
+
+        // See if we are showing a loading dialog
+        if (props.showDialog) {
+            // Show a loading dialog
+            LoadingDialog.setHeader("Validating Lookup Lists");
+            LoadingDialog.setBody("Validating the required lookup lists have been added...");
+            LoadingDialog.show();
+        }
+
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Parse the lookup fields
+            Helper.Executor(props.lookupFields, lookupField => {
+                // Ensure this lookup isn't to the source list
+                if (lookupField.LookupList?.indexOf(props.srcList.Id) >= 0) { return; }
+
+                // Return a promise
+                return new Promise((resolve, reject) => {
+                    // Get the source list
+                    Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(list => {
+                        // Ensure the list exists in the destination
+                        Web(props.dstUrl).Lists(list.Title).execute(resolve, () => {
+                            // Generate the lookup list configuration
+                            this.generate({
+                                addLookupLists: true,
+                                srcList: list,
+                                srcWebUrl: props.srcWebUrl,
+                                showDialog: props.showDialog
+                            }).then(
+                                // Success
+                                cfg => {
+                                    // Append the list configuration
+                                    listConfigs.push(cfg.cfg);
+
+                                    // Resolve the request
+                                    resolve(null);
+                                },
+
+                                // Error
+                                () => {
+                                    // Reject the reqeust
+                                    reject("Lookup list '" + list.Title + "' for field '" + lookupField.InternalName + "' does not exist in the configuration. Please add the lists in the appropriate order.");
+                                }
+                            )
+                        });
+
+                    }, () => {
+                        // Reject the reqeust
+                        reject("Lookup list for field '" + lookupField.InternalName + "' does not exist in the source web. Please review the source list for any issues.");
+                    });
+                });
+            }).then(() => {
+                // Resolve the request
+                resolve(listConfigs);
+            }, reject);
         });
     }
 }
