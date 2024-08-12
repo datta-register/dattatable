@@ -26,6 +26,7 @@ export interface IItemFormCreateProps {
     info?: Helper.IListFormResult;
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+    onFormRendered?: (form?: Components.IListFormEdit) => void;
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onResetForm?: () => void;
     onSave?: (values: any) => object | PromiseLike<object>;
@@ -46,6 +47,7 @@ export interface IItemFormEditProps {
     itemId: number;
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+    onFormRendered?: (form?: Components.IListFormEdit) => void;
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onResetForm?: () => void;
     onSave?: (values: any) => object | PromiseLike<object>;
@@ -66,6 +68,7 @@ export interface IItemFormViewProps {
     itemId: number;
     onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
+    onFormRendered?: (form?: Components.IListFormDisplay) => void;
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onResetForm?: () => void;
     onSetFooter?: (el: HTMLElement) => void;
@@ -84,6 +87,7 @@ export class ItemForm {
     private static _onCreateEditForm: (props: Components.IListFormEditProps) => Components.IListFormEditProps = null;
     private static _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
     private static _onFormButtonsRendering: (buttons: Components.IButtonProps[]) => Components.IButtonProps[] = null;
+    private static _onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void = null;
     private static _onGetListInfo: (props: Helper.IListFormProps) => Helper.IListFormProps = null;
     private static _onResetForm: () => void = null;
     private static _onSetFooter?: (el: HTMLElement) => void = null;
@@ -156,6 +160,7 @@ export class ItemForm {
         this._info = props.info;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
+        this._onFormRendered = props.onFormRendered;
         this._onGetListInfo = props.onGetListInfo;
         this._onResetForm = props.onResetForm;
         this._onSave = props.onSave;
@@ -475,6 +480,9 @@ export class ItemForm {
                 }
             }
         }
+
+        // Call the rendered event
+        this._onFormRendered ? this._onFormRendered(this.IsDisplay ? this.DisplayForm : this.EditForm) : null;
 
         // Close the dialog
         LoadingDialog.hide();
