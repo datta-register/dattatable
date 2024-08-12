@@ -6,7 +6,7 @@ export * from "./documents";
 export * from "./installRequired";
 export * from "./itemForm";
 export * from "./list";
-export * from "./list-cfg";
+export * from "./listCfg";
 export * from "./listSecurity";
 export * from "./loadingDialog";
 export * from "./methods";
