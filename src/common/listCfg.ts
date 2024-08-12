@@ -322,11 +322,14 @@ export class ListConfig {
                             // Check the next list
                             resolve(null);
                         }, () => {
+                            // Updated the loading dialog
+                            props.showDialog ? LoadingDialog.setBody("Generating the configuration for: " + list.Title) : null;
+
                             // Generate the lookup list configuration
                             this.generate({
                                 srcList: list,
                                 srcWebUrl: props.srcWebUrl,
-                                showDialog: props.showDialog
+                                showDialog: false
                             }).then(
                                 // Success
                                 cfg => {
