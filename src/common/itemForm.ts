@@ -460,13 +460,19 @@ export class ItemForm {
             // Show the form
             (this._useModal ? Modal : CanvasForm).show();
         } else {
-            // Render the form based on the type
-            let elForm = this.IsDisplay ? this.renderDisplayForm() : this.renderEditForm();
+            // See if we are rendering tabs
+            if (this._tabInfo) {
+                // Render the tabs
+                this.renderTabs();
+            } else {
+                // Render the form based on the type
+                let elForm = this.IsDisplay ? this.renderDisplayForm() : this.renderEditForm();
 
-            // Copy the elements
-            for (let i = 0; i < elForm.children.length; i++) {
-                // Append the element
-                this._elForm.appendChild(elForm.children[i]);
+                // Copy the elements
+                for (let i = 0; i < elForm.children.length; i++) {
+                    // Append the element
+                    this._elForm.appendChild(elForm.children[i]);
+                }
             }
         }
 
@@ -509,7 +515,7 @@ export class ItemForm {
 
         // Render the tabs
         this._tabs = Components.ListGroup({
-            el: this.UseModal ? Modal.BodyElement : CanvasForm.BodyElement,
+            el: this._elForm || this.UseModal ? Modal.BodyElement : CanvasForm.BodyElement,
             colWidth: this._tabInfo.isVertical ? 4 : 12,
             isTabs: true,
             isHorizontal: this._tabInfo.isVertical != true,
