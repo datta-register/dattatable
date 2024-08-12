@@ -27,6 +27,7 @@ export interface IItemFormCreateProps {
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+    onResetForm?: () => void;
     onSave?: (values: any) => object | PromiseLike<object>;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
@@ -46,6 +47,7 @@ export interface IItemFormEditProps {
     onCreateEditForm?: (props: Components.IListFormEditProps) => Components.IListFormEditProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+    onResetForm?: () => void;
     onSave?: (values: any) => object | PromiseLike<object>;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
@@ -65,6 +67,7 @@ export interface IItemFormViewProps {
     onCreateViewForm?: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps;
     onFormButtonsRendering?: (buttons: Components.IButtonProps[]) => Components.IButtonProps[];
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
+    onResetForm?: () => void;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
     onShowForm?: (form?: CanvasForm | Modal) => void;
@@ -82,6 +85,7 @@ export class ItemForm {
     private static _onCreateViewForm: (props: Components.IListFormDisplayProps) => Components.IListFormDisplayProps = null;
     private static _onFormButtonsRendering: (buttons: Components.IButtonProps[]) => Components.IButtonProps[] = null;
     private static _onGetListInfo: (props: Helper.IListFormProps) => Helper.IListFormProps = null;
+    private static _onResetForm: () => void = null;
     private static _onSetFooter?: (el: HTMLElement) => void = null;
     private static _onSetHeader?: (el: HTMLElement) => void = null;
     private static _onShowForm?: (form?: CanvasForm | Modal) => void = null;
@@ -153,6 +157,7 @@ export class ItemForm {
         this._onCreateEditForm = props.onCreateEditForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
         this._onGetListInfo = props.onGetListInfo;
+        this._onResetForm = props.onResetForm;
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
@@ -424,6 +429,9 @@ export class ItemForm {
         if (this._elForm == null) {
             // Clear the form
             (this._useModal ? Modal : CanvasForm).clear();
+
+            // Call the event
+            this._onResetForm ? this._onResetForm() : null;
 
             // Set the header
             (this._useModal ? Modal : CanvasForm).setHeader('<h5 class="m-0">' + (this._info.item ? this._info.item.Title : "Create Item") + '</h5>');
