@@ -157,7 +157,7 @@ export class Tiles implements ITiles {
                 }
 
                 // Call the event
-                this._props.onCardRendered ? this._props.onCardRendered(el, card.body[0].data) : null;
+                this._props.onCardRendered ? this._props.onCardRendered(el, card) : null;
             },
             body: [{
                 content: bodyContent,
