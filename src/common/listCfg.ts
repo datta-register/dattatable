@@ -50,7 +50,7 @@ export class ListConfig {
             var list = new List({
                 listName: props.srcList.Title,
                 webUrl: props.srcWebUrl,
-                itemQuery: { Expand: ["ContentTypes/Parent"], Filter: "Id eq 0" },
+                itemQuery: { Filter: "Id eq 0" },
                 onInitError: () => {
                     // Reject the request
                     reject("Error loading the list information. Please check your permission to the source list.");

@@ -279,7 +279,7 @@ export class List<T = Types.SP.ListItem> {
 
             // Query the content types
             list.ContentTypes().query({
-                Expand: ["FieldLinks", "Fields"]
+                Expand: ["FieldLinks", "Fields", "Parent"]
             }).execute(cts => {
                 // Save the content types
                 this._listContentTypes = cts.results;
