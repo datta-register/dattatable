@@ -337,8 +337,8 @@ export class ListConfig {
                                     // Set the flag
                                     lookupLists[list.Id] = true;
 
-                                    // Append the list configuration
-                                    props.cfg.ListCfg.push(cfg.cfg.ListCfg[0]);
+                                    // Prepend the list configuration
+                                    props.cfg.ListCfg.splice(props.cfg.ListCfg.length - 1, 0, cfg.cfg.ListCfg[0]);
 
                                     // Check the next list
                                     resolve(null);
