@@ -50,7 +50,7 @@ export class ListConfig {
             var list = new List({
                 listName: props.srcList.Title,
                 webUrl: props.srcWebUrl,
-                itemQuery: { Filter: "Id eq 0" },
+                itemQuery: { Expand: ["ContentTypes/Parent"], Filter: "Id eq 0" },
                 onInitError: () => {
                     // Reject the request
                     reject("Error loading the list information. Please check your permission to the source list.");
@@ -132,7 +132,7 @@ export class ListConfig {
                         cfgProps.ListCfg[0].ContentTypes.push({
                             Name: ct.Name,
                             Description: ct.Description,
-                            ParentName: ct.Name,
+                            ParentName: ct.Parent.Name,
                             FieldRefs: fieldRefs
                         });
                     }
