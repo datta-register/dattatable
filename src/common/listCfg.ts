@@ -92,6 +92,9 @@ export class ListConfig {
                         for (let j = 0; j < ct.FieldLinks.results.length; j++) {
                             let fldInfo: Types.SP.Field = list.getField(ct.FieldLinks.results[j].Name);
 
+                            // Skip the TaxCatchAll field for now
+                            if (fldInfo.InternalName == "TaxCatchAll") { continue; }
+
                             // See if this is a lookup field
                             if (fldInfo.FieldTypeKind == SPTypes.FieldType.Lookup) {
                                 // Ensure this isn't an associated lookup field
