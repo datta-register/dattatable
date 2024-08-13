@@ -95,6 +95,9 @@ export class ListConfig {
                             // Skip the TaxCatchAll field for now
                             if (fldInfo.InternalName == "TaxCatchAll") { continue; }
 
+                            // Skip MMS fields for now
+                            if (fldInfo.TypeDisplayName == "Managed Metadata") { continue; }
+
                             // See if this is a lookup field
                             if (fldInfo.FieldTypeKind == SPTypes.FieldType.Lookup) {
                                 // Ensure this isn't an associated lookup field
