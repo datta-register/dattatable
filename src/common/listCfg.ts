@@ -302,7 +302,7 @@ export class ListConfig {
                 if (lookupField.LookupList?.indexOf(props.srcList.Id) >= 0) { return; }
 
                 // See if we have already checked this list
-                let listId = (lookupField.LookupList || "").replace(/{}/g, '');
+                let listId = (lookupField.LookupList || "").replace(/{|}/g, '');
                 if (lookupLists[listId]) { return; }
 
                 // Updated the loading dialog
