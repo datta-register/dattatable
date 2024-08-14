@@ -394,6 +394,7 @@ export class ListConfig {
                         // Parse the MMS fields
                         for (let i = 0; i < mmsFields.length; i++) {
                             let mmsField = mmsFields[i];
+                            let removeProps = [];
 
                             // Get the schema xml
                             let parser = new DOMParser();
@@ -404,10 +405,7 @@ export class ListConfig {
                             for (let j = props.children.length; j >= 0; j--) {
                                 // See if this isn't the text field property
                                 let prop = props.children[j];
-                                if (prop && prop.querySelector("Name").innerHTML != "TextField") {
-                                    // Remove it
-                                    props.removeChild(prop);
-                                } else {
+                                if (prop.querySelector("Name").innerHTML == "TextField") {
                                     // Find the hidden text field for this MMS field
                                     let field = list.getFieldById(prop.querySelector("Value").innerHTML);
                                     if (field) {
@@ -418,7 +416,16 @@ export class ListConfig {
                                             schemaXml: field.SchemaXml
                                         });
                                     }
+                                } else {
+                                    // Remove it
+                                    removeProps.push(prop);
                                 }
+                            }
+
+                            // Remove the properties
+                            for (let j = 0; j < removeProps.length; j++) {
+                                // Remove the property
+                                props.removeChild(removeProps[j]);
                             }
 
                             // Append the field
