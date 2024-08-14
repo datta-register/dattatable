@@ -107,7 +107,6 @@ export class ListConfig {
                             props.showDialog ? LoadingDialog.setBody("Importing the list data: " + lookupData.list) : null;
 
                             // Parse the list items
-                            let counter = 0;
                             for (let i = 0; i < items.length; i++) {
                                 let addItem = true;
                                 let item = items[i];
@@ -123,9 +122,6 @@ export class ListConfig {
 
                                 // See if we are adding the item
                                 if (addItem) {
-                                    // Increment the counter
-                                    counter++;
-
                                     // Default the Title field value
                                     let dstItem = { Title: item["Title"] };
 
@@ -136,7 +132,7 @@ export class ListConfig {
                                     dstList.Items().add(dstItem).batch(item => {
                                         // Log
                                         console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
-                                    }, counter % 100 == 0);
+                                    });
                                 }
                             }
 
