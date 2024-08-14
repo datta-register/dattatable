@@ -26,7 +26,7 @@ export interface IListConfigProps {
 export interface ILookupData {
     field: string;
     list: string;
-    items: string;
+    items: string[];
 }
 
 // Generate Lookup Data Properties
@@ -85,15 +85,6 @@ export class ListConfig {
                     // Update the dialog
                     props.showDialog ? LoadingDialog.setBody("Getting the list: " + lookupData.list) : null;
 
-                    // Get the items
-                    let items: [] = null;
-                    try { items = Helper.parse(lookupData.items).results; }
-                    catch {
-                        // Unable to parse the data
-                        console.error("List data corrupt for: " + lookupData.list);
-                        return;
-                    }
-
                     // Return a promise
                     return new Promise(resolve => {
                         // Update the dialog
@@ -107,14 +98,14 @@ export class ListConfig {
                             props.showDialog ? LoadingDialog.setBody("Importing the list data: " + lookupData.list) : null;
 
                             // Parse the list items
-                            for (let i = 0; i < items.length; i++) {
+                            for (let i = 0; i < lookupData.items.length; i++) {
                                 let addItem = true;
-                                let item = items[i];
+                                let value = lookupData.items[i];
 
                                 // See if the items exists
                                 currItems.results.find(a => {
                                     // See if the item exists
-                                    if (a[lookupData.field] == item[lookupData.field]) {
+                                    if (a[lookupData.field] == value) {
                                         // Set the flag
                                         addItem = false;
                                     }
@@ -122,13 +113,9 @@ export class ListConfig {
 
                                 // See if we are adding the item
                                 if (addItem) {
-                                    // Default the Title field value
-                                    let dstItem = { Title: item["Title"] };
-
-                                    // Set the lookup field value
-                                    dstItem[lookupData.field] = item[lookupData.field];
-
                                     // Create the item
+                                    let dstItem = {};
+                                    dstItem[lookupData.field] = value;
                                     dstList.Items().add(dstItem).batch(item => {
                                         // Log
                                         console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
@@ -446,10 +433,19 @@ export class ListConfig {
                             Top: 5000,
                             OrderBy: ["Id"]
                         }).execute(items => {
+                            let values: string[] = [];
+
+                            // Parse the items
+                            for (let i = 0; i < items.results.length; i++) {
+                                // Add the value
+                                let value = items.results[i][lookupField.LookupField];
+                                value ? values.push(value) : null;
+                            }
+
                             // Save the item data
                             lookupListData.push({
                                 field: lookupField.LookupField,
-                                items: Helper.stringify(items),
+                                items: values.sort(),
                                 list: list.Title
                             });
 
