@@ -15,6 +15,14 @@ export interface IListConfigProps {
     srcWebUrl: string;
 }
 
+// Generate Lookup Data Properties
+export interface IGenerateLookupDataProps {
+    lookupFields: Types.SP.FieldLookup[];
+    showDialog?: boolean;
+    srcList: Types.SP.List;
+    srcWebUrl: string;
+}
+
 // Lookup List Validation Properties
 export interface IValidateLookupsProps {
     cfg: Helper.ISPConfigProps;
@@ -278,6 +286,59 @@ export class ListConfig {
                     });
                 }
             });
+        });
+    }
+
+    // Generates the lookup list data
+    static generateLookupListData(props: IGenerateLookupDataProps): PromiseLike<{ [key: string]: string }> {
+        let lookupListData: { [key: string]: string } = {};
+
+        // See if we are showing a loading dialog
+        if (props.showDialog) {
+            // Show a loading dialog
+            LoadingDialog.setHeader("Analyzing Lookup Lists");
+            LoadingDialog.setBody("Getting the lookup lists data...");
+            LoadingDialog.show();
+        }
+
+        // Keep track of the lookup lists we are searching for
+        let lookupLists: { [key: string]: boolean } = {};
+
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Parse the lookup fields
+            Helper.Executor(props.lookupFields, lookupField => {
+                // Ensure this lookup isn't to the source list
+                if (lookupField.LookupList?.indexOf(props.srcList.Id) >= 0) { return; }
+
+                // See if we have already checked this list
+                let listId = (lookupField.LookupList || "").replace(/{|}/g, '');
+                if (lookupLists[listId]) { return; }
+
+                // Updated the loading dialog
+                props.showDialog ? LoadingDialog.setBody("Getting the lookup list for: " + lookupField.InternalName) : null;
+
+                // Return a promise
+                return new Promise((resolve) => {
+                    // Get the source list
+                    Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).Items().execute(items => {
+                        // Save the item data
+                        lookupListData[lookupField.InternalName] = Helper.stringify(items);
+
+                        // Set the flag
+                        lookupLists[listId] = true;
+
+                        // Check the next list
+                        resolve(null);
+                    }, () => {
+                        // Check the next list
+                        resolve(null);
+                    });
+                });
+            }).then(() => {
+                // Resolve the request
+                resolve(lookupListData);
+            }, reject);
         });
     }
 
