@@ -172,6 +172,7 @@ export class ListConfig {
                     let calcFields: Types.SP.Field[] = [];
                     let fields: { [key: string]: boolean } = {};
                     let lookupFields: Types.SP.FieldLookup[] = [];
+                    let mmsFields: Types.SP.Field[] = [];
 
                     // Update the loading dialog
                     LoadingDialog.setBody("Analyzing the list information...");
@@ -230,6 +231,11 @@ export class ListConfig {
                                 // Add the field
                                 lookupFields.push(fldInfo);
                             }
+                            // Else, see if this is a MMS field
+                            else if (fldInfo.TypeDisplayName == "Managed Metadata") {
+                                // Add the field
+                                mmsFields.push(fldInfo);
+                            }
                             // Else, ensure the field hasn't been added
                             else if (fields[fldInfo.InternalName] == null) {
                                 // Add the field information
@@ -272,6 +278,11 @@ export class ListConfig {
                                 else if (field.FieldTypeKind == SPTypes.FieldType.Lookup) {
                                     // Add the field
                                     lookupFields.push(field);
+                                }
+                                // Else, see if this is a MMS field
+                                else if (field.TypeDisplayName == "Managed Metadata") {
+                                    // Add the field
+                                    mmsFields.push(field);
                                 } else {
                                     // Append the field
                                     fields[field.InternalName] = true;
@@ -378,6 +389,44 @@ export class ListConfig {
                                     schemaXml: schemaXml.querySelector("Field").outerHTML
                                 });
                             }
+                        }
+
+                        // Parse the MMS fields
+                        for (let i = 0; i < mmsFields.length; i++) {
+                            let mmsField = mmsFields[i];
+
+                            // Get the schema xml
+                            let parser = new DOMParser();
+                            let schemaXml = parser.parseFromString(mmsField.SchemaXml, "application/xml");
+
+                            // Parse the properties
+                            let props = schemaXml.querySelector("ArrayOfProperty");
+                            for (let j = props.children.length; j >= 0; j--) {
+                                // See if this isn't the text field property
+                                let prop = props.children[j];
+                                if (prop && prop.querySelector("Name").innerHTML != "TextField") {
+                                    // Remove it
+                                    props.removeChild(prop);
+                                } else {
+                                    // Find the hidden text field for this MMS field
+                                    let field = list.getFieldById(prop.querySelector("Value").innerHTML);
+                                    if (field) {
+                                        // Append the field
+                                        fields[field.InternalName] = true;
+                                        cfgProps.ListCfg[0].CustomFields.push({
+                                            name: field.InternalName,
+                                            schemaXml: field.SchemaXml
+                                        });
+                                    }
+                                }
+                            }
+
+                            // Append the field
+                            fields[mmsField.InternalName] = true;
+                            cfgProps.ListCfg[0].CustomFields.push({
+                                name: mmsField.InternalName,
+                                schemaXml: schemaXml.querySelector("Field").outerHTML
+                            });
                         }
 
                         // Hide the loading dialog

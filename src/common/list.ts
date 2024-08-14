@@ -237,6 +237,25 @@ export class List<T = Types.SP.ListItem> {
         return titleField;
     }
 
+    // Gets a list field by internal or title
+    getFieldById(id: string = "") {
+        let fieldId = id.replace(/{|}/g, '');
+
+        // Parse the fields
+        for (let i = 0; i < this.ListFields.length; i++) {
+            let field = this.ListFields[i];
+
+            // See if this is the target field
+            if (field.Id == fieldId) {
+                // Return the field if we match by internal
+                return field;
+            }
+        }
+
+        // Not found
+        return null;
+    }
+
     // Gets a list item by id
     getItem(id: number): T {
         // Parse the items
@@ -253,6 +272,7 @@ export class List<T = Types.SP.ListItem> {
         // Not found
         return null;
     }
+
     // Initializes the list component
     private init(): PromiseLike<void> {
         // Return a promise
