@@ -122,9 +122,13 @@ export class ListConfig {
 
                                 // See if we are adding the item
                                 if (addItem) {
-                                    let dstItem = {};
-                                    dstItem["Title"] = item["Title"];
+                                    // Default the Title field value
+                                    let dstItem = { Title: item["Title"] };
+
+                                    // Set the lookup field value
                                     dstItem[lookupData.field] = item[lookupData.field];
+
+                                    // Create the item
                                     dstList.Items().add(dstItem).batch(item => {
                                         // Log
                                         console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
