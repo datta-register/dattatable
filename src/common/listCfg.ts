@@ -133,7 +133,7 @@ export class ListConfig {
                             }
 
                             // Execute the batch job
-                            dstList.done(() => {
+                            dstList.execute(() => {
                                 // Check the next list
                                 resolve(null);
                             });
