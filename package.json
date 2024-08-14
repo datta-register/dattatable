@@ -1,6 +1,6 @@
 {
     "name": "dattatable",
-    "version": "2.10.63",
+    "version": "2.10.64",
     "description": "",
     "main": "build/index.js",
     "typings": "build/index.d.ts",
