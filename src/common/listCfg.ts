@@ -1,6 +1,13 @@
-import { Helper, SPTypes, Types, Web } from "gd-sprest-bs";
+import { ContextInfo, Helper, SPTypes, Types, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { List } from "./list";
+
+// Create Lookup List Data
+export interface ICreateLookupData {
+    lookupData: ILookupData[];
+    showDialog?: boolean;
+    webUrl: string;
+}
 
 // List Configuration
 export interface IListConfig {
@@ -13,6 +20,13 @@ export interface IListConfigProps {
     showDialog?: boolean;
     srcList: Types.SP.List;
     srcWebUrl: string;
+}
+
+// Lookup List Data
+export interface ILookupData {
+    field: string;
+    list: string;
+    items: string;
 }
 
 // Generate Lookup Data Properties
@@ -41,6 +55,106 @@ export class ListConfig {
     private static InternalFields = [
         "ContentType", "TaxCatchAll", "TaxCatchAllLabel", "Title"
     ]
+    // Generates the lookup list data
+    static createLookupListData(props: ICreateLookupData): PromiseLike<void> {
+        // See if we are showing a loading dialog
+        if (props.showDialog) {
+            // Show a loading dialog
+            LoadingDialog.setHeader("Lookup List Data");
+            LoadingDialog.setBody("Updating the lookup list data...");
+            LoadingDialog.show();
+        }
+
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Ensure data exists
+            if (props.lookupData == null) {
+                // Hide the dialog
+                props.showDialog ? LoadingDialog.hide() : null;
+                resolve(null);
+                return;
+            }
+
+            // Update the dialog
+            props.showDialog ? LoadingDialog.setBody("Getting the web context information...") : null;
+
+            // Get the web context info
+            ContextInfo.getWeb(props.webUrl).execute(contextInfo => {
+                // Parse the lookup list data
+                Helper.Executor(props.lookupData, lookupData => {
+                    // Update the dialog
+                    props.showDialog ? LoadingDialog.setBody("Getting the list: " + lookupData.list) : null;
+
+                    // Get the items
+                    let items: [] = null;
+                    try { items = Helper.parse(lookupData.items).results; }
+                    catch {
+                        // Unable to parse the data
+                        console.error("List data corrupt for: " + lookupData.list);
+                        return;
+                    }
+
+                    // Return a promise
+                    return new Promise(resolve => {
+                        // Update the dialog
+                        props.showDialog ? LoadingDialog.setBody("Getting the current list data for: " + lookupData.list) : null;
+
+                        // Get the current list items
+                        Web(props.webUrl).Lists(lookupData.list).Items().query({ Top: 5000, GetAllItems: true }).execute(currItems => {
+                            let dstList = Web(props.webUrl, { requestDigest: contextInfo.GetContextWebInformation.FormDigestValue }).Lists(lookupData.list);
+
+                            // Update the dialog
+                            props.showDialog ? LoadingDialog.setBody("Importing the list data: " + lookupData.list) : null;
+
+                            // Parse the list items
+                            for (let i = 0; i < items.length; i++) {
+                                let addItem = true;
+                                let item = items[i];
+
+                                // See if the items exists
+                                currItems.results.find(a => {
+                                    // See if the item exists
+                                    if (a[lookupData.field] == item[lookupData.field]) {
+                                        // Set the flag
+                                        addItem = false;
+                                    }
+                                });
+
+                                // See if we are adding the item
+                                if (addItem) {
+                                    let dstItem = {};
+                                    dstItem["Title"] = item["Title"];
+                                    dstItem[lookupData.field] = item[lookupData.field];
+                                    dstList.Items().add(dstItem).batch(item => {
+                                        // Log
+                                        console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
+                                    });
+                                }
+                            }
+
+                            // Execute the batch job
+                            dstList.done(() => {
+                                // Check the next list
+                                resolve(null);
+                            });
+                        }, () => {
+                            // Error getting the list data
+                            console.error("Error getting the destination list: " + lookupData.list);
+
+                            // Check the next lookup field
+                            resolve(null);
+                        });
+                    });
+                }).then(() => {
+                    // Hide the dialog
+                    props.showDialog ? LoadingDialog.hide() : null;
+
+                    // Resolve the request
+                    resolve();
+                }, reject);
+            });
+        });
+    }
 
     // Generates the list configuration
     static generate(props: IListConfigProps): PromiseLike<IListConfig> {
@@ -290,8 +404,8 @@ export class ListConfig {
     }
 
     // Generates the lookup list data
-    static generateLookupListData(props: IGenerateLookupDataProps): PromiseLike<{ [key: string]: string }> {
-        let lookupListData: { [key: string]: string } = {};
+    static generateLookupListData(props: IGenerateLookupDataProps): PromiseLike<ILookupData[]> {
+        let lookupListData: ILookupData[] = [];
 
         // See if we are showing a loading dialog
         if (props.showDialog) {
@@ -321,15 +435,26 @@ export class ListConfig {
                 // Return a promise
                 return new Promise((resolve) => {
                     // Get the source list
-                    Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).Items().execute(items => {
-                        // Save the item data
-                        lookupListData[lookupField.InternalName] = Helper.stringify(items);
+                    Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(list => {
+                        // Get the list items
+                        list.Items().query({
+                            GetAllItems: true,
+                            Top: 5000,
+                            OrderBy: ["Id"]
+                        }).execute(items => {
+                            // Save the item data
+                            lookupListData.push({
+                                field: lookupField.LookupField,
+                                items: Helper.stringify(items),
+                                list: list.Title
+                            });
 
-                        // Set the flag
-                        lookupLists[listId] = true;
+                            // Set the flag
+                            lookupLists[listId] = true;
 
-                        // Check the next list
-                        resolve(null);
+                            // Check the next list
+                            resolve(null);
+                        });
                     }, () => {
                         // Check the next list
                         resolve(null);
