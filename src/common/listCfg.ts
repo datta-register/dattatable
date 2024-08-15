@@ -206,9 +206,6 @@ export class ListConfig {
                         for (let j = 0; j < ct.FieldLinks.results.length; j++) {
                             let fieldLink = ct.FieldLinks.results[j];
 
-                            // Skip hidden fields
-                            if (fieldLink.Hidden) { continue; }
-
                             // Get the field
                             let field: Types.SP.Field = list.getField(fieldLink.Name);
 
