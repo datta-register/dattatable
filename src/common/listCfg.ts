@@ -402,13 +402,13 @@ export class ListConfig {
 
                             // Parse the properties
                             let props = schemaXml.querySelector("ArrayOfProperty");
-                            for (let j = props.children.length; j >= 0; j--) {
+                            for (let j = props.children.length - 1; j >= 0; j--) {
                                 // See if this isn't the text field property
                                 let prop = props.children[j];
                                 if (prop.querySelector("Name").innerHTML == "TextField") {
                                     // Find the hidden text field for this MMS field
                                     let field = list.getFieldById(prop.querySelector("Value").innerHTML);
-                                    if (field) {
+                                    if (field && fields[field.InternalName] != true) {
                                         // Append the field
                                         fields[field.InternalName] = true;
                                         cfgProps.ListCfg[0].CustomFields.push({
