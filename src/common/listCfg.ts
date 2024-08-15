@@ -206,6 +206,9 @@ export class ListConfig {
                         for (let j = 0; j < ct.FieldLinks.results.length; j++) {
                             let fieldLink = ct.FieldLinks.results[j];
 
+                            // Ignore the Taxonomy fields, they will get added automatically
+                            if (fieldLink.Name == "TaxCatchAll" || fieldLink.Name == "TaxCatchAllLabel") { continue; }
+
                             // Get the field
                             let field: Types.SP.Field = list.getField(fieldLink.Name);
 
@@ -411,12 +414,28 @@ export class ListConfig {
                                 if (prop.querySelector("Name").innerHTML == "TextField") {
                                     // Find the hidden text field for this MMS field
                                     let field = list.getFieldById(prop.querySelector("Value").innerHTML);
-                                    if (field && fields[field.InternalName] != true) {
-                                        // Append the field
-                                        fields[field.InternalName] = true;
-                                        cfgProps.ListCfg[0].CustomFields.push({
-                                            name: field.InternalName,
-                                            schemaXml: field.SchemaXml
+                                    if (field) {
+                                        // Ensure we haven't already added it
+                                        if (fields[field.InternalName] != true) {
+                                            // Append the field
+                                            fields[field.InternalName] = true;
+                                            cfgProps.ListCfg[0].CustomFields.push({
+                                                name: field.InternalName,
+                                                schemaXml: field.SchemaXml
+                                            });
+                                        }
+
+                                        // Parse the content types
+                                        Helper.Executor(cfgProps.ListCfg[0].ContentTypes, ct => {
+                                            // Parse the field links
+                                            for (let i = 0; i < ct.FieldRefs.length; i++) {
+                                                // See if this is the target field
+                                                if (ct.FieldRefs[i] == field.InternalName) {
+                                                    // Remove this from the content types
+                                                    ct.FieldRefs.splice(i, 1);
+                                                    break;
+                                                }
+                                            }
                                         });
                                     }
                                 } else {
