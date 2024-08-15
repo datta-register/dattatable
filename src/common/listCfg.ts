@@ -172,7 +172,7 @@ export class ListConfig {
                     let calcFields: Types.SP.Field[] = [];
                     let fields: { [key: string]: boolean } = {};
                     let lookupFields: Types.SP.FieldLookup[] = [];
-                    let mmsFields: Types.SP.Field[] = [];
+                    let mmsFields: { [key: string]: Types.SP.Field } = {};
 
                     // Update the loading dialog
                     LoadingDialog.setBody("Analyzing the list information...");
@@ -234,7 +234,7 @@ export class ListConfig {
                             // Else, see if this is a MMS field
                             else if (fldInfo.TypeDisplayName == "Managed Metadata") {
                                 // Add the field
-                                mmsFields.push(fldInfo);
+                                mmsFields[fldInfo.InternalName] = fldInfo;
                             }
                             // Else, ensure the field hasn't been added
                             else if (fields[fldInfo.InternalName] == null) {
@@ -282,7 +282,7 @@ export class ListConfig {
                                 // Else, see if this is a MMS field
                                 else if (field.TypeDisplayName == "Managed Metadata") {
                                     // Add the field
-                                    mmsFields.push(field);
+                                    mmsFields[field.InternalName] = field;
                                 } else {
                                     // Append the field
                                     fields[field.InternalName] = true;
@@ -392,15 +392,15 @@ export class ListConfig {
                         }
 
                         // Parse the MMS fields
-                        for (let i = 0; i < mmsFields.length; i++) {
-                            let mmsField = mmsFields[i];
-                            let removeProps = [];
+                        for (let fieldName in mmsFields) {
+                            let mmsField = mmsFields[fieldName];
 
                             // Get the schema xml
                             let parser = new DOMParser();
                             let schemaXml = parser.parseFromString(mmsField.SchemaXml, "application/xml");
 
-                            // Parse the properties
+                            // Remove all properties, except for the TextField property
+                            let removeProps = [];
                             let props = schemaXml.querySelector("ArrayOfProperty");
                             for (let j = props.children.length - 1; j >= 0; j--) {
                                 // See if this isn't the text field property
@@ -423,9 +423,9 @@ export class ListConfig {
                             }
 
                             // Remove the properties
-                            for (let j = 0; j < removeProps.length; j++) {
+                            for (let i = 0; i < removeProps.length; i++) {
                                 // Remove the property
-                                props.removeChild(removeProps[j]);
+                                props.removeChild(removeProps[i]);
                             }
 
                             // Append the field
