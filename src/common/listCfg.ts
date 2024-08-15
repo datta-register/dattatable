@@ -204,45 +204,51 @@ export class ListConfig {
                         // Parse the content type fields
                         let fieldRefs = [];
                         for (let j = 0; j < ct.FieldLinks.results.length; j++) {
-                            let fldInfo: Types.SP.Field = list.getField(ct.FieldLinks.results[j].Name);
+                            let fieldLink = ct.FieldLinks.results[j];
+
+                            // Skip hidden fields
+                            if (fieldLink.Hidden) { continue; }
+
+                            // Get the field
+                            let field: Types.SP.Field = list.getField(fieldLink.Name);
 
                             // See if this is a lookup field
-                            if (fldInfo.FieldTypeKind == SPTypes.FieldType.Lookup) {
+                            if (field.FieldTypeKind == SPTypes.FieldType.Lookup) {
                                 // Ensure this isn't an associated lookup field
-                                if ((fldInfo as Types.SP.FieldLookup).IsDependentLookup != true) {
+                                if ((field as Types.SP.FieldLookup).IsDependentLookup != true) {
                                     // Append the field ref
-                                    fieldRefs.push(fldInfo.InternalName);
+                                    fieldRefs.push(field.InternalName);
                                 }
                             } else {
                                 // Append the field ref
-                                fieldRefs.push(fldInfo.InternalName);
+                                fieldRefs.push(field.InternalName);
                             }
 
                             // Skip internal fields
-                            if (this.InternalFields.indexOf(fldInfo.InternalName) >= 0) { continue; }
+                            if (this.InternalFields.indexOf(field.InternalName) >= 0) { continue; }
 
                             // See if this is a calculated field
-                            if (fldInfo.FieldTypeKind == SPTypes.FieldType.Calculated) {
+                            if (field.FieldTypeKind == SPTypes.FieldType.Calculated) {
                                 // Add the field and continue the loop
-                                calcFields.push(fldInfo);
+                                calcFields.push(field);
                             }
                             // Else, see if this is a lookup field
-                            else if (fldInfo.FieldTypeKind == SPTypes.FieldType.Lookup) {
+                            else if (field.FieldTypeKind == SPTypes.FieldType.Lookup) {
                                 // Add the field
-                                lookupFields.push(fldInfo);
+                                lookupFields.push(field);
                             }
                             // Else, see if this is a MMS field
-                            else if (fldInfo.TypeDisplayName == "Managed Metadata") {
+                            else if (field.TypeDisplayName == "Managed Metadata") {
                                 // Add the field
-                                mmsFields[fldInfo.InternalName] = fldInfo;
+                                mmsFields[field.InternalName] = field;
                             }
                             // Else, ensure the field hasn't been added
-                            else if (fields[fldInfo.InternalName] == null) {
+                            else if (fields[field.InternalName] == null) {
                                 // Add the field information
-                                fields[fldInfo.InternalName] = true;
+                                fields[field.InternalName] = true;
                                 cfgProps.ListCfg[0].CustomFields.push({
-                                    name: fldInfo.InternalName,
-                                    schemaXml: fldInfo.SchemaXml
+                                    name: field.InternalName,
+                                    schemaXml: field.SchemaXml
                                 });
                             }
                         }
