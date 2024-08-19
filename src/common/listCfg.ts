@@ -26,7 +26,7 @@ export interface IListConfigProps {
 export interface ILookupData {
     field: string;
     list: string;
-    items: string[];
+    items: { [key: string]: string }[];
 }
 
 // Generate Lookup Data Properties
@@ -99,28 +99,13 @@ export class ListConfig {
 
                             // Parse the list items
                             for (let i = 0; i < lookupData.items.length; i++) {
-                                let addItem = true;
-                                let value = lookupData.items[i];
+                                let lookupItem = lookupData.items[i];
 
-                                // See if the items exists
-                                currItems.results.find(a => {
-                                    // See if the item exists
-                                    if (a[lookupData.field] == value) {
-                                        // Set the flag
-                                        addItem = false;
-                                    }
+                                // Create the item
+                                dstList.Items().add(lookupItem).batch(item => {
+                                    // Log
+                                    console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
                                 });
-
-                                // See if we are adding the item
-                                if (addItem) {
-                                    // Create the item
-                                    let dstItem = {};
-                                    dstItem[lookupData.field] = value;
-                                    dstList.Items().add(dstItem).batch(item => {
-                                        // Log
-                                        console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
-                                    });
-                                }
                             }
 
                             // Execute the batch job
@@ -505,25 +490,45 @@ export class ListConfig {
                 return new Promise((resolve) => {
                     // Get the source list
                     Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(list => {
+                        let fields: string[] = [];
+
+                        // Get the list content type fields
+                        list.ContentTypes().query({ Expand: ["FieldLinks"] }).execute(cts => {
+                            // Parse the content type fields
+                            for (let i = 0; i < cts.results[0].FieldLinks.results.length; i++) {
+                                let field = cts.results[0].FieldLinks.results[i];
+
+                                // Add the field link
+                                fields.push(field.Name);
+                            }
+                        });
+
                         // Get the list items
                         list.Items().query({
                             GetAllItems: true,
                             Top: 5000,
                             OrderBy: ["Id"]
                         }).execute(items => {
-                            let values: string[] = [];
+                            let lookupItems: { [key: string]: string }[] = [];
 
                             // Parse the items
                             for (let i = 0; i < items.results.length; i++) {
-                                // Add the value
-                                let value = items.results[i][lookupField.LookupField];
-                                value ? values.push(value) : null;
+                                let lookupItem = {};
+
+                                // Parse the field links
+                                for (let j = 0; j < fields.length; j++) {
+                                    // Add the value
+                                    lookupItem[fields[j]] = items.results[i][fields[j]];
+                                }
+
+                                // Add the lookup item
+                                lookupItems.push(lookupItem);
                             }
 
                             // Save the item data
                             lookupListData.push({
                                 field: lookupField.LookupField,
-                                items: values.sort(),
+                                items: lookupItems,
                                 list: list.Title
                             });
 
@@ -536,7 +541,7 @@ export class ListConfig {
                     }, () => {
                         // Check the next list
                         resolve(null);
-                    });
+                    }, true); // Set the flag to run this after the previous request completes
                 });
             }).then(() => {
                 // Resolve the request
