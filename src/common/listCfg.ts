@@ -535,6 +535,12 @@ export class ListConfig {
                                     // Ensure a value exists
                                     if (value == null) { continue; }
 
+                                    // See if this is a collection
+                                    if (value.results) {
+                                        // Set the results
+                                        value = { results: value.results };
+                                    }
+
                                     // Add the value, based on the type
                                     switch (field.FieldTypeKind) {
                                         case SPTypes.FieldType.URL:
@@ -545,7 +551,7 @@ export class ListConfig {
                                             break;
                                         default:
                                             // Set the value
-                                            lookupItem[field.InternalName] = value.results ? value.results : value;
+                                            lookupItem[field.InternalName] = value;
                                             break;
                                     }
                                 }
