@@ -495,7 +495,7 @@ export class ListConfig {
                         // Get the list content type fields
                         list.ContentTypes().query({ Expand: ["Fields"] }).execute(cts => {
                             // Parse the content type fields
-                            for (let i = 0; i < cts.results[0].FieldLinks.results.length; i++) {
+                            for (let i = 0; i < cts.results[0].Fields.results.length; i++) {
                                 let field = cts.results[0].Fields.results[i];
 
                                 // Add the field link
