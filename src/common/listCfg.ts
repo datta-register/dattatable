@@ -490,16 +490,16 @@ export class ListConfig {
                 return new Promise((resolve) => {
                     // Get the source list
                     Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(list => {
-                        let fields: string[] = [];
+                        let fields: Types.SP.Field[] = [];
 
                         // Get the list content type fields
-                        list.ContentTypes().query({ Expand: ["FieldLinks"] }).execute(cts => {
+                        list.ContentTypes().query({ Expand: ["Fields"] }).execute(cts => {
                             // Parse the content type fields
                             for (let i = 0; i < cts.results[0].FieldLinks.results.length; i++) {
-                                let field = cts.results[0].FieldLinks.results[i];
+                                let field = cts.results[0].Fields.results[i];
 
                                 // Add the field link
-                                fields.push(field.Name);
+                                fields.push(field);
                             }
                         });
 
@@ -517,8 +517,24 @@ export class ListConfig {
 
                                 // Parse the field links
                                 for (let j = 0; j < fields.length; j++) {
-                                    // Add the value
-                                    lookupItem[fields[j]] = items.results[i][fields[j]];
+                                    let field = fields[j];
+                                    let value = items.results[i][field.InternalName];
+
+                                    // Ensure a value exists
+                                    if (value == null) { continue; }
+
+                                    // Add the value, based on the type
+                                    switch (field.FieldTypeKind) {
+                                        case SPTypes.FieldType.URL:
+                                            lookupItem[field.InternalName] = {
+                                                Description: value.Description,
+                                                Url: value.Url
+                                            } as Types.SP.FieldUrlValue;
+                                            break;
+                                        default:
+                                            lookupItem[field.InternalName] = value;
+                                            break;
+                                    }
                                 }
 
                                 // Add the lookup item
