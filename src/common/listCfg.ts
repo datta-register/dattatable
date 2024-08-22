@@ -106,11 +106,30 @@ export class ListConfig {
                                     // Set the metadata type
                                     lookupItem["__metadata"] = { type: list.ListItemEntityTypeFullName };
 
-                                    // Create the item
-                                    dstList.Items().add(lookupItem).batch(item => {
+                                    // See if the item exists
+                                    let createFl = true;
+                                    for (let j = 0; j < currItems.results.length; j++) {
+                                        let currItem = currItems.results[j];
+
+                                        // See if the item already exists
+                                        if (currItem[lookupData.field] == lookupItem[lookupData.field]) {
+                                            // Set the flag
+                                            createFl = false;
+                                            break;
+                                        }
+                                    }
+
+                                    // See if we are creating the item
+                                    if (createFl) {
+                                        // Create the item
+                                        dstList.Items().add(lookupItem).batch(item => {
+                                            // Log
+                                            console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
+                                        });
+                                    } else {
                                         // Log
-                                        console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
-                                    });
+                                        console.log("[" + lookupData.list + "] Item already exists: " + lookupItem[lookupData.field]);
+                                    }
                                 }
 
                                 // Execute the batch job
