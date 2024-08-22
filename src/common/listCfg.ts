@@ -26,7 +26,7 @@ export interface IListConfigProps {
 export interface ILookupData {
     field: string;
     list: string;
-    items: { [key: string]: string }[];
+    items: { [key: string]: object | string }[];
 }
 
 // Generate Lookup Data Properties
@@ -90,27 +90,39 @@ export class ListConfig {
                         // Update the dialog
                         props.showDialog ? LoadingDialog.setBody("Getting the current list data for: " + lookupData.list) : null;
 
-                        // Get the current list items
-                        Web(props.webUrl).Lists(lookupData.list).Items().query({ Top: 5000, GetAllItems: true }).execute(currItems => {
-                            let dstList = Web(props.webUrl, { requestDigest: contextInfo.GetContextWebInformation.FormDigestValue }).Lists(lookupData.list);
+                        // Get the current list
+                        Web(props.webUrl).Lists(lookupData.list).execute(list => {
+                            // Get the current list items
+                            Web(props.webUrl).Lists(lookupData.list).Items().query({ Top: 5000, GetAllItems: true }).execute(currItems => {
+                                let dstList = Web(props.webUrl, { requestDigest: contextInfo.GetContextWebInformation.FormDigestValue }).Lists(lookupData.list);
 
-                            // Update the dialog
-                            props.showDialog ? LoadingDialog.setBody("Importing the list data: " + lookupData.list) : null;
+                                // Update the dialog
+                                props.showDialog ? LoadingDialog.setBody("Importing the list data: " + lookupData.list) : null;
 
-                            // Parse the list items
-                            for (let i = 0; i < lookupData.items.length; i++) {
-                                let lookupItem = lookupData.items[i];
+                                // Parse the list items
+                                for (let i = 0; i < lookupData.items.length; i++) {
+                                    let lookupItem = lookupData.items[i];
 
-                                // Create the item
-                                dstList.Items().add(lookupItem).batch(item => {
-                                    // Log
-                                    console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
+                                    // Set the metadata type
+                                    lookupItem["__metadata"] = { type: list.EntityTypeName };
+
+                                    // Create the item
+                                    dstList.Items().add(lookupItem).batch(item => {
+                                        // Log
+                                        console.log("[" + lookupData.list + "] Item added: " + item[lookupData.field]);
+                                    });
+                                }
+
+                                // Execute the batch job
+                                dstList.execute(() => {
+                                    // Check the next list
+                                    resolve(null);
                                 });
-                            }
+                            }, () => {
+                                // Error getting the list data
+                                console.error("Error getting the destination list: " + lookupData.list);
 
-                            // Execute the batch job
-                            dstList.execute(() => {
-                                // Check the next list
+                                // Check the next lookup field
                                 resolve(null);
                             });
                         }, () => {
@@ -509,7 +521,7 @@ export class ListConfig {
                             Top: 5000,
                             OrderBy: ["Id"]
                         }).execute(items => {
-                            let lookupItems: { [key: string]: string }[] = [];
+                            let lookupItems: { [key: string]: object | string }[] = [];
 
                             // Parse the items
                             for (let i = 0; i < items.results.length; i++) {
@@ -532,7 +544,8 @@ export class ListConfig {
                                             } as Types.SP.FieldUrlValue;
                                             break;
                                         default:
-                                            lookupItem[field.InternalName] = value;
+                                            // Set the value
+                                            lookupItem[field.InternalName] = value.results ? value.results : value;
                                             break;
                                     }
                                 }
