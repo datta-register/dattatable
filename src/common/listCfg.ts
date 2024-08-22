@@ -104,7 +104,7 @@ export class ListConfig {
                                     let lookupItem = lookupData.items[i];
 
                                     // Set the metadata type
-                                    lookupItem["__metadata"] = { type: list.EntityTypeName };
+                                    lookupItem["__metadata"] = { type: list.ListItemEntityTypeFullName };
 
                                     // Create the item
                                     dstList.Items().add(lookupItem).batch(item => {
