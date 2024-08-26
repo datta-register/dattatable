@@ -184,7 +184,9 @@ export class ItemForm {
         this._info = props.info;
         this._onCreateEditForm = props.onCreateEditForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
+        this._onFormRendered = props.onFormRendered;
         this._onGetListInfo = props.onGetListInfo;
+        this._onResetForm = props.onResetForm;
         this._onSave = props.onSave;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
@@ -227,6 +229,7 @@ export class ItemForm {
         this._info = props.info;
         this._onCreateViewForm = props.onCreateViewForm;
         this._onFormButtonsRendering = props.onFormButtonsRendering;
+        this._onFormRendered = props.onFormRendered;
         this._onGetListInfo = props.onGetListInfo;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
