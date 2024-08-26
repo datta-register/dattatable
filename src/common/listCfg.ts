@@ -33,7 +33,7 @@ export interface ILookupData {
 export interface IGenerateLookupDataProps {
     lookupFields: Types.SP.FieldLookup[];
     showDialog?: boolean;
-    srcList: Types.SP.List;
+    srcListId: string;
     srcWebUrl: string;
 }
 
@@ -508,7 +508,7 @@ export class ListConfig {
             // Parse the lookup fields
             Helper.Executor(props.lookupFields, lookupField => {
                 // Ensure this lookup isn't to the source list
-                if (lookupField.LookupList?.indexOf(props.srcList.Id) >= 0) { return; }
+                if (lookupField.LookupList?.indexOf(props.srcListId) >= 0) { return; }
 
                 // See if we have already checked this list
                 let listId = (lookupField.LookupList || "").replace(/{|}/g, '');
