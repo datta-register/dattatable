@@ -18,7 +18,7 @@ export interface IListConfig {
 // List Configuration Properties
 export interface IListConfigProps {
     showDialog?: boolean;
-    srcList: Types.SP.List;
+    srcList: string;
     srcWebUrl: string;
 }
 
@@ -177,7 +177,7 @@ export class ListConfig {
         return new Promise((resolve, reject) => {
             // Get the list information
             var list = new List({
-                listName: props.srcList.Title,
+                listName: props.srcList,
                 webUrl: props.srcWebUrl,
                 itemQuery: { Filter: "Id eq 0" },
                 onInitError: () => {
@@ -200,7 +200,7 @@ export class ListConfig {
                                 AllowContentTypes: list.ListInfo.AllowContentTypes,
                                 BaseTemplate: list.ListInfo.BaseTemplate,
                                 ContentTypesEnabled: list.ListInfo.ContentTypesEnabled,
-                                Title: props.srcList.Title,
+                                Title: props.srcList,
                                 Hidden: list.ListInfo.Hidden,
                                 NoCrawl: list.ListInfo.NoCrawl
                             },
@@ -651,7 +651,7 @@ export class ListConfig {
 
                             // Generate the lookup list configuration
                             this.generate({
-                                srcList: list,
+                                srcList: list.Title,
                                 srcWebUrl: props.srcWebUrl,
                                 showDialog: false
                             }).then(
