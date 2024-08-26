@@ -154,6 +154,9 @@ export class ItemForm {
 
     // Creates a new task
     static create(props: IItemFormCreateProps = {}): PromiseLike<void> {
+        // Clear the properties
+        this.clearProps();
+
         // Set the properties
         this._controlMode = SPTypes.ControlMode.New;
         this._elForm = props.elForm;
@@ -178,6 +181,9 @@ export class ItemForm {
 
     // Edits a task
     static edit(props: IItemFormEditProps): PromiseLike<void> {
+        // Clear the properties
+        this.clearProps();
+
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Edit;
         this._elForm = props.elForm;
@@ -223,6 +229,9 @@ export class ItemForm {
 
     // Views the task
     static view(props: IItemFormViewProps): PromiseLike<void> {
+        // Clear the properties
+        this.clearProps();
+
         // Set the properties
         this._controlMode = SPTypes.ControlMode.Display;
         this._elForm = props.elForm;
@@ -242,6 +251,25 @@ export class ItemForm {
     }
 
     /** Private Methods */
+
+    // Clears the properties
+    private static clearProps() {
+        this._elForm = null;
+        this._onCreateEditForm = null;
+        this._onCreateViewForm = null;
+        this._onFormButtonsRendering = null;
+        this._onFormRendered = null;
+        this._onGetListInfo = null;
+        this._onResetForm = null;
+        this._onSetFooter = null;
+        this._onSetHeader = null;
+        this._onShowForm = null;
+        this._onSave = null;
+        this._onValidation = null;
+        this._requestDigest = null;
+        this._tabInfo = null;
+        this._updateEvent = null;
+    }
 
     // Load the form information
     private static load(webUrl?: string, itemId?: number): PromiseLike<void> {
