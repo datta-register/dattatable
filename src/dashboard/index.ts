@@ -247,6 +247,7 @@ export class Dashboard {
             let navProps = this._props.navigation || {};
             this._navigation = new Navigation({
                 el: this._props.el.querySelector("#navigation"),
+                className: headerIsVisible || navIsVisible ? null : "sub-nav-border",
                 hideFilter: navProps.showFilter != null ? !navProps.showFilter : false,
                 hideSearch: navProps.showSearch != null ? !navProps.showSearch : false,
                 items: navProps.items,

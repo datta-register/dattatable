@@ -6,6 +6,7 @@ import { filter } from "gd-sprest-bs/build/icons/svgs/filter";
  */
 interface INavProps {
     el: HTMLElement;
+    className?: string;
     hideFilter?: boolean;
     hideSearch?: boolean;
     items?: Components.INavbarItem[];
@@ -44,6 +45,7 @@ export class Navigation {
         // Define the default props
         let props: Components.INavbarProps = {
             el: this._props.el,
+            className: this._props.className,
             brand: this._props.title,
             enableSearch: this._props.hideSearch != null ? !this._props.hideSearch : null,
             items: this._props.items,
