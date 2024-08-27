@@ -4,6 +4,7 @@ import { Components } from "gd-sprest-bs";
  * Header
  */
 export interface IHeaderProps {
+    className?: string;
     el: HTMLElement;
     onRendering?: (props: Components.IJumbotronProps) => void;
     onRendered?: (el: HTMLElement) => void;
@@ -33,7 +34,7 @@ export class Header {
         // Define the default props
         let props: Components.IJumbotronProps = {
             el: this._props.el,
-            className: "header",
+            className: "header" + (this._props.className ? " " : "") + this._props.className,
             lead: this._props.title
         };
 

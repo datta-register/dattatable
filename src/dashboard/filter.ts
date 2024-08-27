@@ -17,6 +17,7 @@ export interface IFilterItem {
  * Properties
  */
 export interface IFilterProps {
+    className?: string;
     filters: IFilterItem[];
     onClear?: () => void;
     onFilter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
@@ -29,6 +30,7 @@ export interface IFilterProps {
  */
 export class FilterSlideout {
     private _cbs: Array<Components.ICheckboxGroup> = null;
+    private _className: string = null;
     private _el: HTMLElement = null;
     private _filters: IFilterItem[] = null;
     private _items: Array<Components.IAccordionItem> = null;
@@ -38,6 +40,7 @@ export class FilterSlideout {
 
     constructor(props: IFilterProps) {
         // Save the properties
+        this._className = props.className;
         this._filters = props.filters || [];
         this._onClear = props.onClear;
         this._onFilter = props.onFilter;
@@ -79,6 +82,7 @@ export class FilterSlideout {
         // Render a clear button
         Components.Tooltip({
             el: this._el,
+            className: this._className,
             content: "Reset Filters",
             placement: Components.TooltipPlacements.Left,
             btnProps: {

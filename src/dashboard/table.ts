@@ -23,6 +23,7 @@ export interface IDataTable {
  * Properties
  */
 export interface IDataTableProps {
+    className?: string;
     columns: Components.ITableColumn[];
     dtProps?: any;
     el: HTMLElement;
@@ -152,6 +153,7 @@ export class DataTable implements IDataTable {
 
         // Render the data table
         let table = Components.Table({
+            className: this._props.className,
             el: this._props.el,
             rows,
             columns: this._props.columns

@@ -37,18 +37,21 @@ export interface IDashboardProps {
     }
     el: HTMLElement;
     footer?: {
+        className?: string;
         items?: Components.INavbarItem[];
         itemsEnd?: Components.INavbarItem[];
         onRendering?: (props: Components.INavbarProps) => void;
         onRendered?: (el?: HTMLElement) => void;
     }
     filters?: {
+        className?: string;
         items: IFilterItem[];
         onClear?: () => void;
         onRendered?: (el?: HTMLElement) => void;
         onShowFilter?: () => void;
     }
     header?: {
+        className?: string;
         onRendering?: (props: Components.IJumbotronProps) => void;
         onRendered?: (el?: HTMLElement) => void;
         title?: string;
@@ -58,6 +61,7 @@ export interface IDashboardProps {
     hideNavigation?: boolean;
     hideSubNavigation?: boolean;
     navigation?: {
+        className?: string;
         searchPlaceholder?: string;
         showFilter?: boolean;
         showSearch?: boolean;
@@ -71,6 +75,7 @@ export interface IDashboardProps {
         onShowFilter?: () => void;
     }
     subNavigation?: {
+        className?: string;
         showFilter?: boolean;
         showSearch?: boolean;
         title?: string | HTMLElement;
@@ -83,6 +88,7 @@ export interface IDashboardProps {
         onShowFilter?: () => void;
     }
     table?: {
+        className?: string;
         columns: Components.ITableColumn[];
         dtProps?: any;
         onRendering?: (dtProps: any) => any;
@@ -92,6 +98,7 @@ export interface IDashboardProps {
     tiles?: {
         bodyFields?: string[];
         bodyTemplate?: string;
+        className?: string;
         colSize?: number;
         filterFields?: string[];
         items: any[];
@@ -194,6 +201,7 @@ export class Dashboard {
     private render() {
         // Create the filters
         this._filters = new FilterSlideout({
+            className: this._props.filters ? this._props.filters.className : null,
             filters: this._props.filters ? this._props.filters.items : [],
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
@@ -246,6 +254,7 @@ export class Dashboard {
             // Render the navigation
             let navProps = this._props.navigation || {};
             this._navigation = new Navigation({
+                className: navProps.className,
                 el: this._props.el.querySelector("#navigation"),
                 hideFilter: navProps.showFilter != null ? !navProps.showFilter : false,
                 hideSearch: navProps.showSearch != null ? !navProps.showSearch : false,
@@ -301,6 +310,7 @@ export class Dashboard {
             // Render the header
             let header = this._props.header || {};
             new Header({
+                className: header.className,
                 el: elHeader,
                 onRendering: this._props.header ? this._props.header.onRendering : null,
                 onRendered: this._props.header ? this._props.header.onRendered : null,
@@ -327,9 +337,11 @@ export class Dashboard {
         } else {
             // Render the navigation
             let navProps = this._props.subNavigation || {};
+            let className = (headerIsVisible || navIsVisible ? null : "sub-nav-border") +
+                (navProps.className ? " " : "") + navProps.className;
             new Navigation({
                 el: this._props.el.querySelector("#sub-navigation"),
-                className: headerIsVisible || navIsVisible ? null : "sub-nav-border",
+                className,
                 hideFilter: navProps.showFilter != null ? !navProps.showFilter : true,
                 hideSearch: navProps.showSearch != null ? !navProps.showSearch : true,
                 items: navProps.items,
@@ -401,7 +413,7 @@ export class Dashboard {
             // Render the footer
             let footer = this._props.footer || {};
             new Footer({
-                className: "bg-sharepoint rounded-bottom",
+                className: "bg-sharepoint rounded-bottom" + (footer.className ? " " : "") + footer.className,
                 el: this._props.el.querySelector("#footer"),
                 items: footer.items,
                 itemsEnd: footer.itemsEnd,

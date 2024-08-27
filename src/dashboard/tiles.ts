@@ -9,6 +9,7 @@ export interface ITiles {
 export interface ITilesProps {
     bodyFields?: string[];
     bodyTemplate?: string;
+    className?: string;
     colSize?: number;
     el: HTMLElement;
     filterFields?: string[];
@@ -239,6 +240,7 @@ export class Tiles implements ITiles {
         this._tiles = Components.CardGroup({
             el: this._props.el,
             cards,
+            className: this._props.className,
             colSize: this._props.colSize || 4,
             onColRender: this._props.onColumnRendered
         });

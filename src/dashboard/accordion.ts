@@ -9,6 +9,7 @@ export interface IAccordion {
 export interface IAccordionProps {
     bodyFields?: string[];
     bodyTemplate?: string;
+    className?: string;
     el: HTMLElement;
     filterFields?: string[];
     items: any[];
@@ -179,6 +180,7 @@ export class Accordion implements IAccordion {
         // Render the accordion
         this._accordion = Components.Accordion({
             el: this._props.el,
+            className: this._props.className,
             id: "accordion-list",
             items: accordionItems
         });
