@@ -54,8 +54,8 @@ export class Tiles implements ITiles {
     }
 
     // Filters the tile
-    filter(values: string[] = []) {
-        this._activeFilterValue = values.join('|');
+    filter(values: string[]) {
+        this._activeFilterValue = values ? values.join('|') : "";
 
         // Parse all tile
         let tiles = this._props.el.querySelectorAll(".card");
