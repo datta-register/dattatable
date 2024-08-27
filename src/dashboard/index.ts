@@ -338,7 +338,7 @@ export class Dashboard {
             // Render the navigation
             let navProps = this._props.subNavigation || {};
             let className = (headerIsVisible || navIsVisible ? null : "sub-nav-border") +
-                (navProps.className ? " " : "") + navProps.className;
+                (navProps.className ? " " + navProps.className : "");
             new Navigation({
                 el: this._props.el.querySelector("#sub-navigation"),
                 className,
@@ -413,7 +413,7 @@ export class Dashboard {
             // Render the footer
             let footer = this._props.footer || {};
             new Footer({
-                className: "bg-sharepoint rounded-bottom" + (footer.className ? " " : "") + footer.className,
+                className: "bg-sharepoint rounded-bottom" + (footer.className ? " " + footer.className : ""),
                 el: this._props.el.querySelector("#footer"),
                 items: footer.items,
                 itemsEnd: footer.itemsEnd,
