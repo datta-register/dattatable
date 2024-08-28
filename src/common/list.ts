@@ -8,7 +8,8 @@ import {
 export interface IListProps<T = Types.SP.ListItem> {
     camlQuery?: string;
     itemQuery?: Types.IODataQuery;
-    listName: string;
+    listId?: string;
+    listName?: string;
     viewName?: string;
     onInitError?: (...args) => void;
     onInitialized?: () => void;
@@ -62,6 +63,10 @@ export class List<T = Types.SP.ListItem> {
     // Items
     private _items: T[] = null;
     get Items(): T[] { return this._items; }
+
+    // List Id
+    private _listId: string = null;
+    get ListId(): string { return this._listId; }
 
     // List Name
     private _listName: string = null;
@@ -119,6 +124,7 @@ export class List<T = Types.SP.ListItem> {
     constructor(props: IListProps<T>) {
         // Save the properties
         this._camlQuery = props.camlQuery;
+        this._listId = props.listId;
         this._listName = props.listName;
         this._odata = props.itemQuery;
         this._onInitError = props.onInitError;
@@ -277,13 +283,21 @@ export class List<T = Types.SP.ListItem> {
     private init(): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
-            let list = Web(this.WebUrl, {
+            // Set the web
+            let web = Web(this.WebUrl, {
                 disableCache: true,
                 requestDigest: this._requestDigest
-            }).Lists(this.ListName);
+            });
+
+            // Get the list
+            let list = this.ListId ? web.Lists().getById(this.ListId) : web.Lists(this.ListName);
 
             // Query the list content types
             list.execute(list => {
+                // Set the list id/name
+                this._listId = list.Id;
+                this._listName = list.Title;
+
                 // Save the list information
                 this._listInfo = list as any;
             }, (...args) => {
