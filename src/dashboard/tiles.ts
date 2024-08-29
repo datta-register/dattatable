@@ -285,7 +285,7 @@ export class Tiles implements ITiles {
                         showItem = true;
 
                         // Break from the loop if we aren't using the and operator
-                        if (this._useAndOperator) { break; }
+                        if (!this._useAndOperator) { break; }
                     }
                     // Else, see if we are using the and operator
                     else if (this._useAndOperator) {
