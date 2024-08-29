@@ -1,7 +1,7 @@
 import { Components } from "gd-sprest-bs";
 
 export interface ITiles {
-    filter?: (value: string | string[], item?: Components.ICheckboxGroupItem) => void;
+    filter?: (value: string | string[], useAndOperator?: boolean) => void;
     refresh?: (items: any[]) => void;
     search?: (value: string) => void;
 }
@@ -44,6 +44,7 @@ export class Tiles implements ITiles {
     private _activeSearchValue: string = null;
     private _pagination: Components.IPagination = null;
     private _props: ITilesProps;
+    private _useAndOperator: boolean = false;
 
     // Constructor
     constructor(props: ITilesProps) {
@@ -55,8 +56,9 @@ export class Tiles implements ITiles {
     }
 
     // Filters the tile
-    filter(values: string[]) {
+    filter(values: string[], useAndOperator: boolean = false) {
         this._activeFilterValue = values ? values.join('|') : "";
+        this._useAndOperator = useAndOperator;
 
         // Parse all tile
         let tiles = this._props.el.querySelectorAll(".card");
@@ -279,8 +281,16 @@ export class Tiles implements ITiles {
                 for (let j = 0; j < activeFilters.length; j++) {
                     // See if the item contains the filter value
                     if (filterValues.indexOf(activeFilters[j]) >= 0) {
-                        // Set the flag and break from the loop
+                        // Set the flag
                         showItem = true;
+
+                        // Break from the loop if we aren't using the and operator
+                        if (this._useAndOperator) { break; }
+                    }
+                    // Else, see if we are using the and operator
+                    else if (this._useAndOperator) {
+                        // Set the flag and break from the loop
+                        showItem = false;
                         break;
                     }
                 }

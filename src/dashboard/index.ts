@@ -212,10 +212,10 @@ export class Dashboard {
                 // See if this is an accordion
                 if (this.IsAccordion) {
                     // Filter the accordion
-                    this._accordion.filter(values, item);
+                    this._accordion.filter(values);
                 } else {
                     // Filter the tiles
-                    this._tiles.filter(values, item)
+                    this._tiles.filter(values)
                 }
             } : null
         });
@@ -459,11 +459,11 @@ export class Dashboard {
     }
 
     // Filter the accordion
-    filterAccordion(values?: string | string[]) {
+    filterAccordion(values?: string | string[], useAndOperator: boolean = false) {
         // See if we have an accordion
         if (this.IsAccordion) {
             // Filter the accordion
-            this._accordion.filter(typeof (values) === "string" ? [values] : values);
+            this._accordion.filter(typeof (values) === "string" ? [values] : values, useAndOperator);
         }
     }
 
@@ -486,11 +486,11 @@ export class Dashboard {
     }
 
     // Filter the tiles
-    filterTiles(values?: string | string[]) {
+    filterTiles(values?: string | string[], useAndOperator: boolean = false) {
         // See if we have tiles
         if (this.IsTiles) {
             // Filter the tiles
-            this._tiles.filter(typeof (values) === "string" ? [values] : values);
+            this._tiles.filter(typeof (values) === "string" ? [values] : values, useAndOperator);
         }
     }
 
