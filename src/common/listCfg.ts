@@ -53,7 +53,8 @@ export interface IValidateLookupsProps {
 export class ListConfig {
     // Internal Fields
     private static InternalFields = [
-        "ContentType", "TaxCatchAll", "TaxCatchAllLabel", "Title"
+        "ContentType", "TaxCatchAll", "TaxCatchAllLabel", "Title",
+        "ItemChildCount", "FolderChildCount", "FileLeafRef", "FileRef"
     ]
     // Generates the lookup list data
     static createLookupListData(props: ICreateLookupData): PromiseLike<void> {
