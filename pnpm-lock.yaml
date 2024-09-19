@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.8.1_webpack@5.89.0
   datatables.net: 2.1.3
   datatables.net-bs5: 2.1.3
-  gd-sprest-bs: 10.11.99
+  gd-sprest-bs: 10.12.0
   html-loader: 4.2.0_webpack@5.89.0
   jquery: 3.7.1
   moment: 2.29.4
@@ -2067,26 +2067,26 @@ packages:
     dev: true
     resolution:
       integrity: sha512-2VFDA494DJcx5mEN03nZAE+E5HsBCvUzZ/y/zUtw1hxFLW1nRmGUbQA5dxvc7YSBfSYOWkHcsNx2q1fQL7vupQ==
-  /gd-sprest-bs/10.11.99:
+  /gd-sprest-bs/10.12.0:
     dependencies:
       flatpickr: 4.6.13
       gd-bs: 6.6.40
-      gd-sprest: 8.1.9
+      gd-sprest: 8.2.0
       gd-sprest-def: 1.4.7
       quill: 2.0.2
     dev: true
     resolution:
-      integrity: sha512-YMQ5L7k4N2ap1gHQIZGl9PD00wi8/rbcm0/b8NHUkXzwEIHHwVYU0AjhAzXUJdRkmHBpIfK2KAzBmI165DcsWA==
+      integrity: sha512-jYHc659vXJ2vjptyjxtSxOsf+7ZhLFpXb0nXTVSPzsIMZE8r5rji6efqTYD5geSnugDh/wsimm18/FnJ2sBiAA==
   /gd-sprest-def/1.4.7:
     dev: true
     resolution:
       integrity: sha512-Jr5MpGj5Q1a+Gq5b5Uhi5hp36ojPvOAWLIwAaEuvkh/V4JXostF9zuBjeFBOFOt6ttjyYUde7FmLwV2sUJGfiw==
-  /gd-sprest/8.1.9:
+  /gd-sprest/8.2.0:
     dependencies:
       gd-sprest-def: 1.4.7
     dev: true
     resolution:
-      integrity: sha512-thKHaRaW2Wk8GWaJlIrtObayOjcupXx9m9OhwbLaXdPv/wsu9giXHc52qCDipYeYsHmtL3Hf8BCu8eXVazWoKw==
+      integrity: sha512-spy4w7jzUxKtwlfTvPlohAa4PgpWdnWZOKxXM2czE5mGLdREQcWquobEAvjt0gKcweDUJ29Bc2TtTJYFc9xq0g==
   /gensync/1.0.0-beta.2:
     dev: true
     engines:
@@ -3248,7 +3248,7 @@ specifiers:
   css-loader: ^6.8.1
   datatables.net: ^2.1.3
   datatables.net-bs5: ^2.1.3
-  gd-sprest-bs: ^10.11.99
+  gd-sprest-bs: ^10.12.0
   html-loader: ^4.2.0
   jquery: ^3.7.1
   moment: ^2.29.4

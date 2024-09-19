@@ -201,6 +201,7 @@ export class ListConfig {
                                 AllowContentTypes: list.ListInfo.AllowContentTypes,
                                 BaseTemplate: list.ListInfo.BaseTemplate,
                                 ContentTypesEnabled: list.ListInfo.ContentTypesEnabled,
+                                EnableAttachments: list.ListInfo.EnableAttachments,
                                 Title: props.srcList,
                                 Hidden: list.ListInfo.Hidden,
                                 NoCrawl: list.ListInfo.NoCrawl
@@ -272,6 +273,7 @@ export class ListConfig {
 
                         // Add the list content type
                         cfgProps.ListCfg[0].ContentTypes.push({
+                            ClientFormCustomFormatter: ct.ClientFormCustomFormatter,
                             Name: ct.Name,
                             Description: ct.Description,
                             ParentName: ct.Parent.Name,
@@ -319,6 +321,7 @@ export class ListConfig {
 
                         // Add the view
                         cfgProps.ListCfg[0].ViewInformation.push({
+                            CustomFormatter: viewInfo.CustomFormatter,
                             Default: viewInfo.DefaultView,
                             Hidden: viewInfo.Hidden,
                             JSLink: viewInfo.JSLink,
