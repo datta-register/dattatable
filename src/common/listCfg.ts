@@ -637,45 +637,32 @@ export class ListConfig {
                     // Get the source list
                     Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(list => {
                         // Updated the loading dialog
-                        props.showDialog ? LoadingDialog.setBody("Checking the destination web for: " + list.Title) : null;
+                        props.showDialog ? LoadingDialog.setBody("Generating the configuration for: " + list.Title) : null;
 
-                        // Ensure the list exists in the destination
-                        Web(props.dstUrl).Lists(list.Title).execute(() => {
-                            // Set the flag
-                            lookupLists[list.Id] = true;
+                        // Generate the lookup list configuration
+                        this.generate({
+                            srcList: list.Title,
+                            srcWebUrl: props.srcWebUrl,
+                            showDialog: false
+                        }).then(
+                            // Success
+                            cfg => {
+                                // Set the flag
+                                lookupLists[list.Id] = true;
 
-                            // Check the next list
-                            resolve(null);
-                        }, () => {
-                            // Updated the loading dialog
-                            props.showDialog ? LoadingDialog.setBody("Generating the configuration for: " + list.Title) : null;
+                                // Prepend the list configuration
+                                props.cfg.ListCfg.splice(props.cfg.ListCfg.length - 1, 0, cfg.cfg.ListCfg[0]);
 
-                            // Generate the lookup list configuration
-                            this.generate({
-                                srcList: list.Title,
-                                srcWebUrl: props.srcWebUrl,
-                                showDialog: false
-                            }).then(
-                                // Success
-                                cfg => {
-                                    // Set the flag
-                                    lookupLists[list.Id] = true;
+                                // Check the next list
+                                resolve(null);
+                            },
 
-                                    // Prepend the list configuration
-                                    props.cfg.ListCfg.splice(props.cfg.ListCfg.length - 1, 0, cfg.cfg.ListCfg[0]);
-
-                                    // Check the next list
-                                    resolve(null);
-                                },
-
-                                // Error
-                                () => {
-                                    // Reject the reqeust
-                                    reject("Lookup list '" + list.Title + "' for field '" + lookupField.InternalName + "' does not exist in the configuration. Please add the lists in the appropriate order.");
-                                }
-                            );
-                        });
-
+                            // Error
+                            () => {
+                                // Reject the reqeust
+                                reject("Lookup list '" + list.Title + "' for field '" + lookupField.InternalName + "' does not exist in the configuration. Please add the lists in the appropriate order.");
+                            }
+                        );
                     }, () => {
                         // Reject the reqeust
                         reject("Lookup list for field '" + lookupField.InternalName + "' does not exist in the source web. Please review the source list for any issues.");
