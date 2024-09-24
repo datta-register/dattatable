@@ -30,6 +30,7 @@ export interface IItemFormCreateProps {
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onResetForm?: () => void;
     onSave?: (values: any) => object | PromiseLike<object>;
+    onSaveError?: (err: any) => void;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
     onShowForm?: (form?: CanvasForm | Modal) => void;
@@ -51,6 +52,7 @@ export interface IItemFormEditProps {
     onGetListInfo?: (props: Helper.IListFormProps) => Helper.IListFormProps;
     onResetForm?: () => void;
     onSave?: (values: any) => object | PromiseLike<object>;
+    onSaveError?: (err: any) => void;
     onSetFooter?: (el: HTMLElement) => void;
     onSetHeader?: (el: HTMLElement) => void;
     onShowForm?: (form?: CanvasForm | Modal) => void;
@@ -94,6 +96,7 @@ export class ItemForm {
     private static _onSetHeader?: (el: HTMLElement) => void = null;
     private static _onShowForm?: (form?: CanvasForm | Modal) => void = null;
     private static _onSave: (values: any) => any | PromiseLike<any> = null;
+    private static _onSaveError: (err: any) => void = null;
     private static _onValidation: (values?: any, isValid?: boolean) => boolean | PromiseLike<boolean> = null;
     private static _requestDigest: string = null;
     private static _tabInfo: IItemFormTabInfo = null;
@@ -116,7 +119,7 @@ export class ItemForm {
     static get EditForms(): Components.IListFormEdit[] { return this._editForms; }
 
     // Form Information
-    private static _info = null;
+    private static _info: Helper.IListFormResult = null;
     static get FormInfo(): Helper.IListFormResult { return this._info; }
 
     // Form Modes
@@ -167,6 +170,7 @@ export class ItemForm {
         this._onGetListInfo = props.onGetListInfo;
         this._onResetForm = props.onResetForm;
         this._onSave = props.onSave;
+        this._onSaveError = props.onSaveError;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
         this._onShowForm = props.onShowForm;
@@ -194,6 +198,7 @@ export class ItemForm {
         this._onGetListInfo = props.onGetListInfo;
         this._onResetForm = props.onResetForm;
         this._onSave = props.onSave;
+        this._onSaveError = props.onSaveError;
         this._onSetFooter = props.onSetFooter;
         this._onSetHeader = props.onSetHeader;
         this._onShowForm = props.onShowForm;
@@ -265,6 +270,7 @@ export class ItemForm {
         this._onSetHeader = null;
         this._onShowForm = null;
         this._onSave = null;
+        this._onSaveError = null;
         this._onValidation = null;
         this._requestDigest = null;
         this._tabInfo = null;
@@ -661,6 +667,51 @@ export class ItemForm {
                                         // Close the dialogs
                                         (this._useModal ? Modal : CanvasForm).hide();
                                         LoadingDialog.hide();
+                                    }, err => {
+                                        // Try to get the error message
+                                        try {
+                                            let errorMessage: string = JSON.parse(err.response).error.message.value;
+
+                                            // See if the page timed out
+                                            if (errorMessage.indexOf("The security validation for this page is invalid") == 0) {
+                                                // Set the loading dialog
+                                                LoadingDialog.setBody("The page timed out, retrying the request...");
+
+                                                // Get the context
+                                                getContextInfo(this._info.webUrl).then(requestDigest => {
+                                                    // Set the request digest value
+                                                    this._requestDigest = requestDigest;
+
+                                                    // Try to save the item again
+                                                    defaultForm.save(values).then(item => {
+                                                        // Call the update event
+                                                        this._updateEvent ? this._updateEvent(item) : null;
+
+                                                        // Close the dialogs
+                                                        (this._useModal ? Modal : CanvasForm).hide();
+                                                        LoadingDialog.hide();
+                                                    }, err => {
+                                                        // Log
+                                                        console.error("[List Form] Unable to save the item after refreshing the context information.");
+
+                                                        // Call the event
+                                                        this._onSaveError ? this._onSaveError(err) : null;
+                                                    });
+                                                }, () => {
+                                                    // Log
+                                                    console.error("[List Form] Unable to get the context for web.");
+
+                                                    // Call the event
+                                                    this._onSaveError ? this._onSaveError(err) : null;
+                                                });
+                                            } else {
+                                                // Call the event
+                                                this._onSaveError ? this._onSaveError(err) : null;
+                                            }
+                                        } catch {
+                                            // Call the event
+                                            this._onSaveError ? this._onSaveError(err) : null;
+                                        }
                                     });
                                 }
                             }
