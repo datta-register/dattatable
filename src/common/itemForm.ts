@@ -1,4 +1,4 @@
-import { Components, Helper, SPTypes } from "gd-sprest-bs";
+import { Components, Helper, SPTypes, Web } from "gd-sprest-bs";
 import { CanvasForm, LoadingDialog, Modal, getContextInfo } from ".";
 
 /** Tab */
@@ -655,7 +655,7 @@ export class ItemForm {
                             LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
 
                             // Saves the item
-                            let saveItem = (values) => {
+                            let saveItem = (values, retryFl?: boolean) => {
                                 // If values is null then do nothing. This would happen when the
                                 // onSave event wants to cancel the save and do something custom
                                 if (values) {
@@ -668,49 +668,36 @@ export class ItemForm {
                                         (this._useModal ? Modal : CanvasForm).hide();
                                         LoadingDialog.hide();
                                     }, err => {
-                                        // Try to get the error message
-                                        try {
-                                            let errorMessage: string = JSON.parse(err.response).error.message.value;
+                                        // See if we have already retried to save the item
+                                        if (retryFl) {
+                                            // Log
+                                            console.error("[List Form] Unable to get the context for web.");
 
-                                            // See if the page timed out
-                                            if (errorMessage.indexOf("The security validation for this page is invalid") == 0) {
-                                                // Set the loading dialog
-                                                LoadingDialog.setBody("The page timed out, retrying the request...");
+                                            // Call the event
+                                            this._onSaveError ? this._onSaveError(err) : null;
+                                        } else {
+                                            // Try to get the error message
+                                            try {
+                                                let errorMessage: string = JSON.parse(err.response).error.message.value;
 
-                                                // Get the context
-                                                getContextInfo(this._info.webUrl).then(requestDigest => {
-                                                    // Set the request digest value
-                                                    this._requestDigest = requestDigest;
+                                                // See if the page timed out
+                                                if (errorMessage.indexOf("The security validation for this page is invalid") == 0) {
+                                                    // Set the loading dialog
+                                                    LoadingDialog.setBody("The page timed out, retrying the request...");
 
-                                                    // Try to save the item again
-                                                    defaultForm.save(values).then(item => {
-                                                        // Call the update event
-                                                        this._updateEvent ? this._updateEvent(item) : null;
-
-                                                        // Close the dialogs
-                                                        (this._useModal ? Modal : CanvasForm).hide();
-                                                        LoadingDialog.hide();
-                                                    }, err => {
-                                                        // Log
-                                                        console.error("[List Form] Unable to save the item after refreshing the context information.");
-
-                                                        // Call the event
-                                                        this._onSaveError ? this._onSaveError(err) : null;
+                                                    // Refresh the request digest
+                                                    defaultForm.refreshRequestDigest().then(() => {
+                                                        // Try to save the item again
+                                                        saveItem(values, true);
                                                     });
-                                                }, () => {
-                                                    // Log
-                                                    console.error("[List Form] Unable to get the context for web.");
-
+                                                } else {
                                                     // Call the event
                                                     this._onSaveError ? this._onSaveError(err) : null;
-                                                });
-                                            } else {
+                                                }
+                                            } catch {
                                                 // Call the event
                                                 this._onSaveError ? this._onSaveError(err) : null;
                                             }
-                                        } catch {
-                                            // Call the event
-                                            this._onSaveError ? this._onSaveError(err) : null;
                                         }
                                     });
                                 }
