@@ -219,6 +219,9 @@ export class ListConfig {
                         // Skip sealed content types
                         if (ct.Sealed) { continue; }
 
+                        // Skip the folder content type
+                        if (ct.Name == "Folder") { continue; }
+
                         // Parse the content type fields
                         let fieldRefs = [];
                         for (let j = 0; j < ct.FieldLinks.results.length; j++) {
