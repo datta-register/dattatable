@@ -586,7 +586,7 @@ export class ItemForm {
     }
 
     // Saves the edit form
-    static save(props: { form?: Components.IListFormEdit, bypassValidation?: boolean } = {}): PromiseLike<void> {
+    static save(props: { form?: Components.IListFormEdit, bypassValidation?: boolean } = {}): PromiseLike<any> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let values = {};
@@ -673,7 +673,7 @@ export class ItemForm {
                                             LoadingDialog.hide();
 
                                             // Resolve the request
-                                            resolve();
+                                            resolve(item);
                                         }, err => {
                                             // See if we have already retried to save the item
                                             if (retryFl) {

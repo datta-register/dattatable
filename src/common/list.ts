@@ -574,7 +574,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Saves the item with an option to bypass validation
-    save(bypassValidation?: boolean): PromiseLike<void> {
+    save(bypassValidation?: boolean): PromiseLike<T> {
         // Save the item
         return ItemForm.save({ bypassValidation });
     }
