@@ -27,6 +27,7 @@ export interface ILookupData {
     field: string;
     list: string;
     items: { [key: string]: object | string }[];
+    srcField: string;
 }
 
 // Generate Lookup Data Properties
@@ -590,7 +591,8 @@ export class ListConfig {
                             lookupListData.push({
                                 field: lookupField.LookupField,
                                 items: lookupItems,
-                                list: list.Title
+                                list: list.Title,
+                                srcField: lookupField.InternalName
                             });
 
                             // Set the flag
