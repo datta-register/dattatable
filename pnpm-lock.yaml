@@ -5,7 +5,7 @@ devDependencies:
   css-loader: 6.8.1_webpack@5.89.0
   datatables.net: 2.1.3
   datatables.net-bs5: 2.1.3
-  gd-sprest-bs: 10.12.12
+  gd-sprest-bs: 10.12.14
   html-loader: 4.2.0_webpack@5.89.0
   jquery: 3.7.1
   moment: 2.29.4
@@ -2057,7 +2057,7 @@ packages:
     dev: true
     resolution:
       integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==
-  /gd-bs/6.6.41:
+  /gd-bs/6.6.42:
     dependencies:
       '@popperjs/core': 2.11.8
       bootstrap: 5.3.3_@popperjs+core@2.11.8
@@ -2066,27 +2066,27 @@ packages:
       tippy.js: 6.3.7
     dev: true
     resolution:
-      integrity: sha512-himTAwHeUSxi/zV3MLNHZknyezMT1Xf0CF9hCsyOOYl05UTtMjb6pLrYRf7BKD5Y4bvJiz/jq1jhKrtG4m1DtQ==
-  /gd-sprest-bs/10.12.12:
+      integrity: sha512-PWcjJhjfZAlvIeSHd4zHtZBO+BIxa5wiR2EjHXwiTceRHzXrEwFu6EjcVL7RaowgiaG/RjFjrdpqn7n+vURFYA==
+  /gd-sprest-bs/10.12.14:
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.6.41
-      gd-sprest: 8.2.6
+      gd-bs: 6.6.42
+      gd-sprest: 8.2.7
       gd-sprest-def: 1.4.9
       quill: 2.0.2
     dev: true
     resolution:
-      integrity: sha512-G87XwgRHnavyW2Z8Yk6ITliOYPgFzsnmPNzxxK2Zl2CGU2/Se8LdlXSdzqtxk3sqxpx7pt0NtoBNO4P3z6IfCw==
+      integrity: sha512-cmX738p6EJd6ZeJIgkJKfb+A/P9zp45Pgc6MGFMu56B0vwCOrWHdgVUwDJE06zMKIyy0FLdHfadCsxK9oIQ/wA==
   /gd-sprest-def/1.4.9:
     dev: true
     resolution:
       integrity: sha512-O22RWmTL45n8bzahTotHRijdydhztv32lNwcaqCxE2ItMds/nLObjbOdp6w07ToLKJI934mPBKFSqT+KKBi+eg==
-  /gd-sprest/8.2.6:
+  /gd-sprest/8.2.7:
     dependencies:
       gd-sprest-def: 1.4.9
     dev: true
     resolution:
-      integrity: sha512-OElYg99b9nFIUfCmteOQo9xykUKBx0fU+kHvh/UY4aNxkZfHCMGkViGozIC+OMTQCx5yCj3oSVqnGqLn7NcJlg==
+      integrity: sha512-dznS5TmIkjT3zCfEW7WNjJc3VeEIl23PIZdoC4lu5FcnyUp498RaIpUs9bQyrfT9k/bSUk3JRWGjdLbD4LIxWw==
   /gensync/1.0.0-beta.2:
     dev: true
     engines:
@@ -3248,7 +3248,7 @@ specifiers:
   css-loader: ^6.8.1
   datatables.net: ^2.1.3
   datatables.net-bs5: ^2.1.3
-  gd-sprest-bs: ^10.12.12
+  gd-sprest-bs: ^10.12.14
   html-loader: ^4.2.0
   jquery: ^3.7.1
   moment: ^2.29.4

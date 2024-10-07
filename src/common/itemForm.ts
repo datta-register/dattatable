@@ -586,11 +586,11 @@ export class ItemForm {
     }
 
     // Saves the edit form
-    static save(form?: Components.IListFormEdit) {
+    static save(props: { form?: Components.IListFormEdit, bypassValidation?: boolean } = {}) {
         let values = {};
 
         // Default the form
-        let forms = form ? [form] : this._editForms;
+        let forms = props.form ? [props.form] : this._editForms;
         let defaultForm = forms[0];
 
         // Display a loading dialog
@@ -611,36 +611,38 @@ export class ItemForm {
                 defaultForm = form;
             }
 
-            // Validate the form
-            let tabIsValid = form.isValid();
+            // See if we are bypassing validation
+            if (props.bypassValidation == null || props.bypassValidation != true) {
+                // Validate the form
+                let tabIsValid = form.isValid();
 
-            // See if we are using tabs and an event exists
-            let tabInfo = this._tabInfo && this._tabInfo.tabs[counter];
-            if (tabInfo && tabInfo.onValidation) {
-                // Call the event
-                tabIsValid = tabInfo.onValidation(values);
-            }
+                // See if we are using tabs and an event exists
+                let tabInfo = this._tabInfo && this._tabInfo.tabs[counter];
+                if (tabInfo && tabInfo.onValidation) {
+                    // Call the event
+                    tabIsValid = tabInfo.onValidation(values);
+                }
 
-            // See if the form is not valid
-            if (!tabIsValid) {
-                // Set the flag
-                isValid = false;
-            }
+                // See if the form is not valid
+                if (!tabIsValid) {
+                    // Set the flag
+                    isValid = false;
+                }
 
-            // See if tabs exist
-            if (this.Tabs) {
-                // Get the tab
-                let tab = this.Tabs.el.querySelectorAll(".list-group-item")[counter++] as HTMLAnchorElement;
-                if (tab) {
-                    // Clear the class name
-                    tab.classList.remove("is-valid");
-                    tab.classList.remove("is-invalid");
+                // See if tabs exist
+                if (this.Tabs) {
+                    // Get the tab
+                    let tab = this.Tabs.el.querySelectorAll(".list-group-item")[counter++] as HTMLAnchorElement;
+                    if (tab) {
+                        // Clear the class name
+                        tab.classList.remove("is-valid");
+                        tab.classList.remove("is-invalid");
 
-                    // Set the class name
-                    tab.classList.add(tabIsValid ? "is-valid" : "is-invalid");
+                        // Set the class name
+                        tab.classList.add(tabIsValid ? "is-valid" : "is-invalid");
+                    }
                 }
             }
-            // Set the tab class
         }).then(
             // Success
             () => {
@@ -649,7 +651,7 @@ export class ItemForm {
                     // Valid
                     isValid => {
                         // See if the form(s) are valid
-                        if (isValid) {
+                        if (isValid || props.bypassValidation == true) {
                             // Update the loading dialog
                             LoadingDialog.setHeader("Saving the Item");
                             LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
