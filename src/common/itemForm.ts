@@ -586,153 +586,171 @@ export class ItemForm {
     }
 
     // Saves the edit form
-    static save(props: { form?: Components.IListFormEdit, bypassValidation?: boolean } = {}) {
-        let values = {};
+    static save(props: { form?: Components.IListFormEdit, bypassValidation?: boolean } = {}): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            let values = {};
 
-        // Default the form
-        let forms = props.form ? [props.form] : this._editForms;
-        let defaultForm = forms[0];
+            // Default the form
+            let forms = props.form ? [props.form] : this._editForms;
+            let defaultForm = forms[0];
 
-        // Display a loading dialog
-        LoadingDialog.setHeader("Validation");
-        LoadingDialog.setBody("Validating the form...");
-        LoadingDialog.show();
+            // Display a loading dialog
+            LoadingDialog.setHeader("Validation");
+            LoadingDialog.setBody("Validating the form...");
+            LoadingDialog.show();
 
-        // Validate the forms
-        let isValid = true;
-        let counter = 0;
-        Helper.Executor(forms, form => {
-            // Update the values
-            values = { ...values, ...form.getValues() }
+            // Validate the forms
+            let isValid = true;
+            let counter = 0;
+            Helper.Executor(forms, form => {
+                // Update the values
+                values = { ...values, ...form.getValues() }
 
-            // See if this form has attachments
-            if (form.hasAttachments()) {
-                // Set the default form
-                defaultForm = form;
-            }
-
-            // See if we are bypassing validation
-            if (props.bypassValidation == null || props.bypassValidation != true) {
-                // Validate the form
-                let tabIsValid = form.isValid();
-
-                // See if we are using tabs and an event exists
-                let tabInfo = this._tabInfo && this._tabInfo.tabs[counter];
-                if (tabInfo && tabInfo.onValidation) {
-                    // Call the event
-                    tabIsValid = tabInfo.onValidation(values);
+                // See if this form has attachments
+                if (form.hasAttachments()) {
+                    // Set the default form
+                    defaultForm = form;
                 }
 
-                // See if the form is not valid
-                if (!tabIsValid) {
-                    // Set the flag
-                    isValid = false;
-                }
+                // See if we are bypassing validation
+                if (props.bypassValidation == null || props.bypassValidation != true) {
+                    // Validate the form
+                    let tabIsValid = form.isValid();
 
-                // See if tabs exist
-                if (this.Tabs) {
-                    // Get the tab
-                    let tab = this.Tabs.el.querySelectorAll(".list-group-item")[counter++] as HTMLAnchorElement;
-                    if (tab) {
-                        // Clear the class name
-                        tab.classList.remove("is-valid");
-                        tab.classList.remove("is-invalid");
+                    // See if we are using tabs and an event exists
+                    let tabInfo = this._tabInfo && this._tabInfo.tabs[counter];
+                    if (tabInfo && tabInfo.onValidation) {
+                        // Call the event
+                        tabIsValid = tabInfo.onValidation(values);
+                    }
 
-                        // Set the class name
-                        tab.classList.add(tabIsValid ? "is-valid" : "is-invalid");
+                    // See if the form is not valid
+                    if (!tabIsValid) {
+                        // Set the flag
+                        isValid = false;
+                    }
+
+                    // See if tabs exist
+                    if (this.Tabs) {
+                        // Get the tab
+                        let tab = this.Tabs.el.querySelectorAll(".list-group-item")[counter++] as HTMLAnchorElement;
+                        if (tab) {
+                            // Clear the class name
+                            tab.classList.remove("is-valid");
+                            tab.classList.remove("is-invalid");
+
+                            // Set the class name
+                            tab.classList.add(tabIsValid ? "is-valid" : "is-invalid");
+                        }
                     }
                 }
-            }
-        }).then(
-            // Success
-            () => {
-                // Call the custom validation event
-                this.validate(values, isValid).then(
-                    // Valid
-                    isValid => {
-                        // See if the form(s) are valid
-                        if (isValid || props.bypassValidation == true) {
-                            // Update the loading dialog
-                            LoadingDialog.setHeader("Saving the Item");
-                            LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
+            }).then(
+                // Success
+                () => {
+                    // Call the custom validation event
+                    this.validate(values, isValid).then(
+                        // Valid
+                        isValid => {
+                            // See if the form(s) are valid
+                            if (isValid || props.bypassValidation == true) {
+                                // Update the loading dialog
+                                LoadingDialog.setHeader("Saving the Item");
+                                LoadingDialog.setBody((this.IsNew ? "Creating" : "Updating") + " the Item");
 
-                            // Saves the item
-                            let saveItem = (values, retryFl?: boolean) => {
-                                // If values is null then do nothing. This would happen when the
-                                // onSave event wants to cancel the save and do something custom
-                                if (values) {
-                                    // Save the item
-                                    defaultForm.save(values).then(item => {
-                                        // Call the update event
-                                        this._updateEvent ? this._updateEvent(item) : null;
+                                // Saves the item
+                                let saveItem = (values, retryFl?: boolean) => {
+                                    // If values is null then do nothing. This would happen when the
+                                    // onSave event wants to cancel the save and do something custom
+                                    if (values) {
+                                        // Save the item
+                                        defaultForm.save(values).then(item => {
+                                            // Call the update event
+                                            this._updateEvent ? this._updateEvent(item) : null;
 
-                                        // Close the dialogs
-                                        (this._useModal ? Modal : CanvasForm).hide();
-                                        LoadingDialog.hide();
-                                    }, err => {
-                                        // See if we have already retried to save the item
-                                        if (retryFl) {
-                                            // Log
-                                            console.error("[List Form] Unable to get the context for web.");
+                                            // Close the dialogs
+                                            (this._useModal ? Modal : CanvasForm).hide();
+                                            LoadingDialog.hide();
 
-                                            // Call the event
-                                            this._onSaveError ? this._onSaveError(err) : null;
-                                        } else {
-                                            // Try to get the error message
-                                            try {
-                                                let errorMessage: string = JSON.parse(err.response).error.message.value;
+                                            // Resolve the request
+                                            resolve();
+                                        }, err => {
+                                            // See if we have already retried to save the item
+                                            if (retryFl) {
+                                                // Log
+                                                console.error("[List Form] Unable to get the context for web.");
 
-                                                // See if the page timed out
-                                                if (errorMessage.indexOf("The security validation for this page is invalid") == 0) {
-                                                    // Set the loading dialog
-                                                    LoadingDialog.setBody("The page timed out, retrying the request...");
-
-                                                    // Refresh the request digest
-                                                    defaultForm.refreshRequestDigest().then(() => {
-                                                        // Try to save the item again
-                                                        saveItem(values, true);
-                                                    });
-                                                } else {
-                                                    // Call the event
-                                                    this._onSaveError ? this._onSaveError(err) : null;
-                                                }
-                                            } catch {
                                                 // Call the event
                                                 this._onSaveError ? this._onSaveError(err) : null;
+
+                                                // Reject the request
+                                                reject();
+                                            } else {
+                                                // Try to get the error message
+                                                try {
+                                                    let errorMessage: string = JSON.parse(err.response).error.message.value;
+
+                                                    // See if the page timed out
+                                                    if (errorMessage.indexOf("The security validation for this page is invalid") == 0) {
+                                                        // Set the loading dialog
+                                                        LoadingDialog.setBody("The page timed out, retrying the request...");
+
+                                                        // Refresh the request digest
+                                                        defaultForm.refreshRequestDigest().then(() => {
+                                                            // Try to save the item again
+                                                            saveItem(values, true);
+                                                        });
+                                                    } else {
+                                                        // Call the event
+                                                        this._onSaveError ? this._onSaveError(err) : null;
+
+                                                        // Reject the request
+                                                        reject();
+                                                    }
+                                                } catch {
+                                                    // Call the event
+                                                    this._onSaveError ? this._onSaveError(err) : null;
+
+                                                    // Reject the request
+                                                    reject();
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
-                            }
 
-                            // Call the save event and ensure values exist
-                            values = this._onSave ? this._onSave(values) : values;
+                                // Call the save event and ensure values exist
+                                values = this._onSave ? this._onSave(values) : values;
 
-                            // See if the onSave event returned a promise
-                            if (values && typeof (values["then"]) === "function") {
-                                // Wait for the promise to complete
-                                values["then"](values => {
+                                // See if the onSave event returned a promise
+                                if (values && typeof (values["then"]) === "function") {
+                                    // Wait for the promise to complete
+                                    values["then"](values => {
+                                        // Save the item
+                                        saveItem(values);
+                                    });
+                                } else {
                                     // Save the item
                                     saveItem(values);
-                                });
+                                }
                             } else {
-                                // Save the item
-                                saveItem(values);
+                                // Close the dialog
+                                LoadingDialog.hide();
                             }
-                        } else {
+                        },
+
+                        // Not Valid
+                        () => {
                             // Close the dialog
                             LoadingDialog.hide();
-                        }
-                    },
 
-                    // Not Valid
-                    () => {
-                        // Close the dialog
-                        LoadingDialog.hide();
-                    }
-                );
-            }
-        );
+                            // Reject the request
+                            reject();
+                        }
+                    );
+                }
+            );
+        });
     }
 
     // Validates the form
