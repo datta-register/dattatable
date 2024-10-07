@@ -573,6 +573,12 @@ export class List<T = Types.SP.ListItem> {
         return this.loadItem(itemId, query);
     }
 
+    // Saves the item with an option to bypass validation
+    save(bypassValidation?: boolean) {
+        // Save the item
+        ItemForm.save({ bypassValidation });
+    }
+
     // Updates an item
     updateItem(itemId: number, values): PromiseLike<void> {
         // Return a promise
