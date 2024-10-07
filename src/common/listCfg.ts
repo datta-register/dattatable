@@ -27,7 +27,6 @@ export interface ILookupData {
     field: string;
     list: string;
     items: { [key: string]: object | string }[];
-    srcField: string;
 }
 
 // Generate Lookup Data Properties
@@ -529,79 +528,21 @@ export class ListConfig {
                 return new Promise((resolve) => {
                     // Get the source list
                     Web(props.srcWebUrl).Lists().getById(lookupField.LookupList).execute(list => {
-                        let fields: Types.SP.Field[] = [];
-
-                        // Get the list content type fields
-                        list.ContentTypes().query({ Expand: ["Fields"] }).execute(cts => {
-                            // Parse the content type fields
-                            for (let i = 0; i < cts.results[0].Fields.results.length; i++) {
-                                let field = cts.results[0].Fields.results[i];
-
-                                // Add the field link
-                                fields.push(field);
-                            }
-                        });
-
-                        // Get the list items
-                        list.Items().query({
-                            GetAllItems: true,
-                            Top: 5000,
-                            OrderBy: ["Id"]
-                        }).execute(items => {
-                            let lookupItems: { [key: string]: object | string }[] = [];
-
-                            // Parse the items
-                            for (let i = 0; i < items.results.length; i++) {
-                                let lookupItem = {};
-
-                                // Parse the field links
-                                for (let j = 0; j < fields.length; j++) {
-                                    let field = fields[j];
-                                    let value = items.results[i][field.InternalName];
-
-                                    // Ensure a value exists
-                                    if (value == null) { continue; }
-
-                                    // See if this is a collection
-                                    if (value.results) {
-                                        // Set the results
-                                        value = { results: value.results };
-                                    }
-
-                                    // Add the value, based on the type
-                                    switch (field.FieldTypeKind) {
-                                        case SPTypes.FieldType.URL:
-                                            lookupItem[field.InternalName] = {
-                                                Description: value.Description,
-                                                Url: value.Url
-                                            } as Types.SP.FieldUrlValue;
-                                            break;
-                                        default:
-                                            // Set the value
-                                            lookupItem[field.InternalName] = value;
-                                            break;
-                                    }
-                                }
-
-                                // Add the lookup item
-                                lookupItems.push(lookupItem);
-                            }
-
-                            // Save the item data
-                            lookupListData.push({
-                                field: lookupField.LookupField,
-                                items: lookupItems,
-                                list: list.Title,
-                                srcField: lookupField.InternalName
-                            });
-
+                        // Read the list
+                        this.readList(props.srcWebUrl, list.Title, lookupField.LookupField).then(data => {
                             // Set the flag
                             lookupLists[listId] = true;
 
+                            // Save the item data
+                            lookupListData.push(data);
+
                             // Check the next list
                             resolve(null);
-                        }, true); // Set the flag to run this after the previous request completes
+                        }, resolve);
                     }, () => {
+                        // Log
+                        console.error(`Error: List with id '${lookupField.LookupList}' does not exist in web '${props.srcWebUrl}'.`)
+
                         // Check the next list
                         resolve(null);
                     });
@@ -609,6 +550,81 @@ export class ListConfig {
             }).then(() => {
                 // Resolve the request
                 resolve(lookupListData);
+            }, reject);
+        });
+    }
+
+    // Generates the lookup list data
+    static readList(webUrl: string, listName: string, lookupField: string): PromiseLike<ILookupData> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Get the source list
+            Web(webUrl).Lists(listName).execute(list => {
+                let fields: Types.SP.Field[] = [];
+
+                // Get the list content type fields
+                list.ContentTypes().query({ Expand: ["Fields"] }).execute(cts => {
+                    // Parse the content type fields
+                    for (let i = 0; i < cts.results[0].Fields.results.length; i++) {
+                        let field = cts.results[0].Fields.results[i];
+
+                        // Add the field link
+                        fields.push(field);
+                    }
+                });
+
+                // Get the list items
+                list.Items().query({
+                    GetAllItems: true,
+                    Top: 5000,
+                    OrderBy: ["Id"]
+                }).execute(items => {
+                    let lookupItems: { [key: string]: object | string }[] = [];
+
+                    // Parse the items
+                    for (let i = 0; i < items.results.length; i++) {
+                        let lookupItem = {};
+
+                        // Parse the field links
+                        for (let j = 0; j < fields.length; j++) {
+                            let field = fields[j];
+                            let value = items.results[i][field.InternalName];
+
+                            // Ensure a value exists
+                            if (value == null) { continue; }
+
+                            // See if this is a collection
+                            if (value.results) {
+                                // Set the results
+                                value = { results: value.results };
+                            }
+
+                            // Add the value, based on the type
+                            switch (field.FieldTypeKind) {
+                                case SPTypes.FieldType.URL:
+                                    lookupItem[field.InternalName] = {
+                                        Description: value.Description,
+                                        Url: value.Url
+                                    } as Types.SP.FieldUrlValue;
+                                    break;
+                                default:
+                                    // Set the value
+                                    lookupItem[field.InternalName] = value;
+                                    break;
+                            }
+                        }
+
+                        // Add the lookup item
+                        lookupItems.push(lookupItem);
+                    }
+
+                    // Resolve the request
+                    resolve({
+                        field: lookupField,
+                        items: lookupItems,
+                        list: list.Title
+                    });
+                }, true); // Set the flag to run this after the previous request completes
             }, reject);
         });
     }
