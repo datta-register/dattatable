@@ -598,11 +598,11 @@ export class ListConfig {
 
                             // Check the next list
                             resolve(null);
-                        });
+                        }, true); // Set the flag to run this after the previous request completes
                     }, () => {
                         // Check the next list
                         resolve(null);
-                    }, true); // Set the flag to run this after the previous request completes
+                    });
                 });
             }).then(() => {
                 // Resolve the request
