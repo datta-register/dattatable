@@ -56,6 +56,7 @@ export class ListConfig {
         "ContentType", "TaxCatchAll", "TaxCatchAllLabel", "Title",
         "ItemChildCount", "FolderChildCount", "FileLeafRef", "FileRef"
     ]
+
     // Generates the lookup list data
     static createLookupListData(props: ICreateLookupData): PromiseLike<void> {
         // See if we are showing a loading dialog
@@ -160,6 +161,68 @@ export class ListConfig {
                     // Resolve the request
                     resolve();
                 }, reject);
+            });
+        });
+    }
+
+    // Fixes the MMS fields to ensure the list property is configured correctly
+    static fixMMSFields(webUrl: string, listName: string): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Show a loading dialog
+            LoadingDialog.setHeader("Validating MMS Fields");
+            LoadingDialog.setBody("Getting the list '" + listName + "' fields...");
+            LoadingDialog.show();
+
+            // Get the hidden list
+            this.getMMSLookupListId(webUrl).then(listId => {
+                let mmsListId = "{" + listId + "}";
+
+                // Load the list fields
+                Web(webUrl).Lists(listName).Fields().execute(
+                    fields => {
+                        // Parse the fields
+                        Helper.Executor(fields.results, field => {
+                            // See if this is not a MMS field
+                            if (field.TypeDisplayName != "Managed Metadata") { return; }
+
+                            // Return a promise
+                            return new Promise(resolve => {
+                                // Get the schema for this field
+                                let parser = new DOMParser();
+                                let schemaXml = parser.parseFromString(field.SchemaXml, "application/xml");
+                                let xmlField = schemaXml.querySelector("Field");
+
+                                // See if the list property is correct
+                                if (xmlField.getAttribute("List") == mmsListId) {
+                                    // Check the next field
+                                    resolve(null);
+                                } else {
+                                    // Update the list property
+                                    xmlField.setAttribute("List", mmsListId);
+
+                                    // Update the schema value and check the next field
+                                    field.update({ SchemaXml: xmlField.outerHTML }).execute(resolve, () => {
+                                        // Log the error
+                                        console.error("Error updating the MMS list property for field: " + field.InternalName);
+
+                                        // Check the next field
+                                        resolve(null);
+                                    });
+                                }
+                            });
+                        }).then(resolve, reject);
+                    },
+
+                    reject
+                );
+
+            }, () => {
+                // Error getting the list data
+                console.error("Error getting the taxonomy hidden list.");
+
+                // Resolve the request
+                resolve();
             });
         });
     }
@@ -550,6 +613,18 @@ export class ListConfig {
             }).then(() => {
                 // Resolve the request
                 resolve(lookupListData);
+            }, reject);
+        });
+    }
+
+    // Gets the taxonomy hidden list
+    private static getMMSLookupListId(webUrl: string): PromiseLike<string> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Query the web for the hidden list
+            Web(webUrl).Lists("TaxonomyHiddenList").execute(list => {
+                // Resolve the request
+                resolve(list.Id);
             }, reject);
         });
     }
