@@ -15,8 +15,9 @@ export interface ITilesProps {
     filterFields?: string[];
     items: any[];
     onBodyRendered?: (el?: HTMLElement, item?: any) => void;
+    onCardBodyRendering?: (cardBody?: Components.ICardBody, item?: any) => void;
     onCardRendered?: (el?: HTMLElement, item?: any) => void;
-    onCardRendering?: (item?: Components.ICardProps) => void;
+    onCardRendering?: (cardProps?: Components.ICardProps, item?: any) => void;
     onClick?: (el?: HTMLElement, item?: Components.ICardBody) => void;
     onColumnRendered?: (el?: HTMLElement, item?: any) => void;
     onFooterRendered?: (el?: HTMLElement, item?: any) => void;
@@ -202,8 +203,9 @@ export class Tiles implements ITiles {
             };
         }
 
-        // Call the event
-        this._props.onCardRendering ? this._props.onCardRendering(cardProps) : null;
+        // Call the events
+        this._props.onCardBodyRendering ? this._props.onCardBodyRendering(cardProps.body[0], item) : null;
+        this._props.onCardRendering ? this._props.onCardRendering(cardProps, item) : null;
 
         // Return the card properties
         return cardProps;
