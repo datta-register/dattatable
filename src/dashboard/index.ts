@@ -99,7 +99,7 @@ export interface IDashboardProps {
         bodyFields?: string[];
         bodyTemplate?: string;
         className?: string;
-        colSize?: number;
+        colSize?: number | string;
         filterFields?: string[];
         items: any[];
         onBodyRendered?: (el?: HTMLElement, item?: any) => void;

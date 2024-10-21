@@ -10,7 +10,7 @@ export interface ITilesProps {
     bodyFields?: string[];
     bodyTemplate?: string;
     className?: string;
-    colSize?: number;
+    colSize?: number | string;
     el: HTMLElement;
     filterFields?: string[];
     items: any[];
