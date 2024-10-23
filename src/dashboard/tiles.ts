@@ -56,8 +56,10 @@ export class Tiles implements ITiles {
         // Render the tile
         this.render(this._props.items);
 
-        // Call the event
-        this._props.onRendered ? this._props.onRendered(this._props.el) : null;
+        // Call the rendered event in a separate thread to ensure the dashboard object is created
+        setTimeout(() => {
+            this._props.onRendered ? this._props.onRendered(this._props.el) : null;
+        }, 50);
     }
 
     // Filters the tile
