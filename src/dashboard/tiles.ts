@@ -24,6 +24,7 @@ export interface ITilesProps {
     onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
     onPaginationClick?: (pageNumber?: number) => void;
     onPaginationRendered?: (el?: HTMLElement) => void;
+    onRendered?: (el?: HTMLElement) => void;
     onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
     onTitleRendered?: (el?: HTMLElement, item?: any) => void;
     paginationLimit?: number;
@@ -54,6 +55,9 @@ export class Tiles implements ITiles {
 
         // Render the tile
         this.render(this._props.items);
+
+        // Call the event
+        this._props.onRendered ? this._props.onRendered(this._props.el) : null;
     }
 
     // Filters the tile

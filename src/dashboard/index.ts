@@ -112,6 +112,7 @@ export interface IDashboardProps {
         onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
         onPaginationClick?: (pageNumber?: number) => void;
         onPaginationRendered?: (el?: HTMLElement) => void;
+        onRendered?: (el?: HTMLElement) => void;
         onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
         onTitleRendered?: (el?: HTMLElement, item?: any) => void;
         paginationLimit?: number;
