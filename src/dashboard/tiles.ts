@@ -253,6 +253,7 @@ export class Tiles implements ITiles {
     // Updates the visibility of the tiles
     private updateTiles() {
         let paginationLimit = this._props.paginationLimit || 10;
+        let showPagination = typeof (this._props.showPagination) === "boolean" ? this._props.showPagination : true;
 
         // Get the pagination element
         let elPagination = this._props.el.querySelector(".tiles-pagination") as HTMLElement;
@@ -340,17 +341,16 @@ export class Tiles implements ITiles {
             }
         }
 
-        // Parse the active items to hide
-        for (let i = paginationLimit; i < elItems.length; i++) {
-            let elItem = elItems[i] as HTMLElement;
-
-            // Hide the item
-            elItem.parentElement.classList.add("d-none");
-        }
-
-        // See if we are showing pagination
-        let showPagination = typeof (this._props.showPagination) === "boolean" ? this._props.showPagination : true;
+        // Ensure we are showing the pagination
         if (showPagination) {
+            // Parse the active items to hide
+            for (let i = paginationLimit; i < elItems.length; i++) {
+                let elItem = elItems[i] as HTMLElement;
+
+                // Hide the item
+                elItem.parentElement.classList.add("d-none");
+            }
+
             // Render the pagination
             this._pagination = Components.Pagination({
                 el: elPagination,
