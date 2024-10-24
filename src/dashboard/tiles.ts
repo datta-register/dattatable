@@ -258,9 +258,6 @@ export class Tiles implements ITiles {
 
     // Updates the visibility of the tiles
     private updateTiles() {
-        let paginationLimit = this._props.paginationLimit || 10;
-        let showPagination = typeof (this._props.showPagination) === "boolean" ? this._props.showPagination : true;
-
         // Get the pagination element
         let elPagination = this._props.el.querySelector(".tiles-pagination") as HTMLElement;
         if (elPagination) {
@@ -332,6 +329,10 @@ export class Tiles implements ITiles {
                 }
             }
         }
+
+        // Set the pagination limit
+        let showPagination = typeof (this._props.showPagination) === "boolean" ? this._props.showPagination : true;
+        let paginationLimit = showPagination ? this._props.paginationLimit || 10 : elItems.length;
 
         // Parse the active items to show
         for (let i = 0; i < paginationLimit; i++) {
