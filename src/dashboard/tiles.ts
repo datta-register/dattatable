@@ -174,10 +174,6 @@ export class Tiles implements ITiles {
                 data: item,
                 subTitle: subTitleContent,
                 title: titleContent,
-                onClick: (card, ev) => {
-                    // Call the event
-                    this._props.onClick ? this._props.onClick(ev.currentTarget as any, card) : null;
-                },
                 onRender: (el, card) => {
                     let item = card.data;
 
@@ -186,7 +182,11 @@ export class Tiles implements ITiles {
                     this._props.onSubTitleRendered ? this._props.onSubTitleRendered(el.querySelector(".card-subtitle"), item) : null;
                     this._props.onBodyRendered ? this._props.onBodyRendered(el, item) : null;
                 }
-            }]
+            }],
+            onClick: (card, ev) => {
+                // Call the event
+                this._props.onClick ? this._props.onClick(ev.currentTarget as any, card) : null;
+            }
         };
 
         // See if we are showing the header
