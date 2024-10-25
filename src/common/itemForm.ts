@@ -63,6 +63,13 @@ export interface IItemFormEditProps {
     webUrl?: string;
 }
 
+/** Save Item Properties */
+export interface IItemFormSaveProps {
+    bypassValidation?: boolean;
+    checkItemVersion?: boolean;
+    form?: Components.IListFormEdit;
+}
+
 /** View Item Properties */
 export interface IItemFormViewProps {
     elForm?: HTMLElement;
@@ -586,7 +593,7 @@ export class ItemForm {
     }
 
     // Saves the edit form
-    static save(props: { form?: Components.IListFormEdit, bypassValidation?: boolean } = {}): PromiseLike<any> {
+    static save(props: IItemFormSaveProps = {}): PromiseLike<any> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let values = {};
@@ -664,7 +671,7 @@ export class ItemForm {
                                     // onSave event wants to cancel the save and do something custom
                                     if (values) {
                                         // Save the item
-                                        defaultForm.save(values).then(item => {
+                                        defaultForm.save(values, props.checkItemVersion).then(item => {
                                             // Call the update event
                                             this._updateEvent ? this._updateEvent(item) : null;
 
