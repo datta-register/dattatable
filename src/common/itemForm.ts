@@ -6,6 +6,7 @@ export interface IItemFormTab {
     title: string;
     fields?: string[];
     excludeFields?: string[];
+    isReadOnly?: boolean;
     onCreateForm?: (props: Components.IListFormDisplayProps | Components.IListFormEditProps) => Components.IListFormDisplayProps | Components.IListFormEditProps;
     onFormRendered?: (form?: Components.IListFormDisplay | Components.IListFormEdit) => void;
     onRendered?: (el?: HTMLElement, item?: Components.IListGroupItem) => void;
@@ -564,7 +565,7 @@ export class ItemForm {
                     let tab = item.data as IItemFormTab;
 
                     // Render the form
-                    this.IsDisplay ? this.renderDisplayForm(el, tab) : this.renderEditForm(el, tab);
+                    this.IsDisplay || tab.isReadOnly ? this.renderDisplayForm(el, tab) : this.renderEditForm(el, tab);
 
                     // Call the event
                     tab.onRendered ? tab.onRendered(el, item) : null;
