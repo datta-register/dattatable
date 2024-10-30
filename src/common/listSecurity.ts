@@ -105,6 +105,18 @@ export class ListSecurity {
         });
     }
 
+    // Method to manually add a security group to this component
+    addGroup(groupName: string): PromiseLike<Types.SP.GroupOData> {
+        // Return a promise
+        return new Promise(resolve => {
+            // Add the group
+            this.getGroupId(groupName).then(() => {
+                // Resolve the request
+                resolve(this.getGroup(groupName));
+            });
+        });
+    }
+
     // Method to check if the user is w/in a group and add them otherwise
     addToGroup(userId: number, groupName: string): PromiseLike<void> {
         // Return a promise
