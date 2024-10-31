@@ -428,6 +428,11 @@ export class ItemForm {
 
         // Render the edit form
         let form = Components.ListForm.renderEditForm(props);
+
+        // Set the data object to store the tab information
+        form.data = tab;
+
+        // Append the form
         this._editForms.push(form);
 
         // Return the form element
@@ -630,7 +635,7 @@ export class ItemForm {
                     let tabIsValid = form.isValid();
 
                     // See if we are using tabs and an event exists
-                    let tabInfo = this._tabInfo && this._tabInfo.tabs[counter];
+                    let tabInfo = form.data as IItemFormTab;
                     if (tabInfo && tabInfo.onValidation) {
                         // Call the event
                         tabIsValid = tabInfo.onValidation(values);
@@ -643,9 +648,9 @@ export class ItemForm {
                     }
 
                     // See if tabs exist
-                    if (this.Tabs) {
+                    if (this.Tabs && tabInfo) {
                         // Get the tab
-                        let tab = this.Tabs.el.querySelectorAll(".list-group-item")[counter++] as HTMLAnchorElement;
+                        let tab = this.Tabs.el.querySelector(`.list-group-item[data-tab-title='${tabInfo.title}']`) as HTMLAnchorElement;
                         if (tab) {
                             // Clear the class name
                             tab.classList.remove("is-valid");
