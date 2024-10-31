@@ -472,7 +472,10 @@ export class ItemForm {
             let formButtons: Components.IButtonProps[] = [{
                 text: this.IsNew ? "Create" : "Update",
                 type: Components.ButtonTypes.OutlinePrimary,
-                onClick: () => { this.save(); }
+                onClick: () => {
+                    // Save the form
+                    this.save().then(() => { }, () => { });
+                }
             }];
             formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
 
