@@ -241,8 +241,18 @@ export class List<T = Types.SP.ListItem> {
                             // Skip functions
                             if (typeof (version[key]) === "function") { continue; }
 
+                            // See if this is an object
+                            let isEqual = true;
+                            if (typeof (version[key]) === "object") {
+                                // See if they don't match
+                                isEqual = JSON.stringify(version[key] || {}) != JSON.stringify(prevVersion[key] || {});
+                            } else {
+                                // See if they are equal
+                                isEqual = version[key] == prevVersion[key];
+                            }
+
                             // See if they aren't equal
-                            if (!window["_"].isEqual(version[key], prevVersion[key])) {
+                            if (!isEqual) {
                                 // Append the change
                                 changes[versionId][key] = version[key];
                             }
