@@ -239,26 +239,24 @@ export class List<T = Types.SP.ListItem> {
                         // Set the change object
                         changes[versionId] = {};
 
-                        // Parse the keys
-                        for (let key in version) {
+                        // Parse the list fields
+                        for (let j = 0; j < this.ListFields.length; j++) {
+                            let field = this.ListFields[j];
+                            let value = version[field.InternalName] || version[field.InternalName + "Id"];
+                            let prevValue = prevVersion[field.InternalName] || prevVersion[field.InternalName + "Id"];
+
                             // Skip functions
-                            if (typeof (version[key]) === "function") { continue; }
+                            if (typeof (value) === "function") { continue; }
 
-                            // See if this is an object
-                            let isEqual = true;
-                            if (typeof (version[key]) === "object") {
-                                // See if they don't match
-                                isEqual = JSON.stringify(version[key] || {}) != JSON.stringify(prevVersion[key] || {});
-                            } else {
-                                // See if they are equal
-                                isEqual = version[key] == prevVersion[key];
+                            // Try to convert the values to a string
+                            try {
+                                if (JSON.stringify(value) != JSON.stringify(prevValue)) {
+                                    // Append the change
+                                    changes[versionId][field.InternalName] = value;
+                                }
                             }
-
-                            // See if they aren't equal
-                            if (!isEqual) {
-                                // Append the change
-                                changes[versionId][key] = version[key];
-                            }
+                            // Skip this property on error
+                            catch { }
                         }
                     }
 
