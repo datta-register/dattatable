@@ -219,6 +219,43 @@ export class List<T = Types.SP.ListItem> {
         ItemForm.edit(props).then(null, this._onLoadFormError);
     }
 
+    // Gets the changes for a list item's version history
+    getChanges(id: number): PromiseLike<any> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            let changes = {};
+
+            // Get the item
+            let item = this.getItem(id);
+            if (item) {
+                // Get the versions for this item
+                item["Versions"]().execute(versions => {
+                    // Parse the versions
+                    for (let i = 0; i < versions.results.length - 1; i++) {
+                        let version = versions.results[i];
+                        let prevVersion = versions.results[i + 1];
+                        let versionId = version.VersionLabel;
+
+                        // Parse the keys
+                        for (let key in version) {
+                            // Skip functions
+                            if (typeof (version[key]) === "function") { continue; }
+
+                            // See if they aren't equal
+                            if (!window["_"].isEqual(version[key], prevVersion[key])) {
+                                // Append the change
+                                changes[versionId][key] = version[key];
+                            }
+                        }
+                    }
+
+                    // Resolve the request
+                    resolve(changes);
+                }, reject);
+            }
+        });
+    }
+
     // Gets a list field by internal or title
     getField(name: string) {
         let titleField = null;
