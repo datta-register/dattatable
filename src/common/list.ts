@@ -236,6 +236,9 @@ export class List<T = Types.SP.ListItem> {
                         let prevVersion = versions.results[i + 1];
                         let versionId = version.VersionLabel;
 
+                        // Set the change object
+                        changes[versionId] = {};
+
                         // Parse the keys
                         for (let key in version) {
                             // Skip functions
