@@ -220,7 +220,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Gets the changes for a list item's version history
-    getChanges(id: number): PromiseLike<any> {
+    getChanges(id: number, defaultFields: string[] = []): PromiseLike<any> {
         // Return a promise
         return new Promise((resolve, reject) => {
             let changes = {};
@@ -239,11 +239,22 @@ export class List<T = Types.SP.ListItem> {
                         // Set the change object
                         changes[versionId] = {};
 
+                        // Set the default properties
+                        for (let i = 0; i < defaultFields.length; i++) {
+                            let defaultField = defaultFields[i];
+
+                            // Set the default value
+                            changes[versionId][defaultField] = version[defaultField];
+                        }
+
                         // Parse the list fields
                         for (let j = 0; j < this.ListFields.length; j++) {
                             let field = this.ListFields[j];
                             let value = version[field.InternalName] || version[field.InternalName + "Id"];
                             let prevValue = prevVersion[field.InternalName] || prevVersion[field.InternalName + "Id"];
+
+                            // Skip the default properties
+                            if (defaultFields.indexOf(field.InternalName) >= 0) { continue; }
 
                             // Skip functions
                             if (typeof (value) === "function") { continue; }
