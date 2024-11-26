@@ -1,4 +1,4 @@
-import { ContextInfo, Types, Web } from "gd-sprest-bs";
+import { ContextInfo, Helper, SPTypes, Types, Web } from "gd-sprest-bs";
 import {
     ItemForm, IItemFormCreateProps, IItemFormEditProps, IItemFormViewProps,
     CanvasForm, Modal, getContextInfo
@@ -30,6 +30,24 @@ export class List<T = Types.SP.ListItem> {
     // CAML query
     private _camlQuery: string = null;
     get CAMLQuery(): string { return this._camlQuery; }
+
+    // Flag to determine if the user can add/edit items to the list
+    get CanAddEditItems(): boolean {
+        return this.hasPermissions([
+            SPTypes.BasePermissionTypes.AddListItems,
+            SPTypes.BasePermissionTypes.EditListItems
+        ]);
+    }
+
+    // Flag to determine if the user can delete items to the list
+    get CanDeleteItems(): boolean {
+        return this.hasPermissions(SPTypes.BasePermissionTypes.DeleteListItems);
+    }
+
+    // Flag to determine if the user can view items to the list    
+    get CanViewItems(): boolean {
+        return this.hasPermissions(SPTypes.BasePermissionTypes.ViewListItems);
+    }
 
     // Reference to the edit form
     get EditForm() { return ItemForm.EditForm; }
@@ -95,6 +113,9 @@ export class List<T = Types.SP.ListItem> {
     get WebUrl(): string { return this._webUrl; }
 
     /** Private Properties */
+
+    // Base Permissions
+    private _basePermissions: Types.SP.BasePermissions = null;
 
     // Error event when loading the items fail
     private _onInitError: (...args) => void = null;
@@ -338,6 +359,12 @@ export class List<T = Types.SP.ListItem> {
         return null;
     }
 
+    // Determines if the user has permissions to the list
+    hasPermissions(permissions: number | number[]) {
+        // See if the user has permissions
+        return Helper.hasPermissions(this._basePermissions, permissions);
+    }
+
     // Initializes the list component
     private init(): PromiseLike<void> {
         // Return a promise
@@ -362,6 +389,11 @@ export class List<T = Types.SP.ListItem> {
             }, (...args) => {
                 // Reject the request
                 reject(...args);
+            });
+
+            // Get the user permissions for this list
+            list.getUserEffectivePermissions(ContextInfo.userEmail).execute(basePermissions => {
+                this._basePermissions = basePermissions.GetUserEffectivePermissions;
             });
 
             // Get the root folder
