@@ -392,8 +392,8 @@ export class List<T = Types.SP.ListItem> {
             });
 
             // Get the user permissions for this list
-            list.getUserEffectivePermissions(ContextInfo.userEmail).execute(basePermissions => {
-                this._basePermissions = basePermissions.GetUserEffectivePermissions;
+            list.query({ Expand: ["EffectiveBasePermissions"] }).execute(list => {
+                this._basePermissions = list.EffectiveBasePermissions;
             });
 
             // Get the root folder
