@@ -174,8 +174,8 @@ export class ListConfig {
             LoadingDialog.setBody("Getting the list '" + listName + "' information...");
             LoadingDialog.show();
 
-            // Load the list fields
-            Web(webUrl).Lists(listName).query({ Expand: ["ContentTypes", "Views"], Select: ["Id"] }).execute(list => {
+            // Load the list information
+            Web(webUrl).Lists(listName).query({ Expand: ["ContentTypes", "Fields", "Views"], Select: ["Id"] }).execute(list => {
                 // Parse the content types
                 Helper.Executor(list.ContentTypes.results, ct => {
                     // See if the custom formatter exists and needs the list id
@@ -196,7 +196,7 @@ export class ListConfig {
                                 // Log the error
                                 console.error("Error updating the custom formatter for the content type: " + ct.Name);
 
-                                // Check the next field
+                                // Check the next content type
                                 resolve(null);
                             });
                         });
@@ -222,12 +222,39 @@ export class ListConfig {
                                     // Log the error
                                     console.error("Error updating the custom formatter for the view: " + view.Title);
 
-                                    // Check the next field
+                                    // Check the next view
                                     resolve(null);
                                 });
                             });
                         }
-                    }).then(resolve, reject);
+                    }).then(() => {
+                        // Parse the views
+                        Helper.Executor(list.Fields.results, field => {
+                            // See if the custom formatter exists and needs the list id
+                            if (field.SchemaXml && field.SchemaXml.indexOf("[[ListId]]") >= 0) {
+                                // Return a promise
+                                return new Promise(resolve => {
+                                    let schemaXml = field.SchemaXml;
+
+                                    // Replace the list id
+                                    while (schemaXml.indexOf("[[ListId]]") >= 0) {
+                                        schemaXml = schemaXml.replace("[[ListId]]", list.Id)
+                                    }
+
+                                    // Update the content type
+                                    field.update({
+                                        SchemaXml: schemaXml
+                                    }).execute(resolve, () => {
+                                        // Log the error
+                                        console.error("Error updating the custom formatter for the field: " + field.InternalName);
+
+                                        // Check the next field
+                                        resolve(null);
+                                    });
+                                });
+                            }
+                        }).then(resolve, reject);
+                    }, reject);
                 }, reject);
             }, reject);
         });
@@ -396,6 +423,14 @@ export class ListConfig {
                             }
                             // Else, ensure the field hasn't been added
                             else if (fields[field.InternalName] == null) {
+                                // Replace the source list id in the JSON config
+                                let schemaXml = field.SchemaXml;
+                                if (schemaXml) {
+                                    while (schemaXml.indexOf(list.ListId) >= 0) {
+                                        schemaXml = schemaXml.replace(list.ListId, "[[ListId]]");
+                                    }
+                                }
+
                                 // Add the field information
                                 fields[field.InternalName] = true;
                                 cfgProps.ListCfg[0].CustomFields.push({
@@ -409,7 +444,7 @@ export class ListConfig {
                         let customFormatter = ct.ClientFormCustomFormatter;
                         if (customFormatter) {
                             while (customFormatter.indexOf(list.ListId) >= 0) {
-                                customFormatter = customFormatter.replace(list.ListId, "[[ListId]]")
+                                customFormatter = customFormatter.replace(list.ListId, "[[ListId]]");
                             }
                         }
 
@@ -451,6 +486,14 @@ export class ListConfig {
                                     // Add the field
                                     mmsFields[field.InternalName] = field;
                                 } else {
+                                    // Replace the source list id in the JSON config
+                                    let schemaXml = field.SchemaXml;
+                                    if (schemaXml) {
+                                        while (schemaXml.indexOf(list.ListId) >= 0) {
+                                            schemaXml = schemaXml.replace(list.ListId, "[[ListId]]");
+                                        }
+                                    }
+
                                     // Append the field
                                     fields[field.InternalName] = true;
                                     cfgProps.ListCfg[0].CustomFields.push({
@@ -465,7 +508,7 @@ export class ListConfig {
                         let customFormatter = viewInfo.CustomFormatter;
                         if (customFormatter) {
                             while (customFormatter.indexOf(list.ListId) >= 0) {
-                                customFormatter = customFormatter.replace(list.ListId, "[[ListId]]")
+                                customFormatter = customFormatter.replace(list.ListId, "[[ListId]]");
                             }
                         }
 
