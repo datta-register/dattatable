@@ -165,7 +165,75 @@ export class ListConfig {
         });
     }
 
-    // Fixes the MMS fields to ensure the list property is configured correctly
+    // Fixes the custom formatter list id values
+    static fixCustomFormatters(webUrl: string, listName: string): PromiseLike<void> {
+        // Return a promise
+        return new Promise((resolve, reject) => {
+            // Show a loading dialog
+            LoadingDialog.setHeader("Validating Custom Formatters");
+            LoadingDialog.setBody("Getting the list '" + listName + "' information...");
+            LoadingDialog.show();
+
+            // Load the list fields
+            Web(webUrl).Lists(listName).query({ Expand: ["ContentTypes", "Views"], Select: ["Id"] }).execute(list => {
+                // Parse the content types
+                Helper.Executor(list.ContentTypes.results, ct => {
+                    // See if the custom formatter exists and needs the list id
+                    if (ct.ClientFormCustomFormatter && ct.ClientFormCustomFormatter.indexOf("[[ListId]]") >= 0) {
+                        // Return a promise
+                        return new Promise(resolve => {
+                            let customFormatter = ct.ClientFormCustomFormatter;
+
+                            // Replace the list id
+                            while (customFormatter.indexOf("[[ListId]]") >= 0) {
+                                customFormatter = customFormatter.replace("[[ListId]]", list.Id)
+                            }
+
+                            // Update the content type
+                            ct.update({
+                                ClientFormCustomFormatter: customFormatter
+                            }).execute(resolve, () => {
+                                // Log the error
+                                console.error("Error updating the custom formatter for the content type: " + ct.Name);
+
+                                // Check the next field
+                                resolve(null);
+                            });
+                        });
+                    }
+                }).then(() => {
+                    // Parse the views
+                    Helper.Executor(list.Views.results, view => {
+                        // See if the custom formatter exists and needs the list id
+                        if (view.CustomFormatter && view.CustomFormatter.indexOf("[[ListId]]") >= 0) {
+                            // Return a promise
+                            return new Promise(resolve => {
+                                let customFormatter = view.CustomFormatter;
+
+                                // Replace the list id
+                                while (customFormatter.indexOf("[[ListId]]") >= 0) {
+                                    customFormatter = customFormatter.replace("[[ListId]]", list.Id)
+                                }
+
+                                // Update the content type
+                                view.update({
+                                    CustomFormatter: customFormatter
+                                }).execute(resolve, () => {
+                                    // Log the error
+                                    console.error("Error updating the custom formatter for the view: " + view.Title);
+
+                                    // Check the next field
+                                    resolve(null);
+                                });
+                            });
+                        }
+                    }).then(resolve, reject);
+                }, reject);
+            }, reject);
+        });
+    }
+
+    // Fixes the fields to ensure the list property is configured correctly
     static fixMMSFields(webUrl: string, listName: string): PromiseLike<void> {
         // Return a promise
         return new Promise((resolve, reject) => {
@@ -337,9 +405,17 @@ export class ListConfig {
                             }
                         }
 
+                        // Replace the source list id in the JSON config
+                        let customFormatter = ct.ClientFormCustomFormatter;
+                        if (customFormatter) {
+                            while (customFormatter.indexOf(list.ListId) >= 0) {
+                                customFormatter = customFormatter.replace(list.ListId, "[[ListId]]")
+                            }
+                        }
+
                         // Add the list content type
                         cfgProps.ListCfg[0].ContentTypes.push({
-                            ClientFormCustomFormatter: ct.ClientFormCustomFormatter,
+                            ClientFormCustomFormatter: customFormatter,
                             Name: ct.Name,
                             Description: ct.Description,
                             ParentName: ct.Parent.Name,
@@ -385,9 +461,17 @@ export class ListConfig {
                             }
                         }
 
+                        // Replace the source list id in the JSON config
+                        let customFormatter = viewInfo.CustomFormatter;
+                        if (customFormatter) {
+                            while (customFormatter.indexOf(list.ListId) >= 0) {
+                                customFormatter = customFormatter.replace(list.ListId, "[[ListId]]")
+                            }
+                        }
+
                         // Add the view
                         cfgProps.ListCfg[0].ViewInformation.push({
-                            CustomFormatter: viewInfo.CustomFormatter,
+                            CustomFormatter: customFormatter,
                             Default: viewInfo.DefaultView,
                             Hidden: viewInfo.Hidden,
                             JSLink: viewInfo.JSLink,
