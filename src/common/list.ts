@@ -252,7 +252,7 @@ export class List<T = Types.SP.ListItem> {
                 // Get the versions for this item
                 item["Versions"]().execute(versions => {
                     // Parse the versions
-                    for (let i = 0; i < versions.results.length - 1; i++) {
+                    for (let i = 0; i < versions.results.length; i++) {
                         let version = versions.results[i];
                         let prevVersion = versions.results[i + 1];
                         let versionId = version.VersionLabel;
@@ -272,7 +272,7 @@ export class List<T = Types.SP.ListItem> {
                         for (let j = 0; j < this.ListFields.length; j++) {
                             let field = this.ListFields[j];
                             let value = version[field.InternalName] || version[field.InternalName + "Id"];
-                            let prevValue = prevVersion[field.InternalName] || prevVersion[field.InternalName + "Id"];
+                            let prevValue = prevVersion ? prevVersion[field.InternalName] || prevVersion[field.InternalName + "Id"] : null;
 
                             // Skip the default properties
                             if (defaultFields.indexOf(field.InternalName) >= 0) { continue; }
