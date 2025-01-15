@@ -62,6 +62,8 @@ export interface IDashboardProps {
     hideSubNavigation?: boolean;
     navigation?: {
         className?: string;
+        iconSize?: number;
+        iconType?: SVGImageElement | Function;
         searchPlaceholder?: string;
         showFilter?: boolean;
         showSearch?: boolean;

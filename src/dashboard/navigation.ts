@@ -9,6 +9,8 @@ interface INavProps {
     className?: string;
     hideFilter?: boolean;
     hideSearch?: boolean;
+    iconSize?: number;
+    iconType?: SVGImageElement | Function;
     items?: Components.INavbarItem[];
     itemsEnd?: Components.INavbarItem[];
     onFilterRendered?: (el: HTMLElement) => void;
@@ -42,11 +44,33 @@ export class Navigation {
 
     // Renders the component
     private render() {
+        // See if an icon is defined
+        let brand;
+        if (this._props.iconType) {
+            // Set the icon
+            let size = this._props.iconSize || 32;
+            let icon: HTMLElement = typeof (this._props.iconType) === "function" ? this._props.iconType(size) : this._props.iconType;
+
+            // Set the text
+            let text = document.createElement("div");
+            text.classList.add("ms-2");
+            text.append(this._props.title || "");
+
+            // Set the brand
+            brand = document.createElement("div");
+            brand.classList.add("d-flex");
+            brand.appendChild(icon);
+            brand.appendChild(text);
+        } else {
+            // Set the brand
+            brand = this._props.title;
+        }
+
         // Define the default props
         let props: Components.INavbarProps = {
-            el: this._props.el,
+            brand,
             className: this._props.className,
-            brand: this._props.title,
+            el: this._props.el,
             enableSearch: this._props.hideSearch != null ? !this._props.hideSearch : null,
             items: this._props.items,
             itemsEnd: this._props.itemsEnd,
@@ -60,6 +84,7 @@ export class Navigation {
                 // Update the collapse visibility
                 el.classList.remove("navbar-expand-lg");
                 el.classList.add("navbar-expand-sm");
+                el.classList.add("rounded-top");
             }
         };
 
