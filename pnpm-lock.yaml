@@ -27,8 +27,8 @@ importers:
         specifier: ^2.1.3
         version: 2.2.1
       gd-sprest-bs:
-        specifier: ^10.13.18
-        version: 10.13.18
+        specifier: ^10.13.59
+        version: 10.13.59
       html-loader:
         specifier: ^4.2.0
         version: 4.2.0(webpack@5.97.1)
@@ -1043,17 +1043,17 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  gd-bs@6.6.79:
-    resolution: {integrity: sha512-GjScbsUD9QCXOmaHMYwIzQnjydtY3DztpPLsg4oQmyyY//+xivs5dK3Z1eoca+VOW6rbrVhwIfBJvpr0v/jF+Q==}
+  gd-bs@6.6.82:
+    resolution: {integrity: sha512-D5OGJTlkGfwrFECSfSKpG+1gmWrPPARjYgJuh7Z7EEo0W3xEvb1Vfgu2RnUQFKPrPEykA7liCWojgu4hv9MGOw==}
 
-  gd-sprest-bs@10.13.18:
-    resolution: {integrity: sha512-XP2NI+xTKl68R/jzGxNtKhsFoIqHSrJlnfLJTWtMO4u9M+QNcGRbfEkAmwaDPaEi/vZu7AkN+Wlgq8pRtM+1hQ==}
+  gd-sprest-bs@10.13.59:
+    resolution: {integrity: sha512-lJ6jHgehmsWTtzrSh93hL01EGNJP5981isSvDqSGgNOP9VtLZ93lO8FqZebJXCCbplJu9kzaUvOp3RF1AQ2VuA==}
 
-  gd-sprest-def@1.8.6:
-    resolution: {integrity: sha512-GZbXfcSDfDAFKk0DbHzzvPcUje8QsSEx2Nq02dLd84QuTMZP0sm6C3WVIUEFChIYF0UXIjqwbDmpQtH2jWPPtg==}
+  gd-sprest-def@1.9.6:
+    resolution: {integrity: sha512-f6ANhkuVb2KOToTnNV71dKGkOuCT27y3WvYqMqfnRldSvU8/5lEB7Hmsg7wL5E+YGxk8DXFKUZPyxovYLRIklg==}
 
-  gd-sprest@8.7.7:
-    resolution: {integrity: sha512-3Nqc9qMboENj0TopkW9eM0yK5rHQhWgmwKPc2MI4bFSPmRV2nhWM2FYtDIxw5XQFFgHkFguihS/pv9JlXZ/6dw==}
+  gd-sprest@9.0.8:
+    resolution: {integrity: sha512-Cph1lmxYAlUS807AK0CDPRFerX0Eb5dcBaI3NwzniKw/VDVoEPIpPrQTZlTwEvdJu1a192KwD3BT3REFFIvl9g==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2775,7 +2775,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  gd-bs@6.6.79:
+  gd-bs@6.6.82:
     dependencies:
       '@popperjs/core': 2.11.8
       bootstrap: 5.3.3(@popperjs/core@2.11.8)
@@ -2783,19 +2783,19 @@ snapshots:
       core-js: 3.40.0
       tippy.js: 6.3.7
 
-  gd-sprest-bs@10.13.18:
+  gd-sprest-bs@10.13.59:
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.6.79
-      gd-sprest: 8.7.7
-      gd-sprest-def: 1.8.6
+      gd-bs: 6.6.82
+      gd-sprest: 9.0.8
+      gd-sprest-def: 1.9.6
       quill: 2.0.3
 
-  gd-sprest-def@1.8.6: {}
+  gd-sprest-def@1.9.6: {}
 
-  gd-sprest@8.7.7:
+  gd-sprest@9.0.8:
     dependencies:
-      gd-sprest-def: 1.8.6
+      gd-sprest-def: 1.9.6
 
   gensync@1.0.0-beta.2: {}
 

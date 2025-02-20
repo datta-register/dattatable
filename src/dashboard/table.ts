@@ -9,6 +9,7 @@ import "datatables.net-bs5";
  * Data Table
  */
 export interface IDataTable {
+    addRow: (row: any) => void;
     datatable: any;
     filter: (idx: number, value?: string) => void;
     filterExact: (idx: number, value?: string) => void;
@@ -24,7 +25,7 @@ export interface IDataTable {
  */
 export interface IDataTableProps {
     className?: string;
-    columns: Components.ITableColumn[];
+    columns: (Components.ITableColumn & { footer?: string })[];
     dtProps?: any;
     el: HTMLElement;
     onRendering?: (dtProps: any) => any;
@@ -90,6 +91,28 @@ export class DataTable implements IDataTable {
 
         // Render the table
         this.refresh(props.rows);
+    }
+
+    // Adds a row to the table
+    addRow(row: any) {
+        // See if this is an array
+        if (row && typeof (row.length) === "number") {
+            // Add the row
+            this._datatable.row.add(row).draw(false);
+        } else {
+            let newRow = [];
+
+            // Parse the columns
+            for (let i = 0; i < this._props.columns.length; i++) {
+                let column = this._props.columns[i];
+
+                // Append the value
+                newRow.push(row[column.name] || "");
+            }
+
+            // Add the row
+            this._datatable.row.add(newRow).draw(false);
+        }
     }
 
     // Applies the datatables.net plugin
