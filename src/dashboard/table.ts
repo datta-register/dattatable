@@ -25,7 +25,7 @@ export interface IDataTable {
  */
 export interface IDataTableProps {
     className?: string;
-    columns: (Components.ITableColumn & { footer?: string })[];
+    columns: Components.ITableColumn[];
     dtProps?: any;
     el: HTMLElement;
     onRendering?: (dtProps: any) => any;
