@@ -27,8 +27,8 @@ importers:
         specifier: ^2.1.3
         version: 2.2.1
       gd-sprest-bs:
-        specifier: ^10.13.60
-        version: 10.13.60
+        specifier: ^10.13.83
+        version: 10.13.83
       html-loader:
         specifier: ^4.2.0
         version: 4.2.0(webpack@5.97.1)
@@ -900,8 +900,8 @@ packages:
   core-js-compat@3.40.0:
     resolution: {integrity: sha512-0XEDpr5y5mijvw8Lbc6E5AkjrHfp7eEoPlu36SWeAbcL8fn1G1ANe8DBlo2XoNN89oVpxWwOjYIPVzR4ZvsKCQ==}
 
-  core-js@3.40.0:
-    resolution: {integrity: sha512-7vsMc/Lty6AGnn7uFpYT56QesI5D2Y/UkgKounk87OP9Z2H9Z8kj6jzcSGAxFmUtDOS0ntK6lbQz+Nsa0Jj6mQ==}
+  core-js@3.41.0:
+    resolution: {integrity: sha512-SJ4/EHwS36QMJd6h/Rg+GyR4A5xE0FSI3eZ+iBVpfqf1x0eTSg1smWLHrA+2jQThZSh97fmSgFSU8B61nxosxA==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -1043,17 +1043,17 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  gd-bs@6.6.83:
-    resolution: {integrity: sha512-cCck9Sd2VnhCXgdEl9uvAebaU70wy4/JAYXMxbvrO8I8O2FzlYADKtdglORiIGR34Z2aPJx47hxfqEYf5iEn7A==}
+  gd-bs@6.6.90:
+    resolution: {integrity: sha512-R6jayYgDzUH3nqMjYkZKL9y3zniQNEwwBVRByGilnam73QGmG8LrlncTs2NVVsImyZ3CDIiNsszfyif915OzKg==}
 
-  gd-sprest-bs@10.13.60:
-    resolution: {integrity: sha512-7G6L6lNpseAq9YHtE7xJedJlPx7vpJgePuKPs/VYBVt5gUK28Qpg1twuBCyHGNnDbLkDj6QjMFT+m4LxRRfaSQ==}
+  gd-sprest-bs@10.13.83:
+    resolution: {integrity: sha512-ZdzsqiWwQcDxMAIzs4WCHHD2dr9hxU0dYdHC1YNvSGOXbPDST5bmi+VMN+u8Ehk8+sjXA4V1OhgqOnNHzqIjFg==}
 
-  gd-sprest-def@1.9.6:
-    resolution: {integrity: sha512-f6ANhkuVb2KOToTnNV71dKGkOuCT27y3WvYqMqfnRldSvU8/5lEB7Hmsg7wL5E+YGxk8DXFKUZPyxovYLRIklg==}
+  gd-sprest-def@2.0.0:
+    resolution: {integrity: sha512-evd07XBTSseuaAQ35axGUx21VsqXGC6vEjDah4mRnFDtUkDOUd16/RH4EkNQ4WWEGSpedsOkfbEi8MwR4PAGew==}
 
-  gd-sprest@9.0.8:
-    resolution: {integrity: sha512-Cph1lmxYAlUS807AK0CDPRFerX0Eb5dcBaI3NwzniKw/VDVoEPIpPrQTZlTwEvdJu1a192KwD3BT3REFFIvl9g==}
+  gd-sprest@9.2.1:
+    resolution: {integrity: sha512-+k/f8L8kv7d4Xu1M4eMHXoztxQQcSmtjSitODg/z7/jAJHFVOM3Bxi+3XzSX0nVxc14Yaaqjlumxb0Oj8dlQeQ==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2660,7 +2660,7 @@ snapshots:
     dependencies:
       browserslist: 4.24.4
 
-  core-js@3.40.0: {}
+  core-js@3.41.0: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -2775,27 +2775,27 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  gd-bs@6.6.83:
+  gd-bs@6.6.90:
     dependencies:
       '@popperjs/core': 2.11.8
       bootstrap: 5.3.3(@popperjs/core@2.11.8)
       bootstrap-icons: 1.11.3
-      core-js: 3.40.0
+      core-js: 3.41.0
       tippy.js: 6.3.7
 
-  gd-sprest-bs@10.13.60:
+  gd-sprest-bs@10.13.83:
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.6.83
-      gd-sprest: 9.0.8
-      gd-sprest-def: 1.9.6
+      gd-bs: 6.6.90
+      gd-sprest: 9.2.1
+      gd-sprest-def: 2.0.0
       quill: 2.0.3
 
-  gd-sprest-def@1.9.6: {}
+  gd-sprest-def@2.0.0: {}
 
-  gd-sprest@9.0.8:
+  gd-sprest@9.2.1:
     dependencies:
-      gd-sprest-def: 1.9.6
+      gd-sprest-def: 2.0.0
 
   gensync@1.0.0-beta.2: {}
 

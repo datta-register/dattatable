@@ -300,7 +300,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Gets a list field by internal or title
-    getField(name: string) {
+    getField(name: string): Types.SP.Field {
         let titleField = null;
 
         // Parse the fields
@@ -324,7 +324,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Gets a list field by internal or title
-    getFieldById(id: string = "") {
+    getFieldById(id: string = ""): Types.SP.Field {
         let fieldId = id.replace(/{|}/g, '');
 
         // Parse the fields
@@ -360,7 +360,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Determines if the user has permissions to the list
-    hasPermissions(permissions: number | number[]) {
+    hasPermissions(permissions: number | number[]): boolean {
         // See if the user has permissions
         return Helper.hasPermissions(this._basePermissions, permissions);
     }
@@ -494,7 +494,7 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Loads the items
-    private loadItems(query?: Types.IODataQuery) {
+    private loadItems(query?: Types.IODataQuery): PromiseLike<T[]> {
         // See if the caml query exists
         if (this.CAMLQuery) {
             return this.loadItemsByCAMLQuery();
