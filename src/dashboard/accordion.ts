@@ -100,6 +100,12 @@ export class Accordion implements IAccordion {
                 let field = this._props.bodyFields[i];
                 let value = item[field] || "";
 
+                // See if this value has results
+                if (value.results) {
+                    // Combine the values
+                    value = value.results.join(', ');
+                }
+
                 // See if there is a template
                 if (this._props.bodyTemplate) {
                     // Replace the values
@@ -119,6 +125,12 @@ export class Accordion implements IAccordion {
             for (let i = 0; i < this._props.titleFields.length; i++) {
                 let field = this._props.titleFields[i];
                 let value = item[field] || "";
+
+                // See if this value has results
+                if (value.results) {
+                    // Combine the values
+                    value = value.results.join(', ');
+                }
 
                 // See if there is a template
                 if (this._props.titleTemplate) {
