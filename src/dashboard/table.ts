@@ -14,6 +14,7 @@ export interface IDataTable {
     filter: (idx: number, value?: string) => void;
     filterExact: (idx: number, value?: string) => void;
     filterMulti: (idx: number, values?: string[]) => void;
+    filterMultiExact: (idx: number, values?: string[]) => void;
     onRendering?: (dtProps: any) => any;
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     refresh: (rows: any[]) => void;
@@ -159,6 +160,18 @@ export class DataTable implements IDataTable {
 
         // Filter the values
         this.filter(idx, values.join('|'));
+    }
+
+    // Filters multiple values against the status
+    filterMultiExact(idx: number, values: string[] = []) {
+        // Parse the values
+        for (let i = 0; i < values.length; i++) {
+            // Update the value
+            values[i] = values[i].replace(/\|/g, '\\$&');
+        }
+
+        // Filter the values
+        this._datatable.column(idx).search("^(" + values.join('|') + ")$", true, false).draw();
     }
 
     // Method to reload the data

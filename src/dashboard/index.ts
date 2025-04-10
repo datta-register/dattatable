@@ -472,7 +472,7 @@ export class Dashboard {
     }
 
     // Filter the table by multiple values
-    filterMulti(idx: number, values?: string[]) {
+    filterMulti(idx: number, values?: string[], exactMatchFl?: boolean) {
         // See if we have an accordion
         if (this.IsAccordion) {
             // Filter the accordion
@@ -485,7 +485,7 @@ export class Dashboard {
         }
         else {
             // Filter the table
-            this._dt.filterMulti(idx, values);
+            exactMatchFl && values.length > 0 ? this._dt.filterMultiExact(idx, values) : this._dt.filterMulti(idx, values);
         }
     }
 
