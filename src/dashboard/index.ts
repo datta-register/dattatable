@@ -102,6 +102,7 @@ export interface IDashboardProps {
         bodyTemplate?: string;
         className?: string;
         classNameBody?: string;
+        classNameCard?: string;
         classNameFooter?: string;
         classNameHeader?: string;
         colSize?: number | string;

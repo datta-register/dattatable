@@ -11,6 +11,7 @@ export interface ITilesProps {
     bodyTemplate?: string;
     className?: string;
     classNameBody?: string;
+    classNameCard?: string;
     classNameFooter?: string;
     classNameHeader?: string;
     colSize?: number | string;
@@ -163,6 +164,14 @@ export class Tiles implements ITiles {
         // Set the card props
         let cardProps: Components.ICardProps = {
             onRender: (el, card) => {
+                // Set the class name
+                if (this._props.classNameCard) {
+                    this._props.classNameCard.trim().split(' ').forEach(className => {
+                        // Add the class name
+                        el.classList.add(className);
+                    });
+                }
+
                 // See if filters exist
                 if (filterValues && filterValues.length > 0) {
                     // Set the data filter value
