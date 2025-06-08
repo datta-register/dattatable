@@ -98,7 +98,7 @@ export class Accordion implements IAccordion {
             // Parse the fields
             for (let i = 0; i < this._props.bodyFields.length; i++) {
                 let field = this._props.bodyFields[i];
-                let value = item[field] || "";
+                let value = typeof (item[field]) != "undefined" ? item[field] : "";
 
                 // See if this value has results
                 if (value.results) {
@@ -124,7 +124,7 @@ export class Accordion implements IAccordion {
             // Parse the fields
             for (let i = 0; i < this._props.titleFields.length; i++) {
                 let field = this._props.titleFields[i];
-                let value = item[field] || "";
+                let value = typeof (item[field]) != "undefined" ? item[field] : "";
 
                 // See if this value has results
                 if (value.results) {
@@ -233,7 +233,7 @@ export class Accordion implements IAccordion {
 
             // See if there is an active filter
             if (this._activeFilterValue) {
-                let filterValues = (elItem.dataset.filter || "").split('|');
+                let filterValues = (typeof (elItem.dataset.filter) != "undefined" ? elItem.dataset.filter : "").split('|');
 
                 // Parse the active filters
                 let activeFilters = this._activeFilterValue.split('|');
@@ -391,7 +391,7 @@ export class Accordion implements IAccordion {
     // Searches the accordion
     search(value: string) {
         // Set the search value
-        this._activeSearchValue = (value || "").toLowerCase();
+        this._activeSearchValue = typeof (value) != "undefined" ? value : "";
 
         // Render the items
         this.renderItems();

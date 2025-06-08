@@ -106,9 +106,10 @@ export class DataTable implements IDataTable {
             // Parse the columns
             for (let i = 0; i < this._props.columns.length; i++) {
                 let column = this._props.columns[i];
+                let value = typeof (row[column.name]) != "undefined" ? row[column.name] : "";
 
                 // Append the value
-                newRow.push(row[column.name] || "");
+                newRow.push(value);
             }
 
             // Add the row

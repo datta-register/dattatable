@@ -107,7 +107,7 @@ export class Tiles implements ITiles {
             // Parse the fields
             for (let i = 0; i < this._props.bodyFields.length; i++) {
                 let field = this._props.bodyFields[i];
-                let value = item[field] || "";
+                let value = typeof (item[field]) != "undefined" ? item[field] : "";
 
                 // See if there is a template
                 if (this._props.bodyTemplate) {
@@ -127,7 +127,7 @@ export class Tiles implements ITiles {
             // Parse the fields
             for (let i = 0; i < this._props.subTitleFields.length; i++) {
                 let field = this._props.subTitleFields[i];
-                let value = item[field] || "";
+                let value = typeof (item[field]) != "undefined" ? item[field] : "";
 
                 // See if there is a template
                 if (this._props.subTitleTemplate) {
@@ -147,7 +147,7 @@ export class Tiles implements ITiles {
             // Parse the fields
             for (let i = 0; i < this._props.titleFields.length; i++) {
                 let field = this._props.titleFields[i];
-                let value = item[field] || "";
+                let value = typeof (item[field]) != "undefined" ? item[field] : "";
 
                 // See if there is a template
                 if (this._props.titleTemplate) {
@@ -294,7 +294,7 @@ export class Tiles implements ITiles {
 
             // See if a filter value exists
             if (this._activeFilterValue) {
-                let filterValues = (elItem.dataset.filter || "").split('|');
+                let filterValues = (typeof (elItem.dataset.filter) != "undefined" ? elItem.dataset.filter : "").split('|');
 
                 // Parse the active filters
                 let activeFilters = this._activeFilterValue.split('|');
@@ -409,7 +409,7 @@ export class Tiles implements ITiles {
     // Searches the tile
     search(value: string) {
         // Set the search value
-        this._activeSearchValue = value || "";
+        this._activeSearchValue = typeof (value) != "undefined" ? value : "";
 
         // Update the tiles
         this.updateTiles();
