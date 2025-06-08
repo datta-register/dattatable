@@ -101,6 +101,9 @@ export interface IDashboardProps {
         bodyFields?: string[];
         bodyTemplate?: string;
         className?: string;
+        classNameBody?: string;
+        classNameFooter?: string;
+        classNameHeader?: string;
         colSize?: number | string;
         filterFields?: string[];
         items: any[];

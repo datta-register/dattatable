@@ -10,6 +10,9 @@ export interface ITilesProps {
     bodyFields?: string[];
     bodyTemplate?: string;
     className?: string;
+    classNameBody?: string;
+    classNameFooter?: string;
+    classNameHeader?: string;
     colSize?: number | string;
     el: HTMLElement;
     filterFields?: string[];
@@ -170,6 +173,7 @@ export class Tiles implements ITiles {
                 this._props.onCardRendered ? this._props.onCardRendered(el, card) : null;
             },
             body: [{
+                className: this._props.classNameBody,
                 content: bodyContent,
                 data: item,
                 subTitle: subTitleContent,
@@ -193,6 +197,7 @@ export class Tiles implements ITiles {
         let showHeader = typeof (this._props.showHeader) === "boolean" ? this._props.showHeader : true;
         if (showHeader) {
             cardProps.header = {
+                className: this._props.classNameHeader,
                 onRender: (el) => {
                     this._props.onHeaderRendered ? this._props.onHeaderRendered(el, item) : null;
                 }
@@ -203,6 +208,7 @@ export class Tiles implements ITiles {
         let showFooter = typeof (this._props.showFooter) === "boolean" ? this._props.showFooter : true;
         if (showFooter) {
             cardProps.footer = {
+                className: this._props.classNameFooter,
                 onRender: (el) => {
                     this._props.onFooterRendered ? this._props.onFooterRendered(el, item) : null;
                 }
