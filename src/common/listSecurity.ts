@@ -166,7 +166,6 @@ export class ListSecurity {
                         resolve(false);
                     }
                 );
-
             });
         });
     }

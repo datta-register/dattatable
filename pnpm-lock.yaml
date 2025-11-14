@@ -21,14 +21,14 @@ importers:
         specifier: ^6.8.1
         version: 6.11.0(webpack@5.97.1)
       datatables.net:
-        specifier: ^2.1.3
-        version: 2.2.1
+        specifier: ^2.3.4
+        version: 2.3.4
       datatables.net-bs5:
-        specifier: ^2.1.3
-        version: 2.2.1
+        specifier: ^2.3.4
+        version: 2.3.4
       gd-sprest-bs:
-        specifier: ^10.13.92
-        version: 10.13.92(@popperjs/core@2.11.8)
+        specifier: ^10.15.15
+        version: 10.15.15(@popperjs/core@2.11.8)
       html-loader:
         specifier: ^4.2.0
         version: 4.2.0(webpack@5.97.1)
@@ -36,7 +36,7 @@ importers:
         specifier: ^3.7.1
         version: 3.7.1
       moment:
-        specifier: ^2.29.4
+        specifier: ^2.30.1
         version: 2.30.1
       sass:
         specifier: ^1.69.5
@@ -564,14 +564,14 @@ packages:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
     engines: {node: '>=10.0.0'}
 
-  '@floating-ui/core@1.7.1':
-    resolution: {integrity: sha512-azI0DrjMMfIug/ExbBaeDVJXcY0a7EPvPjb2xAJPa4HeimBX+Z18HK8QQR3jb6356SnDDdxx+hinMLcJEDdOjw==}
+  '@floating-ui/core@1.7.3':
+    resolution: {integrity: sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==}
 
-  '@floating-ui/dom@1.7.1':
-    resolution: {integrity: sha512-cwsmW/zyw5ltYTUeeYJ60CnQuPqmGwuGVhG9w0PRaRKkAyi38BT5CKrpIbb+jtahSwUl04cWzSx9ZOIxeS6RsQ==}
+  '@floating-ui/dom@1.7.4':
+    resolution: {integrity: sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==}
 
-  '@floating-ui/utils@0.2.9':
-    resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+  '@floating-ui/utils@0.2.10':
+    resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
   '@jridgewell/gen-mapping@0.3.8':
     resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
@@ -837,8 +837,8 @@ packages:
   bootstrap-icons@1.13.1:
     resolution: {integrity: sha512-ijombt4v6bv5CLeXvRWKy7CuM3TRTuPEuGaGKvTV5cz65rQSY8RQ2JcHt6b90cBBAC7s8fsf2EkQDldzCoXUjw==}
 
-  bootstrap@5.3.6:
-    resolution: {integrity: sha512-jX0GAcRzvdwISuvArXn3m7KZscWWFAf1MKBcnzaN02qWMb3jpMoUX4/qgeiGzqyIb4ojulRzs89UCUmGcFSzTA==}
+  bootstrap@5.3.8:
+    resolution: {integrity: sha512-HP1SZDqaLDPwsNiqRqi5NcP0SSXciX2s9E+RyqJIIqGo+vJeN5AJVM98CXmW/Wux0nQ5L7jeWUdplCEf0Ee+tg==}
     peerDependencies:
       '@popperjs/core': ^2.11.8
 
@@ -909,8 +909,8 @@ packages:
   core-js-compat@3.40.0:
     resolution: {integrity: sha512-0XEDpr5y5mijvw8Lbc6E5AkjrHfp7eEoPlu36SWeAbcL8fn1G1ANe8DBlo2XoNN89oVpxWwOjYIPVzR4ZvsKCQ==}
 
-  core-js@3.42.0:
-    resolution: {integrity: sha512-Sz4PP4ZA+Rq4II21qkNqOEDTDrCvcANId3xpIgB34NDkWc3UduWj2dqEtN9yZIq8Dk3HyPI33x9sqqU5C8sr0g==}
+  core-js@3.46.0:
+    resolution: {integrity: sha512-vDMm9B0xnqqZ8uSBpZ8sNtRtOdmfShrvT6h2TuQGLs0Is+cR0DYbj/KWP6ALVNbWPpqA/qPLoOuppJN07humpA==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -933,11 +933,11 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
-  datatables.net-bs5@2.2.1:
-    resolution: {integrity: sha512-/Z2XUnYh5/bUXDAAi/sHhugAsRiRPHLKwBFM2VEwNA8+gNo7M1eJht9g4gnT0x1w+PGy/obQnN+s8Dt6nXbbog==}
+  datatables.net-bs5@2.3.4:
+    resolution: {integrity: sha512-OSoPWhNfiU71VjNP604uTmFRxiX32U7SCW0KRZ2X6z3ZYbIwjjoWcMEjjPWOH3uOqaI0OTDBgOgOs5G28VaJog==}
 
-  datatables.net@2.2.1:
-    resolution: {integrity: sha512-Hz7f+a77xGdroAzej88aobT5nkQIJ2Oy1JI7yh2cl0QAXQSJDXOKkOLknu+nphVP8CP8w9MtLCmwMst/F8niiQ==}
+  datatables.net@2.3.4:
+    resolution: {integrity: sha512-fKuRlrBIdpAl2uIFgl9enKecHB41QmFd/2nN9LBbOvItV/JalAxLcyqdZXex7wX4ZXjnJQEnv6xeS9veOpKzSw==}
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
@@ -1052,17 +1052,17 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  gd-bs@6.6.98:
-    resolution: {integrity: sha512-NDBYLtTPnWEx2FaA429MKA16Gw2ReyOtTwcg0M6F3x6Yjvct35vxiFa+GDM4asjyj3ecHJVnPnFhonrliEB7/w==}
+  gd-bs@6.9.9:
+    resolution: {integrity: sha512-Ak22uJT6n5/R09GblZ+i/TenfspTLEtSkAm6g6EGIlY4qird3K06MDz7s/ZkwGX40xmGaylbcHHEFc3X9r/d/Q==}
 
-  gd-sprest-bs@10.13.92:
-    resolution: {integrity: sha512-uxfTx4LsOQR84zOEqiPweooUUlLZIAOhXjTuUFx4JCYC6JrAsZaBrVZn960dCGf9jHwEGozJjgPYMuxHezCUrw==}
+  gd-sprest-bs@10.15.15:
+    resolution: {integrity: sha512-TxHQWJeagwPNlot56dKfDjoCbyS3SEW4czKoDF+0lI+XvCWiuCG5ZUXVFzCQq17a71b859Vhwm9TCtwRNJDy8A==}
 
   gd-sprest-def@2.0.1:
     resolution: {integrity: sha512-8kClbmHmjIBw0JFAkCGYznXa2rLBkztfT1ntPVxpMs0YTDP7mDUHSk4AwIkzNAPugaSw6q2me12smTj/BpNimQ==}
 
-  gd-sprest@9.2.7:
-    resolution: {integrity: sha512-XgGxKY1p3+EbAkTief2YXraJvS2kU6xKZVk4eHpbf7VZ/Bm+WvF+NB26NzUQZI0Dgp17qZfes82WiQKcAfCIpg==}
+  gd-sprest@9.2.8:
+    resolution: {integrity: sha512-UzxEikidUoHm2FAXD+tLqK5PJzC3XShsiA1cHO5704MuLZtUMgbG5UqWACG9VcGvey4EYGLgvBYVJ4yAVjynWA==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2328,16 +2328,16 @@ snapshots:
 
   '@discoveryjs/json-ext@0.5.7': {}
 
-  '@floating-ui/core@1.7.1':
+  '@floating-ui/core@1.7.3':
     dependencies:
-      '@floating-ui/utils': 0.2.9
+      '@floating-ui/utils': 0.2.10
 
-  '@floating-ui/dom@1.7.1':
+  '@floating-ui/dom@1.7.4':
     dependencies:
-      '@floating-ui/core': 1.7.1
-      '@floating-ui/utils': 0.2.9
+      '@floating-ui/core': 1.7.3
+      '@floating-ui/utils': 0.2.10
 
-  '@floating-ui/utils@0.2.9': {}
+  '@floating-ui/utils@0.2.10': {}
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
@@ -2609,7 +2609,7 @@ snapshots:
 
   bootstrap-icons@1.13.1: {}
 
-  bootstrap@5.3.6(@popperjs/core@2.11.8):
+  bootstrap@5.3.8(@popperjs/core@2.11.8):
     dependencies:
       '@popperjs/core': 2.11.8
 
@@ -2678,7 +2678,7 @@ snapshots:
     dependencies:
       browserslist: 4.24.4
 
-  core-js@3.42.0: {}
+  core-js@3.46.0: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -2701,12 +2701,12 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  datatables.net-bs5@2.2.1:
+  datatables.net-bs5@2.3.4:
     dependencies:
-      datatables.net: 2.2.1
+      datatables.net: 2.3.4
       jquery: 3.7.1
 
-  datatables.net@2.2.1:
+  datatables.net@2.3.4:
     dependencies:
       jquery: 3.7.1
 
@@ -2793,20 +2793,20 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  gd-bs@6.6.98(@popperjs/core@2.11.8):
+  gd-bs@6.9.9(@popperjs/core@2.11.8):
     dependencies:
-      '@floating-ui/dom': 1.7.1
-      bootstrap: 5.3.6(@popperjs/core@2.11.8)
+      '@floating-ui/dom': 1.7.4
+      bootstrap: 5.3.8(@popperjs/core@2.11.8)
       bootstrap-icons: 1.13.1
-      core-js: 3.42.0
+      core-js: 3.46.0
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-bs@10.13.92(@popperjs/core@2.11.8):
+  gd-sprest-bs@10.15.15(@popperjs/core@2.11.8):
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.6.98(@popperjs/core@2.11.8)
-      gd-sprest: 9.2.7
+      gd-bs: 6.9.9(@popperjs/core@2.11.8)
+      gd-sprest: 9.2.8
       gd-sprest-def: 2.0.1
       quill: 2.0.3
     transitivePeerDependencies:
@@ -2814,7 +2814,7 @@ snapshots:
 
   gd-sprest-def@2.0.1: {}
 
-  gd-sprest@9.2.7:
+  gd-sprest@9.2.8:
     dependencies:
       gd-sprest-def: 2.0.1
 

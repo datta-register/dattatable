@@ -390,7 +390,7 @@ export class Tiles implements ITiles {
                     // Parse the items to show
                     let startIdx = (pageNumber - 1) * paginationLimit;
                     for (let i = startIdx; i < startIdx + paginationLimit && i < elItems.length; i++) {
-                        let elItem = elItems[i];
+                        let elItem = elItems[i] as HTMLElement;
 
                         // Show the item
                         elItem.parentElement.classList.remove("d-none");

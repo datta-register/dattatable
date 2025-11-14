@@ -19,6 +19,7 @@ export interface IDataTable {
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     refresh: (rows: any[]) => void;
     search: (value?: string) => void;
+    updateCell: (row: number, column: number, value) => void;
 }
 
 /**
@@ -204,5 +205,11 @@ export class DataTable implements IDataTable {
     search(value: string = "") {
         // Search the table
         this._datatable.search(value).draw();
+    }
+
+    // Updates a cell in the datatable
+    updateCell(row: number, column: number, value) {
+        // Update the cell
+        this._datatable.cell({ row, column }).data(value).draw(false);
     }
 }

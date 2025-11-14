@@ -557,4 +557,7 @@ export class Dashboard {
 
     // Shows the filter
     showFilter() { this._filters.show(); }
+
+    // Updates a cell in the data table
+    updateCell(row: number, column: number, value) { this._dt?.updateCell(row, column, value); }
 }
