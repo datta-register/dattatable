@@ -41,6 +41,7 @@ export interface IDataTableProps {
 export class DataTable implements IDataTable {
     private _datatable = null;
     private _props: IDataTableProps = null;
+    private _table: Components.ITable = null;
 
     // Constructor
     constructor(props: IDataTableProps) {
@@ -114,7 +115,15 @@ export class DataTable implements IDataTable {
             }
 
             // Add the row
-            this._datatable.row.add(newRow).draw(false);
+            let dtRow = this._datatable.row.add(newRow).draw(false).node();
+
+            // Parse the columns
+            for (let i = 0; i < this._props.columns.length; i++) {
+                let column = this._props.columns[i];
+                if (column.onRenderCell) {
+                    column.onRenderCell(dtRow.children[i], column, newRow, dtRow.rowIdx);
+                }
+            }
         }
     }
 
@@ -190,7 +199,7 @@ export class DataTable implements IDataTable {
         while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
 
         // Render the data table
-        let table = Components.Table({
+        this._table = Components.Table({
             className: this._props.className,
             el: this._props.el,
             rows,
@@ -198,7 +207,7 @@ export class DataTable implements IDataTable {
         });
 
         // Apply the plugin
-        this.applyPlugin(table);
+        this.applyPlugin(this._table);
     }
 
     // Searches the datatable
