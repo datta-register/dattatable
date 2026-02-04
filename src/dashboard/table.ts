@@ -39,6 +39,7 @@ export interface IDataTableProps {
  * Data Table
  */
 export class DataTable implements IDataTable {
+    private _addRowItems = [];
     private _datatable = null;
     private _props: IDataTableProps = null;
     private _table: Components.ITable = null;
@@ -50,6 +51,34 @@ export class DataTable implements IDataTable {
 
         // Set the default properties
         this._props.dtProps = this._props.dtProps || {
+            // This will call the render event if the addRow method is used
+            createdRow: (row, data, dataIndex) => {
+                // Get the row
+                let rowId = data[data.length - 1];
+                let rowItem = null;
+                for (let i = 0; i < this._addRowItems.length; i++) {
+                    // See if this is the target row
+                    if (this._addRowItems[i].rowId == rowId) {
+                        // Remove it from the array
+                        rowItem = this._addRowItems.splice(i, 1)[0].row;
+                        break;
+                    }
+                }
+
+                // See if the row item was found, otherwise it wasn't rendered from the addRows function
+                if (rowItem) {
+                    // Parse the columns
+                    for (let i = 0; i < this._props.columns.length; i++) {
+                        let column = this._props.columns[i];
+
+                        // See if an event exists
+                        if (column.onRenderCell) {
+                            // Call it
+                            column.onRenderCell(row.children[i], column, rowItem || data, dataIndex);
+                        }
+                    }
+                }
+            },
             drawCallback: function (settings) {
                 let api = new $.fn.dataTable.Api(settings) as any;
 
@@ -96,13 +125,10 @@ export class DataTable implements IDataTable {
         this.refresh(props.rows);
     }
 
-    // Adds a row to the table
+    // Adds row(s) to the table
     addRow(row: any) {
-        // See if this is an array
-        if (row && typeof (row.length) === "number") {
-            // Add the row
-            this._datatable.row.add(row).draw(false);
-        } else {
+        // Set the rows array
+        (typeof (row.length) === "number" ? row : [row]).forEach(row => {
             let newRow = [];
 
             // Parse the columns
@@ -114,17 +140,17 @@ export class DataTable implements IDataTable {
                 newRow.push(value);
             }
 
-            // Add the row
-            let dtRow = this._datatable.row.add(newRow).draw(false).node();
+            // Save a reference to the original data for the event
+            let uniqueId = Date.now();
+            newRow.push(uniqueId);
+            this._addRowItems.push({ rowId: uniqueId, row });
 
-            // Parse the columns
-            for (let i = 0; i < this._props.columns.length; i++) {
-                let column = this._props.columns[i];
-                if (column.onRenderCell) {
-                    column.onRenderCell(dtRow.children[i], column, newRow, dtRow.rowIdx);
-                }
-            }
-        }
+            // Add the row
+            this._datatable.row.add(newRow);
+        });
+
+        // Refresh the table
+        this._datatable.draw(false);
     }
 
     // Applies the datatables.net plugin
