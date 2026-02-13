@@ -27,8 +27,8 @@ importers:
         specifier: ^2.3.4
         version: 2.3.4
       gd-sprest-bs:
-        specifier: ^10.15.21
-        version: 10.15.21(@popperjs/core@2.11.8)
+        specifier: ^10.15.24
+        version: 10.15.24(@popperjs/core@2.11.8)
       html-loader:
         specifier: ^4.2.0
         version: 4.2.0(webpack@5.97.1)
@@ -1055,14 +1055,14 @@ packages:
   gd-bs@6.9.11:
     resolution: {integrity: sha512-TWze+wpa78pcyOogvSpEgbWqDlGRnGyr/FszzajoN20uRkoDIs7Fo1CWm0bPufXcwmE9NarDcx5MpxwXq637hA==}
 
-  gd-sprest-bs@10.15.21:
-    resolution: {integrity: sha512-n72omkrG4WzVnFlm62hQZo5CE4LDkAqK8rWijQRGyKrTrNYQtQYIeOD6cqXKNxEl4u0ozhjY+xl8Pwx9TtYyuA==}
+  gd-sprest-bs@10.15.24:
+    resolution: {integrity: sha512-U1dq/OtHEPPkgT0JSb5mUkZAGwfihKnUybtzMrzbEQwDYK+Mc82TqSAEXX0CHnuRZ508afEcZQCI9hZWqKXS1g==}
 
-  gd-sprest-def@2.0.2:
-    resolution: {integrity: sha512-kVh2pf0M1zEUK7rWTYp/iUHgAAADNk7Z+ThhqrpeYW0B5jvNLLllSIJZOXP5fmcrt72fT7LEo+vU+fZTpsuplw==}
+  gd-sprest-def@2.0.5:
+    resolution: {integrity: sha512-MhIN1JJUK+Olz3pIZ5h/XxexS22POFlIDeAzgj97HjFqQ4adLz3a7FN+f34KtI6+OrWRwWzPcZlD1kbEPZK+eQ==}
 
-  gd-sprest@9.3.2:
-    resolution: {integrity: sha512-7nyxPLSBtCzmuerwsk2KDICJEOHEiGIeK1xWdXaQcqUwpYkB8++LiqC+FJQGmQyhB3D7ZS057B8zhxV9DYkDXg==}
+  gd-sprest@9.3.6:
+    resolution: {integrity: sha512-YJwfg1LD8kbTfPBh7j7KL9N2jhZvtrG/CnzMtm23FedD3EJQbdTo70pRVZQwYpKp4aLlGy6Hfgqrbtsjt0fEyg==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2802,21 +2802,21 @@ snapshots:
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-bs@10.15.21(@popperjs/core@2.11.8):
+  gd-sprest-bs@10.15.24(@popperjs/core@2.11.8):
     dependencies:
       flatpickr: 4.6.13
       gd-bs: 6.9.11(@popperjs/core@2.11.8)
-      gd-sprest: 9.3.2
-      gd-sprest-def: 2.0.2
+      gd-sprest: 9.3.6
+      gd-sprest-def: 2.0.5
       quill: 2.0.3
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-def@2.0.2: {}
+  gd-sprest-def@2.0.5: {}
 
-  gd-sprest@9.3.2:
+  gd-sprest@9.3.6:
     dependencies:
-      gd-sprest-def: 2.0.2
+      gd-sprest-def: 2.0.5
 
   gensync@1.0.0-beta.2: {}
 

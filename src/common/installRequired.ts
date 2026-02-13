@@ -1,4 +1,4 @@
-import { Components, Helper, SPTypes, Site, Web } from "gd-sprest-bs";
+import { Components, Helper, SPTypes, Site, Types, Web } from "gd-sprest-bs";
 import { LoadingDialog } from "./loadingDialog";
 import { Modal } from "./modal";
 
@@ -6,6 +6,7 @@ import { Modal } from "./modal";
 export interface IInstallProps {
     cfg: Helper.ISPConfig | Helper.ISPConfig[];
     onCompleted?: () => any;
+    onHasPermissions?: (permissions?: Types.SP.BasePermissions) => boolean | PromiseLike<boolean>;
     onError?: (cfg: Helper.ISPConfig) => void;
 }
 
@@ -210,7 +211,7 @@ export class InstallationRequired {
     }
 
     // Determines if the user is an owner or admin
-    private static checkUserPermissions(): PromiseLike<boolean> {
+    private static checkUserPermissions(onHasPermissions?: (permissions?: Types.SP.BasePermissions) => boolean | PromiseLike<boolean>): PromiseLike<boolean> {
         // Return a promise
         return new Promise(resolve => {
             // Get the current user information
@@ -221,8 +222,20 @@ export class InstallationRequired {
                     Web(this._webUrl).getUserEffectivePermissions(user.LoginName).execute(
                         // Success
                         permissions => {
-                            // See if the user has manage web rights
-                            resolve(Helper.hasPermissions(permissions.GetUserEffectivePermissions, SPTypes.BasePermissionTypes.ManageLists));
+                            // See if there is an event
+                            if (onHasPermissions) {
+                                // Call the event
+                                let callback = onHasPermissions(permissions.GetUserEffectivePermissions);
+                                if (typeof (callback) === "boolean") {
+                                    resolve(callback);
+                                } else {
+                                    // Wait for the promise to complete and resolve the request
+                                    callback?.then(resolve);
+                                }
+                            } else {
+                                // See if the user has manage web rights
+                                resolve(Helper.hasPermissions(permissions.GetUserEffectivePermissions, SPTypes.BasePermissionTypes.ManageLists));
+                            }
                         },
 
                         // Error
@@ -253,7 +266,7 @@ export class InstallationRequired {
         // Return a promise
         return new Promise((resolve, reject) => {
             // Check the user permissions
-            this.checkUserPermissions().then(hasPermissions => {
+            this.checkUserPermissions(props.onHasPermissions).then(hasPermissions => {
                 // See if they are not an owner or admin
                 if (!hasPermissions) {
                     // Reject the request
