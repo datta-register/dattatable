@@ -21,14 +21,14 @@ importers:
         specifier: ^6.8.1
         version: 6.11.0(webpack@5.97.1)
       datatables.net:
-        specifier: ^2.3.4
-        version: 2.3.4
+        specifier: ^2.3.7
+        version: 2.3.7
       datatables.net-bs5:
-        specifier: ^2.3.4
-        version: 2.3.4
+        specifier: ^2.3.7
+        version: 2.3.7
       gd-sprest-bs:
-        specifier: ^10.15.24
-        version: 10.15.24(@popperjs/core@2.11.8)
+        specifier: ^10.15.55
+        version: 10.15.55(@popperjs/core@2.11.8)
       html-loader:
         specifier: ^4.2.0
         version: 4.2.0(webpack@5.97.1)
@@ -564,14 +564,14 @@ packages:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
     engines: {node: '>=10.0.0'}
 
-  '@floating-ui/core@1.7.4':
-    resolution: {integrity: sha512-C3HlIdsBxszvm5McXlB8PeOEWfBhcGBTZGkGlWc2U0KFY5IwG5OQEuQ8rq52DZmcHDlPLd+YFBK+cZcytwIFWg==}
+  '@floating-ui/core@1.7.5':
+    resolution: {integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==}
 
-  '@floating-ui/dom@1.7.5':
-    resolution: {integrity: sha512-N0bD2kIPInNHUHehXhMke1rBGs1dwqvC9O9KYMyyjK7iXt7GAhnro7UlcuYcGdS/yYOlq0MAVgrow8IbWJwyqg==}
+  '@floating-ui/dom@1.7.6':
+    resolution: {integrity: sha512-9gZSAI5XM36880PPMm//9dfiEngYoC6Am2izES1FF406YFsjvyBMmeJ2g4SAju3xWwtuynNRFL2s9hgxpLI5SQ==}
 
-  '@floating-ui/utils@0.2.10':
-    resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
+  '@floating-ui/utils@0.2.11':
+    resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
   '@jridgewell/gen-mapping@0.3.8':
     resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
@@ -933,11 +933,11 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
-  datatables.net-bs5@2.3.4:
-    resolution: {integrity: sha512-OSoPWhNfiU71VjNP604uTmFRxiX32U7SCW0KRZ2X6z3ZYbIwjjoWcMEjjPWOH3uOqaI0OTDBgOgOs5G28VaJog==}
+  datatables.net-bs5@2.3.7:
+    resolution: {integrity: sha512-RiCEMpMXDBeMDwjSrMpmcXDU6mibRMuOn7Wk7k3SlOfLEY3FQHO7S2m+K7teXYeaNlCLyjJMU+6BUUwlBCpLFw==}
 
-  datatables.net@2.3.4:
-    resolution: {integrity: sha512-fKuRlrBIdpAl2uIFgl9enKecHB41QmFd/2nN9LBbOvItV/JalAxLcyqdZXex7wX4ZXjnJQEnv6xeS9veOpKzSw==}
+  datatables.net@2.3.7:
+    resolution: {integrity: sha512-AvsjG/Nkp6OxeyBKYZauemuzQCPogE1kOtKwG4sYjvdqGCSLiGaJagQwXv4YxG+ts5vaJr6qKGG9ec3g6vTo3w==}
 
   debug@4.4.0:
     resolution: {integrity: sha512-6WTZ/IxCY/T6BALoZHaE4ctp9xm+Z5kY/pzYaCHRFeyVhojxlrm+46y68HA6hr0TcwEssoxNiDEUJQjfPZ/RYA==}
@@ -1052,17 +1052,17 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  gd-bs@6.9.11:
-    resolution: {integrity: sha512-TWze+wpa78pcyOogvSpEgbWqDlGRnGyr/FszzajoN20uRkoDIs7Fo1CWm0bPufXcwmE9NarDcx5MpxwXq637hA==}
+  gd-bs@6.9.12:
+    resolution: {integrity: sha512-O79M8ovIWHlfya7U66M+ITiqMnhtmZuASBAmN1/n4LDu2VujK812eOhALhGTET0IYP8xBgW1xragybqLnST0+A==}
 
-  gd-sprest-bs@10.15.24:
-    resolution: {integrity: sha512-U1dq/OtHEPPkgT0JSb5mUkZAGwfihKnUybtzMrzbEQwDYK+Mc82TqSAEXX0CHnuRZ508afEcZQCI9hZWqKXS1g==}
+  gd-sprest-bs@10.15.55:
+    resolution: {integrity: sha512-8g2zlbfnngeycPvrJNu+Iy3uVR5OSIX80pRAXWBKViHnNJYpL5vk53IEf9bCC7+KN+/nr0urrdgjp7XqXJZaww==}
 
-  gd-sprest-def@2.0.5:
-    resolution: {integrity: sha512-MhIN1JJUK+Olz3pIZ5h/XxexS22POFlIDeAzgj97HjFqQ4adLz3a7FN+f34KtI6+OrWRwWzPcZlD1kbEPZK+eQ==}
+  gd-sprest-def@2.0.6:
+    resolution: {integrity: sha512-OQ6mPcv24G/M6O/P7JKDqVAyn4H6utZ27EFfpKq6N68cShVHL/B/l9Wk+6cxb5Qy+CBsVMcVKu0ecgZDe6kr8A==}
 
-  gd-sprest@9.3.6:
-    resolution: {integrity: sha512-YJwfg1LD8kbTfPBh7j7KL9N2jhZvtrG/CnzMtm23FedD3EJQbdTo70pRVZQwYpKp4aLlGy6Hfgqrbtsjt0fEyg==}
+  gd-sprest@9.6.8:
+    resolution: {integrity: sha512-wm3AFtCiQZWprHR36E+Q8UK7P/OvqIs8Dpe3uoBqbT6GfeFxOjCItNyKYDELq7AgUQs6NVh5NS8u1M6KZmoKYA==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2328,16 +2328,16 @@ snapshots:
 
   '@discoveryjs/json-ext@0.5.7': {}
 
-  '@floating-ui/core@1.7.4':
+  '@floating-ui/core@1.7.5':
     dependencies:
-      '@floating-ui/utils': 0.2.10
+      '@floating-ui/utils': 0.2.11
 
-  '@floating-ui/dom@1.7.5':
+  '@floating-ui/dom@1.7.6':
     dependencies:
-      '@floating-ui/core': 1.7.4
-      '@floating-ui/utils': 0.2.10
+      '@floating-ui/core': 1.7.5
+      '@floating-ui/utils': 0.2.11
 
-  '@floating-ui/utils@0.2.10': {}
+  '@floating-ui/utils@0.2.11': {}
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
@@ -2701,12 +2701,12 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  datatables.net-bs5@2.3.4:
+  datatables.net-bs5@2.3.7:
     dependencies:
-      datatables.net: 2.3.4
+      datatables.net: 2.3.7
       jquery: 3.7.1
 
-  datatables.net@2.3.4:
+  datatables.net@2.3.7:
     dependencies:
       jquery: 3.7.1
 
@@ -2793,30 +2793,30 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  gd-bs@6.9.11(@popperjs/core@2.11.8):
+  gd-bs@6.9.12(@popperjs/core@2.11.8):
     dependencies:
-      '@floating-ui/dom': 1.7.5
+      '@floating-ui/dom': 1.7.6
       bootstrap: 5.3.8(@popperjs/core@2.11.8)
       bootstrap-icons: 1.13.1
       core-js: 3.48.0
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-bs@10.15.24(@popperjs/core@2.11.8):
+  gd-sprest-bs@10.15.55(@popperjs/core@2.11.8):
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.9.11(@popperjs/core@2.11.8)
-      gd-sprest: 9.3.6
-      gd-sprest-def: 2.0.5
+      gd-bs: 6.9.12(@popperjs/core@2.11.8)
+      gd-sprest: 9.6.8
+      gd-sprest-def: 2.0.6
       quill: 2.0.3
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-def@2.0.5: {}
+  gd-sprest-def@2.0.6: {}
 
-  gd-sprest@9.3.6:
+  gd-sprest@9.6.8:
     dependencies:
-      gd-sprest-def: 2.0.5
+      gd-sprest-def: 2.0.6
 
   gensync@1.0.0-beta.2: {}
 
