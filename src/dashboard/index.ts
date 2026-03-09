@@ -562,5 +562,5 @@ export class Dashboard {
     updateCell(row: number, column: number, value) { this._dt?.updateCell(row, column, value); }
 
     // Updates a row in the data table
-    updateRow: (rowIdx: number, data) => void;
+    updateRow(rowIdx: number, data) { this._dt?.updateRow(rowIdx, data); };
 }
