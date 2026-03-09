@@ -27,8 +27,8 @@ importers:
         specifier: ^2.3.7
         version: 2.3.7
       gd-sprest-bs:
-        specifier: ^10.15.55
-        version: 10.15.55(@popperjs/core@2.11.8)
+        specifier: ^10.15.59
+        version: 10.15.59(@popperjs/core@2.11.8)
       html-loader:
         specifier: ^4.2.0
         version: 4.2.0(webpack@5.97.1)
@@ -1052,17 +1052,17 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  gd-bs@6.9.12:
-    resolution: {integrity: sha512-O79M8ovIWHlfya7U66M+ITiqMnhtmZuASBAmN1/n4LDu2VujK812eOhALhGTET0IYP8xBgW1xragybqLnST0+A==}
+  gd-bs@6.9.15:
+    resolution: {integrity: sha512-caj8yjoHb2RHh4+sx8xdCkfD9OnKX+NrGujAZCAnKektvT5k2tntpUqDna8Nh4hC/XhmCm9adOS7lkf3oVIN+A==}
 
-  gd-sprest-bs@10.15.55:
-    resolution: {integrity: sha512-8g2zlbfnngeycPvrJNu+Iy3uVR5OSIX80pRAXWBKViHnNJYpL5vk53IEf9bCC7+KN+/nr0urrdgjp7XqXJZaww==}
+  gd-sprest-bs@10.15.59:
+    resolution: {integrity: sha512-l/Vwl/retIPOTwPIhtZs/xZ6kZK+RFQdjd+9Qgl6kk9wC6zUU07ALsEaMAcJ8DQhBj5KQX2LbJEikX61UgSwIw==}
 
   gd-sprest-def@2.0.6:
     resolution: {integrity: sha512-OQ6mPcv24G/M6O/P7JKDqVAyn4H6utZ27EFfpKq6N68cShVHL/B/l9Wk+6cxb5Qy+CBsVMcVKu0ecgZDe6kr8A==}
 
-  gd-sprest@9.6.8:
-    resolution: {integrity: sha512-wm3AFtCiQZWprHR36E+Q8UK7P/OvqIs8Dpe3uoBqbT6GfeFxOjCItNyKYDELq7AgUQs6NVh5NS8u1M6KZmoKYA==}
+  gd-sprest@9.6.9:
+    resolution: {integrity: sha512-6/SayFIViiTXhNOBLmL9ZnLfpIJAxsmxcfRcCxyOoLumo0OIoa4k/CYl347Q3u3mK2GukA6AL1eJaxdOs7fOJA==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2793,7 +2793,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  gd-bs@6.9.12(@popperjs/core@2.11.8):
+  gd-bs@6.9.15(@popperjs/core@2.11.8):
     dependencies:
       '@floating-ui/dom': 1.7.6
       bootstrap: 5.3.8(@popperjs/core@2.11.8)
@@ -2802,11 +2802,11 @@ snapshots:
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-bs@10.15.55(@popperjs/core@2.11.8):
+  gd-sprest-bs@10.15.59(@popperjs/core@2.11.8):
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.9.12(@popperjs/core@2.11.8)
-      gd-sprest: 9.6.8
+      gd-bs: 6.9.15(@popperjs/core@2.11.8)
+      gd-sprest: 9.6.9
       gd-sprest-def: 2.0.6
       quill: 2.0.3
     transitivePeerDependencies:
@@ -2814,7 +2814,7 @@ snapshots:
 
   gd-sprest-def@2.0.6: {}
 
-  gd-sprest@9.6.8:
+  gd-sprest@9.6.9:
     dependencies:
       gd-sprest-def: 2.0.6
 

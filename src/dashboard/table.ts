@@ -20,6 +20,7 @@ export interface IDataTable {
     refresh: (rows: any[]) => void;
     search: (value?: string) => void;
     updateCell: (row: number, column: number, value) => void;
+    updateRow: (rowIdx: number, data) => void;
 }
 
 /**
@@ -245,6 +246,26 @@ export class DataTable implements IDataTable {
     // Updates a cell in the datatable
     updateCell(row: number, column: number, value) {
         // Update the cell
-        this._datatable.cell({ row, column }).data(value).draw(false);
+        let elCell = this._datatable.cell({ row, column }).node();
+        if (elCell) {
+            // Update the cell
+            this._table.updateColumn(elCell, column, value);
+        } else {
+            // Update the cell
+            this._datatable.cell({ row, column }).data(value).draw(false);
+        }
+    }
+
+    // Updates a row in the datatable
+    updateRow(rowIdx: number, data) {
+        // Update the row
+        let elRow = this._datatable.row(rowIdx).node();
+        if (elRow) {
+            // Update the row
+            this._table.updateRow(elRow, data);
+
+            // Update the datatable
+            this._datatable.draw(false);
+        }
     }
 }

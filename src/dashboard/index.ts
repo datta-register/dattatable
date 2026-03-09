@@ -560,4 +560,7 @@ export class Dashboard {
 
     // Updates a cell in the data table
     updateCell(row: number, column: number, value) { this._dt?.updateCell(row, column, value); }
+
+    // Updates a row in the data table
+    updateRow: (rowIdx: number, data) => void;
 }
