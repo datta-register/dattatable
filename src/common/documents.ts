@@ -740,8 +740,8 @@ export class Documents {
                         type: Components.ButtonTypes.OutlineSecondary,
                         onClick: () => {
                             // Set the item form properties
-                            ItemForm.ListName = this._props.listName;
-                            ItemForm.UseModal = false;
+                            let itemForm = new ItemForm(this._props);
+                            itemForm.UseModal = false;
 
                             // Ensure the user can edit the item
                             if (this.CanEdit) {
@@ -826,10 +826,10 @@ export class Documents {
                                 };
 
                                 // Show the edit form
-                                ItemForm.edit(editProps);
+                                itemForm.edit(editProps);
                             } else {
                                 // View the form
-                                ItemForm.view({
+                                itemForm.view({
                                     ...(this._props.onItemFormViewing || {}),
                                     ...{
                                         itemId: (file as Types.SP.File).ListItemAllFields["Id"],

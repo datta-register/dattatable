@@ -50,10 +50,18 @@ export class List<T = Types.SP.ListItem> {
     }
 
     // Reference to the edit form
-    get EditForm() { return ItemForm.EditForm; }
+    get EditForm() { return this.ItemForm.EditForm; }
 
     // Reference to the edit forms, if tabs are used
-    get EditForms() { return ItemForm.EditForms; }
+    get EditForms() { return this.ItemForm.EditForms; }
+
+    // Item Form
+    private _itemForm: ItemForm = null;
+    get ItemForm(): ItemForm { return this._itemForm; }
+
+    // Items
+    private _items: T[] = null;
+    get Items(): T[] { return this._items; }
 
     // List Content Types Information
     private _listContentTypes: Types.SP.ContentTypeOData[] = null;
@@ -78,10 +86,6 @@ export class List<T = Types.SP.ListItem> {
     private _listViews: Types.SP.ViewOData[] = null;
     get ListViews(): Types.SP.ViewOData[] { return this._listViews; }
 
-    // Items
-    private _items: T[] = null;
-    get Items(): T[] { return this._items; }
-
     // List Id
     private _listId: string = null;
     get ListId(): string { return this._listId; }
@@ -95,10 +99,10 @@ export class List<T = Types.SP.ListItem> {
     get OData(): Types.IODataQuery { return this._odata; }
 
     // Reference to the display form
-    get ViewForm() { return ItemForm.DisplayForm; }
+    get ViewForm() { return this.ItemForm.DisplayForm; }
 
     // Reference to the display forms, if tabs are used
-    get ViewForms() { return ItemForm.DisplayForms; }
+    get ViewForms() { return this.ItemForm.DisplayForms; }
 
     // View name
     private _viewName: string = null;
@@ -187,15 +191,16 @@ export class List<T = Types.SP.ListItem> {
 
     // Clears the modal or canvas
     private clear(props: IItemFormCreateProps | IItemFormEditProps | IItemFormViewProps) {
+        // Set the item form
+        this._itemForm = new ItemForm(props);
+        this._itemForm.ListName = this.ListName;
+
         // Ensure we are not rendering to a specified element
         if (props.elForm == null) {
             // Clear the modal/form
-            let useModal = typeof (props.useModal) === "boolean" ? props.useModal : ItemForm.UseModal;
+            let useModal = typeof (props.useModal) === "boolean" ? props.useModal : this.ItemForm.UseModal;
             useModal ? Modal.clear() : CanvasForm.clear();
         }
-
-        // Set the list name
-        ItemForm.ListName = this.ListName;
 
         // Call the event
         this._onResetForm ? this._onResetForm() : null;
@@ -237,7 +242,7 @@ export class List<T = Types.SP.ListItem> {
         this.clear(props);
 
         // Display the form
-        ItemForm.edit(props).then(null, this._onLoadFormError);
+        this.ItemForm.edit(props).then(null, this._onLoadFormError);
     }
 
     // Gets the changes for a list item's version history
@@ -667,7 +672,7 @@ export class List<T = Types.SP.ListItem> {
     // Saves the item with an option to bypass validation
     save(bypassValidation?: boolean): PromiseLike<T> {
         // Save the item
-        return ItemForm.save({ bypassValidation });
+        return this.ItemForm.save({ bypassValidation });
     }
 
     // Updates an item

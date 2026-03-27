@@ -1,5 +1,4 @@
 import { Components } from "gd-sprest-bs";
-import { ItemForm } from "../common";
 import { Accordion, IAccordion } from "./accordion";
 import { FilterSlideout, IFilterItem } from "./filter";
 import { Footer } from "./footer";
@@ -155,9 +154,6 @@ export class Dashboard {
     constructor(props: IDashboardProps) {
         // Set the properties
         this._props = props;
-
-        // Set the flag
-        typeof (props.useModal) === "boolean" ? ItemForm.UseModal = props.useModal : null;
 
         // Render the dashboard
         this.render();
