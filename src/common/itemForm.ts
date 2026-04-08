@@ -638,7 +638,14 @@ export class ItemForm {
         // See if we are rendering a display form
         if (this.IsDisplay) {
             // Call the item form button rendering event
-            let formButtons: Components.IButtonProps[] = [];
+            let formButtons: Components.IButtonProps[] = [{
+                text: "Close",
+                type: Components.ButtonTypes.OutlineSecondary,
+                onClick: () => {
+                    // Hide the form
+                    this._useModal ? Modal.hide() : CanvasForm.hide();
+                }
+            }];
             formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
 
             // Render the form buttons
@@ -654,6 +661,13 @@ export class ItemForm {
                 onClick: () => {
                     // Save the form
                     this.save().then(() => { }, () => { });
+                }
+            }, {
+                text: "Close",
+                type: Components.ButtonTypes.OutlineSecondary,
+                onClick: () => {
+                    // Hide the form
+                    this._useModal ? Modal.hide() : CanvasForm.hide();
                 }
             }];
             formButtons = this._onFormButtonsRendering ? this._onFormButtonsRendering(formButtons) : formButtons;
