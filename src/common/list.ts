@@ -616,7 +616,7 @@ export class List<T = Types.SP.ListItem> {
         this.clear(props);
 
         // Display the form
-        ItemForm.create(props).then(null, this._onLoadFormError);
+        this.ItemForm.create(props).then(null, this._onLoadFormError);
     }
 
     // Refresh the data
@@ -690,6 +690,6 @@ export class List<T = Types.SP.ListItem> {
         this.clear(props);
 
         // Display the form
-        ItemForm.view(props).then(null, this._onLoadFormError);
+        this.ItemForm.view(props).then(null, this._onLoadFormError);
     }
 }

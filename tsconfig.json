@@ -1,7 +1,11 @@
 {
     "compilerOptions": {
+        "esModuleInterop": false,
+        "ignoreDeprecations": "6.0",
+        "strict": false,
         "target": "es5",
-        "outDir": "build",
+        "outDir": "./build",
+        "rootDir": "./src",
         "skipLibCheck": true,
         "declaration": true,
         "lib": [
