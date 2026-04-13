@@ -61,7 +61,7 @@ export class DataTable implements IDataTable {
                         let elCell = meta.settings.aoData[meta.row].anCells ? meta.settings.aoData[meta.row].anCells[meta.col] : null;
                         if (elCell) {
                             // Return the order/sort attribute, inner html or data value
-                            return elCell.getAttribute("data-order") || elCell.getAttribute("data-sort") || elCell.innerHTML || data;
+                            return elCell.getAttribute("data-order") || elCell.getAttribute("data-sort") || elCell.innerText || data;
                         }
                     }
                     return data;
