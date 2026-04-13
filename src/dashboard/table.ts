@@ -52,6 +52,21 @@ export class DataTable implements IDataTable {
 
         // Set the default properties
         this._props.dtProps = this._props.dtProps || {
+            columnDefs: [{
+                targets: "_all",
+                render: (data, type, row, meta) => {
+                    // See if we are sorting
+                    if (type == "sort") {
+                        // Get the cell element
+                        let elCell = meta.settings.aoData[meta.row].anCells ? meta.settings.aoData[meta.row].anCells[meta.col] : null;
+                        if (elCell) {
+                            // Return the order/sort attribute, inner html or data value
+                            return elCell.getAttribute("data-order") || elCell.getAttribute("data-sort") || elCell.innerHTML || data;
+                        }
+                    }
+                    return data;
+                }
+            }],
             // This will call the render event if the addRow method is used
             createdRow: (row, data, dataIndex) => {
                 // Get the row
