@@ -280,7 +280,7 @@ export class DataTable implements IDataTable {
             let hiddenColIndexes = [];
             this._datatable.columns().every(idx => {
                 // See if the column is hidden
-                if (this._datatable.column(idx).visible()) {
+                if (this._datatable.column(idx).visible() === false) {
                     // Add the index
                     hiddenColIndexes.push(idx);
                 }
