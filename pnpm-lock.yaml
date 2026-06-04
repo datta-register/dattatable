@@ -27,8 +27,8 @@ importers:
         specifier: ^2.3.7
         version: 2.3.7
       gd-sprest-bs:
-        specifier: ^10.15.69
-        version: 10.15.69(@popperjs/core@2.11.8)
+        specifier: ^10.15.81
+        version: 10.15.81(@popperjs/core@2.11.8)
       html-loader:
         specifier: ^4.2.0
         version: 4.2.0(webpack@5.97.1)
@@ -1052,17 +1052,17 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  gd-bs@6.9.17:
-    resolution: {integrity: sha512-qdz6xu8vMpxi2KJzuBNaUVLyInJ5wqu3aLjO/IKXXnvSi6xVcnnKz1r3cLMMMAQOh6gXeAPfRI+JpdvwWKFMrw==}
+  gd-bs@6.9.21:
+    resolution: {integrity: sha512-xlAd6oNOeY2lfCW1R1XvoKV042bMtEt7G1EUJw4/VC3IAf+iA2DFlvTgZ3UmU8Swb8CJpRZUeH3JEOaj5loWxA==}
 
-  gd-sprest-bs@10.15.69:
-    resolution: {integrity: sha512-fTyQbXU4G6uX1QAAYO+V2vGdA4i7kI68cD0txtdO1r+ULyZvnrHel3fw68V59R7ZjG/LWtxfsvGbJxJYtD6dHQ==}
+  gd-sprest-bs@10.15.81:
+    resolution: {integrity: sha512-waWqbngfavkwApxyowXCh1EuwHo8v1uYY9brZfwPkhA8qReorSr7emakZFG9/5I+lGIghV12kNPpjpxVxtXMCw==}
 
-  gd-sprest-def@2.0.9:
-    resolution: {integrity: sha512-KxnNEQ7TmF+tjK3nMKm2rXkV1D41vBABy4UBiItihaK2ZgLaVvpvdMAcraUJij9h6tHYDOQ/DKFok2TCTBCNAA==}
+  gd-sprest-def@2.1.3:
+    resolution: {integrity: sha512-FIXyXZ1Wbt9BG94T47jAkFSlkduIn+mGpA0koNuVnrd/m+C5UcyQkHChH78yUpXoaif/NZYNisxHkezDaIPEJQ==}
 
-  gd-sprest@9.7.5:
-    resolution: {integrity: sha512-NVjhDRE7EFxewVizXwH8ZTEQgPT9VDj2kfHKqmW9tJaZJ7bM8gaz10SSJgf47CscYU+ilB/FOodv6qr5ZDIoGA==}
+  gd-sprest@9.8.2:
+    resolution: {integrity: sha512-kfkkxaiPrHt56sCC018jnO7sJ7d+zyj0qpw7ghT5dXvufBXXl3TSIJ67al/RaBLvrhOCShokSppnT3JmfIz9KA==}
 
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
@@ -2793,7 +2793,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  gd-bs@6.9.17(@popperjs/core@2.11.8):
+  gd-bs@6.9.21(@popperjs/core@2.11.8):
     dependencies:
       '@floating-ui/dom': 1.7.6
       bootstrap: 5.3.8(@popperjs/core@2.11.8)
@@ -2802,21 +2802,21 @@ snapshots:
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-bs@10.15.69(@popperjs/core@2.11.8):
+  gd-sprest-bs@10.15.81(@popperjs/core@2.11.8):
     dependencies:
       flatpickr: 4.6.13
-      gd-bs: 6.9.17(@popperjs/core@2.11.8)
-      gd-sprest: 9.7.5
-      gd-sprest-def: 2.0.9
+      gd-bs: 6.9.21(@popperjs/core@2.11.8)
+      gd-sprest: 9.8.2
+      gd-sprest-def: 2.1.3
       quill: 2.0.3
     transitivePeerDependencies:
       - '@popperjs/core'
 
-  gd-sprest-def@2.0.9: {}
+  gd-sprest-def@2.1.3: {}
 
-  gd-sprest@9.7.5:
+  gd-sprest@9.8.2:
     dependencies:
-      gd-sprest-def: 2.0.9
+      gd-sprest-def: 2.1.3
 
   gensync@1.0.0-beta.2: {}
 

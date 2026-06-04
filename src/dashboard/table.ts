@@ -276,8 +276,18 @@ export class DataTable implements IDataTable {
         // Update the row
         let elRow = this._datatable.row(rowIdx).node();
         if (elRow) {
+            // Set the hidden columns
+            let hiddenColIndexes = [];
+            this._datatable.columns().every(idx => {
+                // See if the column is hidden
+                if (this._datatable.column(idx).visible()) {
+                    // Add the index
+                    hiddenColIndexes.push(idx);
+                }
+            });
+
             // Update the row
-            this._table.updateRow(elRow, data);
+            this._table.updateRow(elRow, data, hiddenColIndexes);
 
             // Update the datatable
             this._datatable.draw(false);

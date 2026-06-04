@@ -1,4 +1,4 @@
-import { Components, Helper, SPTypes, Web } from "gd-sprest-bs";
+import { Components, Helper, SPTypes } from "gd-sprest-bs";
 import { CanvasForm, LoadingDialog, Modal, getContextInfo } from ".";
 
 /** Tab */
