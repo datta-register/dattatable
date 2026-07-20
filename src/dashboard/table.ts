@@ -18,6 +18,7 @@ export interface IDataTable {
     onRendering?: (dtProps: any) => any;
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     refresh: (rows: any[]) => void;
+    removeRow: (rowIdx: number) => void;
     search: (value?: string) => void;
     updateCell: (row: number, column: number, value) => void;
     updateRow: (rowIdx: number, data) => void;
@@ -250,6 +251,12 @@ export class DataTable implements IDataTable {
 
         // Apply the plugin
         this.applyPlugin(this._table);
+    }
+
+    // Removes a row by index
+    removeRow(rowIdx: number) {
+        // Remove the row by index
+        this._datatable.row(rowIdx).draw(false);
     }
 
     // Searches the datatable
