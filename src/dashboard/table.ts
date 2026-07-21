@@ -51,8 +51,56 @@ export class DataTable implements IDataTable {
         // Save the properties
         this._props = props;
 
-        // Set the default properties
-        this._props.dtProps = this._props.dtProps || {
+        // Render the table
+        this.refresh(props.rows);
+    }
+
+    // Adds row(s) to the table
+    addRow(row: any) {
+        // Set the rows array
+        (typeof (row.length) === "number" ? row : [row]).forEach(row => {
+            let newRow = [];
+
+            // Parse the columns
+            for (let i = 0; i < this._props.columns.length; i++) {
+                let column = this._props.columns[i];
+                let value = typeof (row[column.name]) != "undefined" ? row[column.name] : "";
+
+                // Append the value
+                newRow.push(value);
+            }
+
+            // Save a reference to the original data for the event
+            let uniqueId = Date.now();
+            newRow.push(uniqueId);
+            this._addRowItems.push({ rowId: uniqueId, row });
+
+            // Add the row
+            this._datatable.row.add(newRow);
+        });
+
+        // Refresh the table
+        this._datatable.draw(false);
+    }
+
+    // Applies the datatables.net plugin
+    private applyPlugin(table: Components.ITable) {
+        // Call the rendering event
+        this._props.dtProps = this.getDefaultProperties(this._props.dtProps);
+        this._props.dtProps = this._props.onRendering ? this._props.onRendering(this._props.dtProps) : this._props.dtProps;
+
+        // Render the datatable
+        this._datatable = $(table.el).DataTable(this._props.dtProps);
+
+        // Call the rendered event in a separate thread to ensure the dashboard object is created
+        setTimeout(() => {
+            this._props.onRendered ? this._props.onRendered(this._props.el, this._datatable) : null;
+        }, 50);
+    }
+
+    private getDefaultProperties(props: IDataTableProps) {
+        // Return the default properties
+        return props?.dtProps || {
             columnDefs: [{
                 targets: "_all",
                 render: (data, type, row, meta) => {
@@ -137,51 +185,6 @@ export class DataTable implements IDataTable {
                 }
             }
         };
-
-        // Render the table
-        this.refresh(props.rows);
-    }
-
-    // Adds row(s) to the table
-    addRow(row: any) {
-        // Set the rows array
-        (typeof (row.length) === "number" ? row : [row]).forEach(row => {
-            let newRow = [];
-
-            // Parse the columns
-            for (let i = 0; i < this._props.columns.length; i++) {
-                let column = this._props.columns[i];
-                let value = typeof (row[column.name]) != "undefined" ? row[column.name] : "";
-
-                // Append the value
-                newRow.push(value);
-            }
-
-            // Save a reference to the original data for the event
-            let uniqueId = Date.now();
-            newRow.push(uniqueId);
-            this._addRowItems.push({ rowId: uniqueId, row });
-
-            // Add the row
-            this._datatable.row.add(newRow);
-        });
-
-        // Refresh the table
-        this._datatable.draw(false);
-    }
-
-    // Applies the datatables.net plugin
-    private applyPlugin(table: Components.ITable) {
-        // Call the rendering event
-        this._props.dtProps = this._props.onRendering ? this._props.onRendering(this._props.dtProps) : this._props.dtProps;
-
-        // Render the datatable
-        this._datatable = $(table.el).DataTable(this._props.dtProps);
-
-        // Call the rendered event in a separate thread to ensure the dashboard object is created
-        setTimeout(() => {
-            this._props.onRendered ? this._props.onRendered(this._props.el, this._datatable) : null;
-        }, 50);
     }
 
     /** Public Interface */
