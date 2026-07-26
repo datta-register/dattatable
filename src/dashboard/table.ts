@@ -171,7 +171,7 @@ export class DataTable implements IDataTable {
                     elTableWrapper.querySelector('.dt-paging').classList.add('px-0');
 
                     // Add spacing for the footer
-                    elTableWrapper.querySelector('.row:last-child').classList.add('mb-1');
+                    elTableWrapper.querySelector('.row :last-child').classList.add('mb-1');
                 }
             },
             language: {
