@@ -155,14 +155,20 @@ export class DataTable implements IDataTable {
                 let elTableWrapper = settings.api.context[0].tableWrapper as HTMLElement;
                 if (elTableWrapper) {
                     // Align the text to be centered
-                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('col-md d-md-flex justify-content-between align-items-center');
+                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('col-md');
+                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('d-md-flex');
+                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('justify-content-between');
+                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('align-items-center');
                     elTableWrapper.querySelector('.dt-info').classList.add('text-center');
 
                     // Remove the label spacing to align with paging
                     elTableWrapper.querySelector('.dt-length label').classList.add('d-none');
 
                     // Push paging to the end
-                    elTableWrapper.querySelector('.dt-paging').classList.add('d-flex justify-content-end mx-0 px-0');
+                    elTableWrapper.querySelector('.dt-paging').classList.add('d-flex');
+                    elTableWrapper.querySelector('.dt-paging').classList.add('justify-content-end');
+                    elTableWrapper.querySelector('.dt-paging').classList.add('mx-0');
+                    elTableWrapper.querySelector('.dt-paging').classList.add('px-0');
 
                     // Add spacing for the footer
                     elTableWrapper.querySelector('.row:last-child').classList.add('mb-1');
