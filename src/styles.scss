@@ -66,6 +66,13 @@
             margin-right: 10px;
         }
     }
+
+    /* Hide the default sort arrow */
+    .dt-column-header {
+        .dt-column-order {
+            visibility: hidden;
+        }
+    }
 }
 
 /* Set white background & alignment for footer */
