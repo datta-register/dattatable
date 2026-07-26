@@ -37,7 +37,6 @@ module.exports = (env, argv) => {
                 // Reference the minified versions
                 "datatables.net": "datatables.net/js/dataTables.min.js",
                 "datatables.net-bs5": "datatables.net-bs5/js/dataTables.bootstrap5.min.js",
-                "jquery": "jquery/dist/jquery.min.js",
                 "moment.js": "moment/min/moment.min.js"
             }
         },

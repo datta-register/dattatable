@@ -1,5 +1,4 @@
 import { Components, Helper, Types } from "gd-sprest-bs";
-import * as jQuery from "jquery";
 import { Modal } from "../common/modal";
 import { List } from "../common/list";
 import { LoadingDialog } from "../common/loadingDialog";
@@ -105,23 +104,29 @@ export class AuditLog {
                     }
                 ],
                 drawCallback: function (settings) {
-                    let api = new jQuery.fn.dataTable.Api(settings) as any;
+                    // Get the table element
+                    let elTable = settings.api.context[0].table as HTMLElement;
+                    if (elTable) {
+                        // Styling option for striped rows
+                        elTable.classList.add('table-striped');
+                    }
 
-                    // Styling option for striped rows
-                    jQuery(api.context[0].nTable).addClass('table-striped');
+                    // Get the table wrapper element
+                    let elTableWrapper = settings.api.context[0].tableWrapper as HTMLElement;
+                    if (elTableWrapper) {
+                        // Align the text to be centered
+                        elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('col-md d-md-flex justify-content-between align-items-center');
+                        elTableWrapper.querySelector('.dt-info').classList.add('text-center');
 
-                    // Align the text to be centered
-                    jQuery(api.context[0].nTableWrapper).find('.dt-info').parent().removeClass('col-md d-md-flex justify-content-between align-items-center');
-                    jQuery(api.context[0].nTableWrapper).find('.dt-info').addClass('text-center');
+                        // Remove the label spacing to align with paging
+                        elTableWrapper.querySelector('.dt-length label').classList.add('d-none');
 
-                    // Remove the label spacing to align with paging
-                    jQuery(api.context[0].nTableWrapper).find('.dt-length label').addClass('d-none');
+                        // Push paging to the end
+                        elTableWrapper.querySelector('.dt-paging').classList.add('d-flex justify-content-end mx-0 px-0');
 
-                    // Push paging to the end
-                    jQuery(api.context[0].nTableWrapper).find('.dt-paging').addClass('d-flex justify-content-end mx-0 px-0');
-
-                    // Add spacing for the footer
-                    jQuery(api.context[0].nTableWrapper).find('.row:last-child').addClass('mb-1');
+                        // Add spacing for the footer
+                        elTableWrapper.querySelector('.row:last-child').classList.add('mb-1');
+                    }
                 },
                 language: {
                     emptyTable: "No logs exist for this item.",
