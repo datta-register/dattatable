@@ -106,7 +106,7 @@ export class DataTable implements IDataTable {
                     // See if we are sorting
                     if (type == "sort") {
                         // Get the cell element
-                        let elCell = meta.settings.aoData[meta.row].anCells ? meta.settings.aoData[meta.row].anCells[meta.col] : null;
+                        let elCell = meta.settings.data[meta.row].anCells ? meta.settings.data[meta.row].anCells[meta.col] : null;
                         if (elCell) {
                             // Return the order/sort attribute, inner html or data value
                             return elCell.getAttribute("data-order") || elCell.getAttribute("data-sort") || elCell.innerText || data;
