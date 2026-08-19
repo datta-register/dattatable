@@ -136,7 +136,11 @@ export class DataTable implements IDataTable {
                         let column = this._props.columns[i];
 
                         // Skip if this column is hidden
-                        if (this._datatable.column(i).visible() === false) { continue; }
+                        if (this._datatable.column(i).visible() === false) {
+                            // Hide the row
+                            row.children[i].classList.add("d-none");
+                            continue;
+                        }
 
                         // See if an event exists
                         if (column.onRenderCell) {
