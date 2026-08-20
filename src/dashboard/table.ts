@@ -137,16 +137,12 @@ export class DataTable implements IDataTable {
                     for (let i = 0; i < this._props.columns.length; i++) {
                         let column = this._props.columns[i];
 
+                        // Skip if this column is hidden
+                        if (this._datatable.column(i).visible() === false) { continue; }
+
                         // Increment the column index
                         // Hidden columns will not have a child reference
                         colIdx++;
-
-                        // Skip if this column is hidden
-                        if (this._datatable.column(i).visible() === false) {
-                            // Decrement the index
-                            colIdx--;
-                            continue;
-                        }
 
                         // See if an event exists
                         if (column.onRenderCell) {
