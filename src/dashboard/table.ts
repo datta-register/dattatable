@@ -131,21 +131,30 @@ export class DataTable implements IDataTable {
 
                 // See if the row item was found, otherwise it wasn't rendered from the addRows function
                 if (rowItem) {
+                    let colIdx = 0;
+
                     // Parse the columns
                     for (let i = 0; i < this._props.columns.length; i++) {
                         let column = this._props.columns[i];
+
+                        // Increment the column index
+                        // Hidden columns will not have a child reference
+                        colIdx++;
 
                         // Skip if this column is hidden
                         if (this._datatable.column(i).visible() === false) {
                             // Hide the row
                             row.children[i].classList.add("d-none");
+
+                            // Decrement the index
+                            colIdx--;
                             continue;
                         }
 
                         // See if an event exists
                         if (column.onRenderCell) {
                             // Call it
-                            column.onRenderCell(row.children[i], column, rowItem || data, dataIndex);
+                            column.onRenderCell(row.children[colIdx], column, rowItem || data, dataIndex);
                         }
                     }
                 }
