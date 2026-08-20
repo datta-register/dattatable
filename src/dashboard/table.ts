@@ -143,9 +143,6 @@ export class DataTable implements IDataTable {
 
                         // Skip if this column is hidden
                         if (this._datatable.column(i).visible() === false) {
-                            // Hide the row
-                            row.children[i].classList.add("d-none");
-
                             // Decrement the index
                             colIdx--;
                             continue;
