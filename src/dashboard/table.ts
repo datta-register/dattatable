@@ -140,15 +140,15 @@ export class DataTable implements IDataTable {
                         // Skip if this column is hidden
                         if (this._datatable.column(i).visible() === false) { continue; }
 
-                        // Increment the column index
-                        // Hidden columns will not have a child reference
-                        colIdx++;
-
                         // See if an event exists
                         if (column.onRenderCell) {
                             // Call it
                             column.onRenderCell(row.children[colIdx], column, rowItem || data, dataIndex);
                         }
+
+                        // Increment the column index
+                        // Hidden columns will not have a child reference
+                        colIdx++;
                     }
                 }
             },
