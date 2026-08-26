@@ -8,6 +8,7 @@
 }
 
 .bs {
+
     /* Flip an image horizontally */
     .img-flip-x {
         -webkit-transform: scaleX(-1);
@@ -56,21 +57,22 @@
         display: grid;
         justify-content: center;
     }
-}
 
-/* Datatables.net table */
-#datatable {
-    /* Add spacing between the column name and the sort arrow */
-    .dt-type-numeric {
-        .dt-column-title {
-            margin-right: 10px;
+    /* Datatables.net table */
+    .dt-container {
+
+        /* Add spacing between the column name and the sort arrow */
+        .dt-type-numeric {
+            .dt-column-title {
+                margin-right: 10px;
+            }
         }
-    }
 
-    /* Hide the default sort arrow */
-    .dt-column-header {
-        .dt-column-order {
-            visibility: hidden;
+        /* Hide the default sort arrow */
+        .dt-column-header {
+            .dt-column-order {
+                visibility: hidden;
+            }
         }
     }
 }
