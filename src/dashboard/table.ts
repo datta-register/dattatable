@@ -1,4 +1,4 @@
-import { DataTable as dtnet } from "datatables.net";
+import dtnet from "datatables.net";
 import { Components } from "gd-sprest-bs";
 
 // DataTables.net
