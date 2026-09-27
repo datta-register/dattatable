@@ -1,4 +1,4 @@
-import dtnet from "datatables.net";
+import * as dtnet from "datatables.net";
 import { Components } from "gd-sprest-bs";
 
 // DataTables.net
@@ -88,8 +88,9 @@ export class DataTable implements IDataTable {
         this._props.dtProps = this.getDefaultProperties(this._props);
         this._props.dtProps = this._props.onRendering ? this._props.onRendering(this._props.dtProps) : this._props.dtProps;
 
-        // Render the datatable
-        this._datatable = new dtnet(table.el, this._props.dtProps);
+        // Get the datatables.net library so it works w/ mjs/js and render the datatable
+        let dtLib: any = dtnet["DataTable"] || dtnet;
+        this._datatable = new dtLib(table.el, this._props.dtProps);
 
         // Call the rendered event in a separate thread to ensure the dashboard object is created
         setTimeout(() => {
