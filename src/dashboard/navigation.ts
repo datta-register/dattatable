@@ -83,6 +83,7 @@ export class Navigation {
             onRendered: el => {
                 // Update the collapse visibility
                 el.classList.remove("navbar-expand-lg");
+                el.classList.remove("rounded");
                 el.classList.add("navbar-expand-sm");
                 el.classList.add("rounded-top");
             }
