@@ -1,8 +1,9 @@
-import * as dtnet from "datatables.net";
+import * as dtnet from "datatables.net-dt";
 import { Components } from "gd-sprest-bs";
 
 // DataTables.net
 import "datatables.net-bs5";
+import "datatables.net-columncontrol-bs5";
 
 /**
  * Data Table
@@ -164,6 +165,9 @@ export class DataTable implements IDataTable {
                 // Get the table wrapper element
                 let elTableWrapper = settings.api.context[0].tableWrapper as HTMLElement;
                 if (elTableWrapper) {
+                    // Remove the margin at the top
+                    elTableWrapper.querySelector('.dt-layout-table').classList.remove('mt-2');
+                    /*
                     // Align the text to be centered
                     elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('col-md');
                     elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('d-md-flex');
@@ -182,6 +186,7 @@ export class DataTable implements IDataTable {
 
                     // Add spacing for the footer
                     elTableWrapper.querySelector('.row :last-child').classList.add('mb-1');
+                    */
                 }
             },
             language: {
@@ -204,7 +209,12 @@ export class DataTable implements IDataTable {
                         type: "full_numbers"
                     }
                 }
-            }
+            },
+            ordering: {
+                indicators: false,
+                handler: false
+            },
+            columnControl: ["order", "searchDropdown"]
         };
     }
 
