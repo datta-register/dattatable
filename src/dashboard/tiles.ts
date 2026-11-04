@@ -48,7 +48,6 @@ export interface ITilesProps {
  */
 export class Tiles implements ITiles {
     private _datatable: any = null;
-    private _pagination: Components.IPagination = null;
     private _props: ITilesProps;
 
     // Constructor
@@ -253,6 +252,14 @@ export class Tiles implements ITiles {
 
     // Method to reload the data
     refresh(items: any[] = []) {
+        // See if the datatable exists
+        if (this._datatable != null) {
+            // Clear the datatable
+            this._datatable.clear();
+            this._datatable.destroy();
+            this._datatable = null;
+        }
+
         // Clear the datatable element
         while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
 
