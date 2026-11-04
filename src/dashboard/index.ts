@@ -104,7 +104,7 @@ export interface IDashboardProps {
         classNameCard?: string;
         classNameFooter?: string;
         classNameHeader?: string;
-        colSize?: number | string;
+        colSize?: number;
         filterFields?: string[];
         items: any[];
         onBodyRendered?: (el?: HTMLElement, item?: any) => void;
@@ -210,17 +210,11 @@ export class Dashboard {
             onClear: this._props.filters ? this._props.filters.onClear : null,
             onRendered: this._props.filters ? this._props.filters.onRendered : null,
             onShowFilter: this._props.filters ? this._props.filters.onShowFilter : null,
-            onFilter: this.IsAccordion || this.IsTiles ? (value, item) => {
+            onFilter: this.IsAccordion ? (value, item) => {
                 let values = typeof (value) === "string" ? [value] : value;
 
-                // See if this is an accordion
-                if (this.IsAccordion) {
-                    // Filter the accordion
-                    this._accordion.filter(values);
-                } else {
-                    // Filter the tiles
-                    this._tiles.filter(values)
-                }
+                // Filter the accordion
+                this._accordion.filter(values);
             } : null
         });
 
@@ -455,7 +449,7 @@ export class Dashboard {
         // Else, see if we are rendering tiles
         else if (this.IsTiles) {
             // Filter the tiles
-            this._tiles.filter(value);
+            exactMatchFl && value ? this._tiles.filterExact(idx, value) : this._tiles.filter(idx, value);
         } else {
             // If no value is specified, then we don't want to filter by exact value
             exactMatchFl && value ? this._dt.filterExact(idx, value) : this._dt.filter(idx, value);
@@ -481,20 +475,11 @@ export class Dashboard {
         // Else, see if we have tiles
         else if (this.IsTiles) {
             // Filter the tiles
-            this._tiles.filter(values);
+            exactMatchFl && values.length > 0 ? this._tiles.filterMultiExact(idx + 1, values) : this._tiles.filterMulti(idx + 1, values);
         }
         else {
             // Filter the table
             exactMatchFl && values.length > 0 ? this._dt.filterMultiExact(idx, values) : this._dt.filterMulti(idx, values);
-        }
-    }
-
-    // Filter the tiles
-    filterTiles(values?: string | string[], useAndOperator: boolean = false) {
-        // See if we have tiles
-        if (this.IsTiles) {
-            // Filter the tiles
-            this._tiles.filter(typeof (values) === "string" ? [values] : values, useAndOperator);
         }
     }
 

@@ -1,7 +1,14 @@
+import * as dtnet from "datatables.net-dt";
 import { Components } from "gd-sprest-bs";
 
+// DataTables.net
+import "datatables.net-bs5";
+
 export interface ITiles {
-    filter?: (value: string | string[], useAndOperator?: boolean) => void;
+    filter: (idx: number, value?: string) => void;
+    filterExact: (idx: number, value?: string) => void;
+    filterMulti: (idx: number, values?: string[]) => void;
+    filterMultiExact: (idx: number, values?: string[]) => void;
     refresh?: (items: any[]) => void;
     search?: (value: string) => void;
 }
@@ -14,7 +21,7 @@ export interface ITilesProps {
     classNameCard?: string;
     classNameFooter?: string;
     classNameHeader?: string;
-    colSize?: number | string;
+    colSize?: number;
     el: HTMLElement;
     filterFields?: string[];
     items: any[];
@@ -23,18 +30,13 @@ export interface ITilesProps {
     onCardRendered?: (el?: HTMLElement, item?: any) => void;
     onCardRendering?: (cardProps?: Components.ICardProps, item?: any) => void;
     onClick?: (el?: HTMLElement, item?: Components.ICardBody) => void;
-    onColumnRendered?: (el?: HTMLElement, item?: any) => void;
     onFooterRendered?: (el?: HTMLElement, item?: any) => void;
     onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
-    onPaginationClick?: (pageNumber?: number) => void;
-    onPaginationRendered?: (el?: HTMLElement) => void;
     onRendered?: (el?: HTMLElement) => void;
     onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
     onTitleRendered?: (el?: HTMLElement, item?: any) => void;
-    paginationLimit?: number;
     showFooter?: boolean;
     showHeader?: boolean;
-    showPagination?: boolean;
     subTitleFields?: string[];
     subTitleTemplate?: string;
     titleFields?: string[];
@@ -45,12 +47,9 @@ export interface ITilesProps {
  * Tiles
  */
 export class Tiles implements ITiles {
-    private _tiles: Components.ICardGroup = null;
-    private _activeFilterValue: string = null;
-    private _activeSearchValue: string = null;
+    private _datatable: any = null;
     private _pagination: Components.IPagination = null;
     private _props: ITilesProps;
-    private _useAndOperator: boolean = false;
 
     // Constructor
     constructor(props: ITilesProps) {
@@ -66,20 +65,40 @@ export class Tiles implements ITiles {
         }, 50);
     }
 
-    // Filters the tile
-    filter(values: string[], useAndOperator: boolean = false) {
-        this._activeFilterValue = values ? values.join('|') : "";
-        this._useAndOperator = useAndOperator;
+    // Filters the status
+    filter(idx: number, value: string = "") {
+        // Set the filter
+        this._datatable.column(idx).search(value.replace(/[-[/\]{}()*+?.,\\^$#\s]/g, '\\$&'), true, false).draw();
+    }
 
-        // Parse all tile
-        let tiles = this._props.el.querySelectorAll(".card");
-        for (let i = 0; i < tiles.length; i++) {
-            // Hide the tile
-            tiles[i].parentElement.classList.add("d-none");
+    // Filters the status
+    filterExact(idx: number, value: string = "") {
+        // Set the filter
+        this._datatable.column(idx).search("^" + value.replace(/[-[/\]{}()*+?.,\\^$#\s]/g, '\\$&') + "$", true, false).draw();
+    }
+
+    // Filters multiple values against the status
+    filterMulti(idx: number, values: string[] = []) {
+        // Parse the values
+        for (let i = 0; i < values.length; i++) {
+            // Update the value
+            values[i] = values[i].replace(/\|/g, '\\$&');
         }
 
-        // Update the tiles
-        this.updateTiles();
+        // Filter the values
+        this.filter(idx, values.join('|'));
+    }
+
+    // Filters multiple values against the status
+    filterMultiExact(idx: number, values: string[] = []) {
+        // Parse the values
+        for (let i = 0; i < values.length; i++) {
+            // Update the value
+            values[i] = values[i].replace(/\|/g, '\\$&');
+        }
+
+        // Filter the values
+        this._datatable.column(idx).search("^(" + values.join('|') + ")$", true, false).draw();
     }
 
     // Generate the card properties
@@ -243,175 +262,101 @@ export class Tiles implements ITiles {
 
     // Renders the dashboard
     private render(items: any[]) {
-        // Render the tile
-        this.renderTiles(items);
+        // Get the column size
+        let colSize = this._props.colSize > 0 ? this._props.colSize : 3;
+        if (colSize > 6) { colSize = 6; }
 
-        // Update the tiles
-        this.updateTiles();
-    }
-
-    // Renders the tiles
-    private renderTiles(items: any[]) {
-        // Parse the items
-        let cards: Array<Components.ICardProps> = [];
-        for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-
-            // Add an tile
-            cards.push(this.generateCard(item));
-        }
-
-        // Render the tiles
-        this._tiles = Components.CardGroup({
-            el: this._props.el,
-            cards,
-            className: this._props.className,
-            colSize: this._props.colSize || 4,
-            onColRender: this._props.onColumnRendered
-        });
-    }
-
-    // Updates the visibility of the tiles
-    private updateTiles() {
-        // Get the pagination element
-        let elPagination = this._props.el.querySelector(".tiles-pagination") as HTMLElement;
-        if (elPagination) {
-            // Clear the element
-            while (elPagination.firstChild) { elPagination.removeChild(elPagination.firstChild); }
-        } else {
-            // Create the element
-            elPagination = document.createElement("div");
-            elPagination.classList.add("tiles-pagination");
-            this._props.el.appendChild(elPagination);
-        }
-
-        // Get the elements as an array
-        let elItems = Array.from(this._tiles.el.querySelectorAll(".card"));
-
-        // Parse the items
-        for (let i = elItems.length - 1; i >= 0; i--) {
-            let elItem = elItems[i] as HTMLElement;
-
-            // See if a filter value exists
-            if (this._activeFilterValue) {
-                let filterValues = (typeof (elItem.dataset.filter) != "undefined" ? elItem.dataset.filter : "").split('|');
-
-                // Parse the active filters
-                let activeFilters = this._activeFilterValue.split('|');
-                let showItem = false;
-                for (let j = 0; j < activeFilters.length; j++) {
-                    // See if the item contains the filter value
-                    if (filterValues.indexOf(activeFilters[j]) >= 0) {
-                        // Set the flag
-                        showItem = true;
-
-                        // Break from the loop if we aren't using the and operator
-                        if (!this._useAndOperator) { break; }
-                    }
-                    // Else, see if we are using the and operator
-                    else if (this._useAndOperator) {
-                        // Set the flag and break from the loop
-                        showItem = false;
-                        break;
-                    }
-                }
-
-                // See if we are hiding the item
-                if (!showItem) {
-                    // Hide the item
-                    elItem.parentElement.classList.add("d-none");
-
-                    // Exclude the item from the array
-                    elItems.splice(i, 1);
-
-                    // Continue the loop
-                    continue;
-                }
-            }
-
-            // See if a search value exists
-            if (this._activeSearchValue) {
-                // See if the item doesn't contains the search value
-                if (elItem.innerText.toLowerCase().indexOf(this._activeSearchValue.toLowerCase()) < 0) {
-                    // Hide the item
-                    elItem.parentElement.classList.add("d-none");
-
-                    // Exclude the item from the array
-                    elItems.splice(i, 1);
-
-                    // Continue the loop
-                    continue;
-                }
-            }
-        }
-
-        // Set the pagination limit
-        let showPagination = typeof (this._props.showPagination) === "boolean" ? this._props.showPagination : true;
-        let paginationLimit = showPagination ? this._props.paginationLimit || 10 : elItems.length;
-
-        // Parse the active items to show
-        for (let i = 0; i < paginationLimit; i++) {
-            let elItem = elItems[i] as HTMLElement;
-
-            // Ensure the item exists
-            if (elItem) {
-                // Show the item
-                elItem.parentElement.classList.remove("d-none");
-            } else {
-                // Break from the loop
+        // Determine the paging based on the column size
+        let lengthMenu = [];
+        switch (colSize) {
+            case 1:
+                lengthMenu = [4, 8, 16, 32];
                 break;
-            }
+            case 2:
+                lengthMenu = [8, 16, 32, 64];
+                break;
+            case 3:
+                lengthMenu = [12, 24, 48, 96];
+                break;
+            case 4:
+                lengthMenu = [16, 32, 64, 128];
+                break;
+            case 5:
+                lengthMenu = [20, 40, 80, 160];
+                break;
+            case 6:
+                lengthMenu = [24, 48, 96, 192];
+                break;
         }
 
-        // Ensure we are showing the pagination
-        if (showPagination) {
-            // Parse the active items to hide
-            for (let i = paginationLimit; i < elItems.length; i++) {
-                let elItem = elItems[i] as HTMLElement;
-
-                // Hide the item
-                elItem.parentElement.classList.add("d-none");
-            }
-
-            // Render the pagination
-            this._pagination = Components.Pagination({
-                el: elPagination,
-                className: "d-flex justify-content-end pt-2",
-                numberOfPages: Math.ceil(elItems.length / paginationLimit),
-                onClick: (pageNumber) => {
-                    // Parse the items
-                    for (let i = 0; i < elItems.length; i++) {
-                        let elItem = elItems[i] as HTMLElement;
-
-                        // Hide the item
-                        elItem.parentElement.classList.add("d-none");
-                    }
-
-                    // Parse the items to show
-                    let startIdx = (pageNumber - 1) * paginationLimit;
-                    for (let i = startIdx; i < startIdx + paginationLimit && i < elItems.length; i++) {
-                        let elItem = elItems[i] as HTMLElement;
-
-                        // Show the item
-                        elItem.parentElement.classList.remove("d-none");
-                    }
-
-                    // Call the event
-                    this._props.onPaginationClick ? this._props.onPaginationClick(pageNumber) : null;
-                }
+        // Append the columns that are filterable
+        let filterColumns = [];
+        let filterFields = this._props.filterFields || [];
+        for (let i = 0; i < filterFields.length; i++) {
+            // Append the column
+            filterColumns.push({
+                data: filterFields[i],
+                visible: false
             });
-
-            // Call the event
-            this._props.onPaginationRendered ? this._props.onPaginationRendered(elPagination) : null;
         }
+
+        // Create the datatable element
+        let el = document.createElement("div");
+        el.classList.add("bs");
+        this._props?.el.appendChild(el);
+
+        // Set the table element
+        let elTable = document.createElement("table");
+        elTable.innerHTML = `<thead><th></th></thead><tbody class="row"></tbody>`;
+        el.appendChild(elTable);
+
+        // Render the table
+        let dtLib: any = dtnet["DataTable"] || dtnet;
+        this._datatable = new dtLib(elTable, {
+            data: items,
+            lengthMenu,
+            pageLength: lengthMenu[0],
+            language: {
+                lengthMenu: "_MENU_",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "Next",
+                    previous: "Previous"
+                }
+            },
+            layout: {
+                top: null,
+                topStart: null,
+                topEnd: null,
+                bottom: "info",
+                bottomStart: "pageLength",
+                bottomEnd: {
+                    paging: {
+                        type: "full_numbers"
+                    }
+                }
+            },
+            createdRow: (row, data, rowIdx) => {
+                // Append the class
+                row.classList.add("col")
+                row.classList.add("col-3")
+            },
+            columns: [{
+                data: null,
+                render: (data, type, row) => {
+                    let cardProps = this.generateCard(data);
+
+                    // Return the card element
+                    return Components.Card(cardProps).el;
+                }
+            }].concat(filterColumns)
+        })
     }
 
     // Searches the tile
-    search(value: string) {
-        // Set the search value
-        this._activeSearchValue = typeof (value) != "undefined" ? value : "";
-
-        // Update the tiles
-        this.updateTiles();
+    search(value: string = "") {
+        // Search the table
+        this._datatable.search(value).draw();
     }
 }

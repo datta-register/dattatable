@@ -126,3 +126,19 @@
 #sub-navigation nav.sub-nav.sub-nav-border {
     border-top: 3px solid var(--sp-neutral-quaternary, #d2d0ce);
 }
+
+/* Tiles */
+.dashboard #tiles {
+    tbody {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    tbody tr {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+}
