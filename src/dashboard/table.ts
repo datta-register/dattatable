@@ -85,8 +85,10 @@ export class DataTable implements IDataTable {
 
     // Applies the datatables.net plugin
     private applyPlugin(table: Components.ITable) {
-        // Call the rendering event
+        // Get the default properties
         this._props.dtProps = this.getDefaultProperties(this._props);
+
+        // Call the rendering event
         this._props.dtProps = this._props.onRendering ? this._props.onRendering(this._props.dtProps) : this._props.dtProps;
 
         // Get the datatables.net library so it works w/ mjs/js and render the datatable
