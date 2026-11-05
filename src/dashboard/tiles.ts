@@ -5,6 +5,7 @@ import { Components } from "gd-sprest-bs";
 import "datatables.net-bs5";
 
 export interface ITiles {
+    add: (items: any[]) => void;
     filter: (idx: number, value?: string) => void;
     filterExact: (idx: number, value?: string) => void;
     filterMulti: (idx: number, values?: string[]) => void;
@@ -58,6 +59,15 @@ export class Tiles implements ITiles {
 
         // Render the tile
         this.render(this._props.items);
+    }
+
+    // Adds a tile to the table
+    add(items: any[]) {
+        // Add the item
+        this._datatable.rows.add(items);
+
+        // Redraw the table to show the new tile
+        this._datatable.draw(false);
     }
 
     // Filters the status

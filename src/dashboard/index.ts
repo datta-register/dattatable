@@ -433,6 +433,18 @@ export class Dashboard {
      * Public Interface
      */
 
+    // Adds a tile
+    addTile(item: any) {
+        // Add the item
+        this._tiles.add([item]);
+    }
+
+    // Adds a tiles
+    addTiles(items: any[]) {
+        // Add the item
+        this._tiles.add(items);
+    }
+
     // Clears the filters
     clearFilter() {
         // Clear the filters
