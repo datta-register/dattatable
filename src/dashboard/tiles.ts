@@ -286,9 +286,31 @@ export class Tiles implements ITiles {
         let columns: object[] = [{
             data: null,
             render: (data, type, row) => {
+                // See if this is the card
                 if (type === 'display') {
                     // Return the card element
                     return Components.Card(this.generateCard(data)).el;
+                }
+                // Else, see if this is filter/sort
+                else if (type === 'filter') {
+                    // Parse the fields
+                    let fields = {};
+                    (this._props.bodyFields || []).forEach(field => { fields[field] = true; });
+                    (this._props.filterFields || []).forEach(field => { fields[field] = true; });
+                    (this._props.titleFields || []).forEach(field => { fields[field] = true; });
+                    (this._props.subTitleFields || []).forEach(field => { fields[field] = true; });
+
+                    // Parse the fields
+                    let values = [];
+                    Object.keys(fields).forEach(field => {
+                        if (row[field]) {
+                            // Add the value
+                            values.push(row[field]);
+                        }
+                    });
+
+                    // Return the values
+                    return values.join(' ');
                 }
 
                 return data;
