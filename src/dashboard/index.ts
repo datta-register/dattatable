@@ -5,7 +5,7 @@ import { Footer } from "./footer";
 import { Header } from "./header";
 import { Navigation } from "./navigation";
 import { DataTable, IDataTable } from "./table";
-import { Tiles, ITiles } from "./tiles";
+import { Tiles, ITiles, ITilesProps } from "./tiles";
 
 // Export the components
 export * from "./accordion";
@@ -96,39 +96,7 @@ export interface IDashboardProps {
         onRendered?: (el?: HTMLElement, dt?: any) => void;
         rows?: any[];
     }
-    tiles?: {
-        bodyFields?: string[];
-        bodyTemplate?: string;
-        className?: string;
-        classNameBody?: string;
-        classNameCard?: string;
-        classNameFooter?: string;
-        classNameHeader?: string;
-        colSize?: number;
-        filterFields?: string[];
-        items: any[];
-        onBodyRendered?: (el?: HTMLElement, item?: any) => void;
-        onCardBodyRendering?: (cardBody?: Components.ICardBody, item?: any) => void;
-        onCardRendered?: (el?: HTMLElement, item?: any) => void;
-        onCardRendering?: (cardProps?: Components.ICardProps, item?: any) => void;
-        onClick?: (el?: HTMLElement, item?: Components.ICardBody) => void;
-        onColumnRendered?: (el?: HTMLElement, item?: any) => void;
-        onFooterRendered?: (el?: HTMLElement, item?: any) => void;
-        onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
-        onPaginationClick?: (pageNumber?: number) => void;
-        onPaginationRendered?: (el?: HTMLElement) => void;
-        onRendered?: (el?: HTMLElement) => void;
-        onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
-        onTitleRendered?: (el?: HTMLElement, item?: any) => void;
-        paginationLimit?: number;
-        showFooter?: boolean;
-        showHeader?: boolean;
-        showPagination?: boolean;
-        subTitleFields?: string[];
-        subTitleTemplate?: string;
-        titleFields?: string[];
-        titleTemplate?: string;
-    }
+    tiles?: ITilesProps;
     onRendered?: (el?: HTMLElement) => void;
     useModal?: boolean;
 }
