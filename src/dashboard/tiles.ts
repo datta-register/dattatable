@@ -32,6 +32,7 @@ export interface ITilesProps {
     onClick?: (el?: HTMLElement, item?: Components.ICardBody) => void;
     onFooterRendered?: (el?: HTMLElement, item?: any) => void;
     onHeaderRendered?: (el?: HTMLElement, item?: any) => void;
+    onRendering?: (dtProps: any) => any;
     onRendered?: (el?: HTMLElement) => void;
     onSubTitleRendered?: (el?: HTMLElement, item?: any) => void;
     onTitleRendered?: (el?: HTMLElement, item?: any) => void;
@@ -57,11 +58,6 @@ export class Tiles implements ITiles {
 
         // Render the tile
         this.render(this._props.items);
-
-        // Call the rendered event in a separate thread to ensure the dashboard object is created
-        setTimeout(() => {
-            this._props.onRendered ? this._props.onRendered(this._props.el) : null;
-        }, 50);
     }
 
     // Filters the status
@@ -250,28 +246,11 @@ export class Tiles implements ITiles {
         return cardProps;
     }
 
-    // Method to reload the data
-    refresh(items: any[] = []) {
-        // See if the datatable exists
-        if (this._datatable != null) {
-            // Clear the datatable
-            this._datatable.clear();
-            this._datatable.destroy();
-            this._datatable = null;
-        }
-
-        // Clear the datatable element
-        while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
-
-        // Render the accordion
-        this.render(items);
-    }
-
-    // Renders the dashboard
-    private render(items: any[]) {
+    // Returns the default properties for the datatable
+    private getDefaultProperties(items: any[]) {
         // Get the column size
-        let colSize = this._props.colSize > 0 ? this._props.colSize : 3;
-        if (colSize > 6) { colSize = 6; }
+        let colSize = this._props.colSize > 0 ? this._props.colSize : 4;
+        if (colSize > 4) { colSize = 4; }
 
         // Determine the paging based on the column size
         let lengthMenu = [];
@@ -288,38 +267,32 @@ export class Tiles implements ITiles {
             case 4:
                 lengthMenu = [16, 32, 64, 128];
                 break;
-            case 5:
-                lengthMenu = [20, 40, 80, 160];
-                break;
-            case 6:
-                lengthMenu = [24, 48, 96, 192];
-                break;
         }
 
-        // Append the columns that are filterable
-        let filterColumns = [];
+        // Set the columns
+        let columns: object[] = [{
+            data: null,
+            render: (data, type, row) => {
+                let cardProps = this.generateCard(data);
+
+                // Return the card element
+                return Components.Card(cardProps).el;
+            }
+        }];
+
+        // Parse the filter columns
         let filterFields = this._props.filterFields || [];
         for (let i = 0; i < filterFields.length; i++) {
-            // Append the column
-            filterColumns.push({
+            // Append the hidden column
+            columns.push({
                 data: filterFields[i],
                 visible: false
             });
         }
 
-        // Create the datatable element
-        let el = document.createElement("div");
-        el.classList.add("bs");
-        this._props?.el.appendChild(el);
-
-        // Set the table element
-        let elTable = document.createElement("table");
-        elTable.innerHTML = `<thead><th></th></thead><tbody class="row"></tbody>`;
-        el.appendChild(elTable);
-
-        // Render the table
-        let dtLib: any = dtnet["DataTable"] || dtnet;
-        this._datatable = new dtLib(elTable, {
+        // Return the default properties
+        return {
+            columns,
             data: items,
             lengthMenu,
             pageLength: lengthMenu[0],
@@ -347,18 +320,68 @@ export class Tiles implements ITiles {
             createdRow: (row, data, rowIdx) => {
                 // Append the class
                 row.classList.add("col")
-                row.classList.add("col-3")
-            },
-            columns: [{
-                data: null,
-                render: (data, type, row) => {
-                    let cardProps = this.generateCard(data);
 
-                    // Return the card element
-                    return Components.Card(cardProps).el;
+                switch (colSize) {
+                    case 1:
+                        row.classList.add("col-12")
+                        break;
+                    case 2:
+                        row.classList.add("col-6")
+                        break;
+                    case 3:
+                        row.classList.add("col-4")
+                        break;
+                    case 4:
+                        row.classList.add("col-3")
+                        break;
                 }
-            }].concat(filterColumns)
-        })
+            }
+        };
+    }
+
+    // Method to reload the data
+    refresh(items: any[] = []) {
+        // See if the datatable exists
+        if (this._datatable != null) {
+            // Clear the datatable
+            this._datatable.clear();
+            this._datatable.destroy();
+            this._datatable = null;
+        }
+
+        // Clear the datatable element
+        while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
+
+        // Render the accordion
+        this.render(items);
+    }
+
+    // Renders the dashboard
+    private render(items: any[]) {
+        // Create the datatable element
+        let el = document.createElement("div");
+        el.classList.add("bs");
+        this._props?.el.appendChild(el);
+
+        // Set the table element
+        let elTable = document.createElement("table");
+        elTable.innerHTML = `<thead><th></th></thead><tbody class="row"></tbody>`;
+        el.appendChild(elTable);
+
+        // Get the default properties
+        let dtProps = this.getDefaultProperties(items);
+
+        // Call the rendering event
+        dtProps = this._props.onRendering ? this._props.onRendering(dtProps) : dtProps;
+
+        // Render the table
+        let dtLib: any = dtnet["DataTable"] || dtnet;
+        this._datatable = new dtLib(elTable, dtProps);
+
+        // Call the rendered event in a separate thread to ensure the dashboard object is created
+        setTimeout(() => {
+            this._props.onRendered ? this._props.onRendered(this._props.el) : null;
+        }, 50);
     }
 
     // Searches the tile

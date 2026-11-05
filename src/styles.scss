@@ -9,7 +9,6 @@
 }
 
 .bs {
-
     /* Flip an image horizontally */
     .img-flip-x {
         -webkit-transform: scaleX(-1);
@@ -129,11 +128,13 @@
 
 /* Tiles */
 .dashboard #tiles {
-    tbody {
+    tbody.row {
         display: flex;
         flex-wrap: wrap;
         align-items: stretch;
         width: 100%;
+        margin-left: 0;
+        margin-right: 0;
     }
 
     tbody tr {
