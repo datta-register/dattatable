@@ -23,9 +23,9 @@ export interface ITilesProps {
     classNameFooter?: string;
     classNameHeader?: string;
     colSize?: number;
-    el: HTMLElement;
+    el?: HTMLElement;
     filterFields?: string[];
-    items: any[];
+    items?: any[];
     onBodyRendered?: (el?: HTMLElement, item?: any) => void;
     onCardBodyRendering?: (cardBody?: Components.ICardBody, item?: any) => void;
     onCardRendered?: (el?: HTMLElement, item?: any) => void;
