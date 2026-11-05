@@ -190,6 +190,7 @@ export class Tiles implements ITiles {
             onRender: (el, card) => {
                 // Add the default class name(s)
                 el.classList.add("h-100");
+                el.classList.add("w-100");
 
                 // Set the class name
                 if (this._props.classNameCard) {
@@ -334,6 +335,7 @@ export class Tiles implements ITiles {
             },
             createdRow: (row, data, rowIdx) => {
                 // Append the class
+                row.classList.add("d-flex")
                 row.classList.add("col")
 
                 switch (colSize) {
