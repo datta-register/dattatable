@@ -188,10 +188,6 @@ export class Tiles implements ITiles {
         // Set the card props
         let cardProps: Components.ICardProps = {
             onRender: (el, card) => {
-                // Add the default class name(s)
-                el.classList.add("h-100");
-                el.classList.add("w-100");
-
                 // Set the class name
                 if (this._props.classNameCard) {
                     this._props.classNameCard.trim().split(' ').forEach(className => {
@@ -334,10 +330,12 @@ export class Tiles implements ITiles {
                 }
             },
             createdRow: (row, data, rowIdx) => {
-                // Append the class
+                // Add the default classes
                 row.classList.add("d-flex")
                 row.classList.add("col")
+                row.firstChild?.classList.add("h-100");
 
+                // Add the class based on the column size
                 switch (colSize) {
                     case 1:
                         row.classList.add("col-12")
