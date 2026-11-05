@@ -188,6 +188,9 @@ export class Tiles implements ITiles {
         // Set the card props
         let cardProps: Components.ICardProps = {
             onRender: (el, card) => {
+                // Add the default class
+                el.classList.add("h-100");
+
                 // Set the class name
                 if (this._props.classNameCard) {
                     this._props.classNameCard.trim().split(' ').forEach(className => {
