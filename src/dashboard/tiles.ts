@@ -283,10 +283,12 @@ export class Tiles implements ITiles {
         let columns: object[] = [{
             data: null,
             render: (data, type, row) => {
-                let cardProps = this.generateCard(data);
+                if (type !== 'display') {
+                    return row.name;
+                }
 
                 // Return the card element
-                return Components.Card(cardProps).el;
+                return Components.Card(this.generateCard(data)).el;
             }
         }];
 
