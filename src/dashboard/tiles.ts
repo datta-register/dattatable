@@ -14,6 +14,36 @@ export interface ITiles {
     search?: (value: string) => void;
 }
 
+interface IColumn {
+    description?: string;
+    filter?: boolean;
+    name: string;
+    title?: string;
+    visible?: boolean;
+}
+
+interface IColumnControl {
+    order?: boolean;
+    orderAsc?: boolean;
+    orderDesc?: boolean;
+    orderRemove?: boolean;
+    orderClear?: boolean;
+    orderAddAsc?: boolean;
+    orderAddDesc?: boolean;
+    reorder?: boolean;
+    rowGroup?: boolean;
+    rowGroupAdd?: boolean;
+    rowGroupClear?: boolean;
+    rowGroupRemove?: boolean;
+    search?: boolean;
+    searchList?: boolean;
+    searchDropdown?: boolean;
+    statusOnly?: boolean;
+    spacer?: boolean;
+    title?: boolean;
+    visibleDropdown?: boolean;
+}
+
 export interface ITilesProps {
     bodyFields?: string[];
     bodyTemplate?: string;
@@ -22,9 +52,10 @@ export interface ITilesProps {
     classNameCard?: string;
     classNameFooter?: string;
     classNameHeader?: string;
+    columnControls?: IColumnControl[];
+    columns?: IColumn[];
     colSize?: number;
     el?: HTMLElement;
-    filterFields?: string[];
     items?: any[];
     onBodyRendered?: (el?: HTMLElement, item?: any) => void;
     onCardBodyRendering?: (cardBody?: Components.ICardBody, item?: any) => void;
@@ -108,23 +139,6 @@ export class Tiles implements ITiles {
 
     // Generate the card properties
     private generateCard(item: any): Components.ICardProps {
-        let filterValues: string[] = [];
-
-        // See if the filter field is specified
-        if (this._props.filterFields) {
-            // Parse the fields
-            for (let i = 0; i < this._props.filterFields.length; i++) {
-                let filterField = this._props.filterFields[i];
-
-                // Get the filter values
-                let filters = item[filterField] || [];
-                filters = filters["results"] || [filters];
-
-                // Append the values
-                filterValues = filterValues.concat(filters);
-            }
-        }
-
         // See if the body fields exist
         let bodyContent = this._props.bodyTemplate || "";
         if (this._props.bodyFields) {
@@ -199,12 +213,6 @@ export class Tiles implements ITiles {
                     });
                 }
 
-                // See if filters exist
-                if (filterValues && filterValues.length > 0) {
-                    // Set the data filter value
-                    el.setAttribute("data-filter", filterValues.join('|'));
-                }
-
                 // Call the event
                 this._props.onCardRendered ? this._props.onCardRendered(el, card) : null;
             },
@@ -259,6 +267,97 @@ export class Tiles implements ITiles {
         return cardProps;
     }
 
+    // Returns the column control
+    private getColumnControl() {
+        let columnControls = [];
+
+        // Parse the column controls
+        (this._props.columnControls || []).forEach(controlProps => {
+            let colControl = [];
+
+            // Add the properties
+            controlProps?.rowGroup ? colControl.push("rowGroup") : null;
+            controlProps?.rowGroupAdd ? colControl.push("rowGroupAdd") : null;
+            controlProps?.rowGroupClear ? colControl.push("rowGroupClear") : null;
+            controlProps?.rowGroupRemove ? colControl.push("rowGroupRemove") : null;
+            controlProps?.order ? colControl.push("order") : null;
+            controlProps?.reorder ? colControl.push("reorder") : null;
+            controlProps?.search ? colControl.push("search") : null;
+            controlProps?.searchDropdown ? colControl.push("searchDropdown") : null;
+            controlProps?.searchList ? colControl.push(["searchList"]) : null;
+            controlProps?.visibleDropdown ? colControl.push("colVisDropdown") : null;
+
+            // Append the control
+            colControl.length > 0 ? columnControls.push(colControl.length > 1 ? colControl : colControl[0]) : null;
+        });
+
+        // Return the column controls or the default options
+        return columnControls.length > 0 ? columnControls : ["order"];
+    }
+
+    // Returns the columns
+    private getColumns() {
+        let colProps = this._props.columns || [];
+        let columns: object[] = [];
+
+        // Set the default column
+        columns.push({
+            data: null,
+            render: (data, type, row) => {
+                // See if this is the card
+                if (type === 'display') {
+                    // Return the card element
+                    return Components.Card(this.generateCard(data)).el;
+                }
+                // Else, see if this is filter/sort
+                else if (type === 'filter') {
+                    let fields = {};
+
+                    // Parse the columns
+                    colProps.forEach(col => {
+                        // See if this is a filter field
+                        if (col.filter) { fields[col.name] = true; }
+                    });
+
+                    // Parse the fields
+                    (this._props.bodyFields || []).forEach(field => { fields[field] = true; });
+                    (this._props.titleFields || []).forEach(field => { fields[field] = true; });
+                    (this._props.subTitleFields || []).forEach(field => { fields[field] = true; });
+
+                    // Parse the fields
+                    let values = [];
+                    Object.keys(fields).forEach(field => {
+                        if (row[field]) {
+                            // Add the value
+                            values.push(row[field]);
+                        }
+                    });
+
+                    // Return the values
+                    return values.join(' ');
+                }
+
+                return data;
+            }
+        });
+
+        // Parse the filter columns
+        colProps.forEach(colProp => {
+            // Set the column
+            let column: object = {
+                data: colProp.name || "",
+                title: colProp.title || colProp.name || "",
+                visible: colProp.visible == false ? false : true
+            };
+
+            // Add the column
+            columns.push(column);
+        });
+
+        // Return the columns
+        return columns;
+    }
+
     // Returns the default properties for the datatable
     private getDefaultProperties(items: any[]) {
         // Get the column size
@@ -282,57 +381,17 @@ export class Tiles implements ITiles {
                 break;
         }
 
-        // Set the columns
-        let columns: object[] = [{
-            data: null,
-            render: (data, type, row) => {
-                // See if this is the card
-                if (type === 'display') {
-                    // Return the card element
-                    return Components.Card(this.generateCard(data)).el;
-                }
-                // Else, see if this is filter/sort
-                else if (type === 'filter') {
-                    // Parse the fields
-                    let fields = {};
-                    (this._props.bodyFields || []).forEach(field => { fields[field] = true; });
-                    (this._props.filterFields || []).forEach(field => { fields[field] = true; });
-                    (this._props.titleFields || []).forEach(field => { fields[field] = true; });
-                    (this._props.subTitleFields || []).forEach(field => { fields[field] = true; });
-
-                    // Parse the fields
-                    let values = [];
-                    Object.keys(fields).forEach(field => {
-                        if (row[field]) {
-                            // Add the value
-                            values.push(row[field]);
-                        }
-                    });
-
-                    // Return the values
-                    return values.join(' ');
-                }
-
-                return data;
-            }
-        }];
-
-        // Parse the filter columns
-        let filterFields = this._props.filterFields || [];
-        for (let i = 0; i < filterFields.length; i++) {
-            // Append the hidden column
-            columns.push({
-                data: filterFields[i],
-                visible: false
-            });
-        }
-
         // Return the default properties
         return {
-            columns,
+            columnControl: this.getColumnControl(),
+            columns: this.getColumns(),
             data: items,
             lengthMenu,
             pageLength: lengthMenu[0],
+            initComplete: (dt) => {
+                // Remove the margin class
+                dt.tableWrapper.querySelector(".dt-layout-table").classList.remove("mt-2");
+            },
             language: {
                 lengthMenu: "_MENU_",
                 paginate: {

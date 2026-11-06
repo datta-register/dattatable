@@ -9,6 +9,7 @@
 }
 
 .bs {
+
     /* Flip an image horizontally */
     .img-flip-x {
         -webkit-transform: scaleX(-1);
@@ -129,7 +130,25 @@
 /* Tiles */
 .dashboard #tiles {
     thead {
-        display: none;
+        tr {
+            background-color: var(--bs-body-bg);
+            display: flex;
+            justify-content: flex-start;
+
+            th:first-child {
+                display: none;
+            }
+
+            th {
+                background-color: var(--bs-body-bg);
+                margin-left: 5px;
+                margin-right: 5px;
+
+                .dt-column-title {
+                    color: var(--sp-black, #000000);
+                }
+            }
+        }
     }
 
     tbody.row {
@@ -145,5 +164,9 @@
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
+
+        td:not(:first-child) {
+            display: none;
+        }
     }
 }
