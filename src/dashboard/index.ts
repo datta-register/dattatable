@@ -396,6 +396,7 @@ export class Dashboard {
     get Datatable(): IDataTable { return this._dt; }
     get Filters(): FilterSlideout { return this._filters; }
     get Navigation(): Navigation { return this._navigation; }
+    get Tiles(): ITiles { return this._tiles; }
 
     /**
      * Public Interface

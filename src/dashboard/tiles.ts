@@ -15,6 +15,7 @@ export interface ITiles {
 }
 
 interface IColumn {
+    columnControl?: object | object[];
     description?: string;
     filter?: boolean;
     name: string;
@@ -84,6 +85,9 @@ export class Tiles implements ITiles {
     private _datatable: any = null;
     private _props: ITilesProps;
 
+    // Datatables.net object
+    get datatable(): any { return this._datatable; }
+    
     // Constructor
     constructor(props: ITilesProps) {
         // Save the properties
@@ -320,10 +324,14 @@ export class Tiles implements ITiles {
             // Set the column
             let column: object = {
                 data: colProp.name || "",
-                render: colProp.render || null,
+                name: colProp.name || "",
                 title: colProp.title || colProp.name || "",
                 visible: colProp.visible == false ? false : true
             };
+
+            // Set the properties
+            colProp.columnControl ? column["columnControl"] = colProp.columnControl : null;
+            colProp.render ? column["render"] = colProp.render : null;
 
             // Add the column
             columns.push(column);
