@@ -6,6 +6,7 @@ import "datatables.net-bs5";
 
 export interface ITiles {
     add: (items: any[]) => void;
+    datatable: any;
     filter: (idx: number, value?: string) => void;
     filterExact: (idx: number, value?: string) => void;
     filterMulti: (idx: number, values?: string[]) => void;
@@ -87,7 +88,7 @@ export class Tiles implements ITiles {
 
     // Datatables.net object
     get datatable(): any { return this._datatable; }
-    
+
     // Constructor
     constructor(props: ITilesProps) {
         // Save the properties
