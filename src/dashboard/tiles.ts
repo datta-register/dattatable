@@ -309,33 +309,6 @@ export class Tiles implements ITiles {
                     // Return the card element
                     return Components.Card(this.generateCard(data)).el;
                 }
-                // Else, see if this is filter/sort
-                else if (type === 'filter') {
-                    let fields = {};
-
-                    // Parse the columns
-                    colProps.forEach(col => {
-                        // See if this is a filter field
-                        if (col.filter) { fields[col.name] = true; }
-                    });
-
-                    // Parse the fields
-                    (this._props.bodyFields || []).forEach(field => { fields[field] = true; });
-                    (this._props.titleFields || []).forEach(field => { fields[field] = true; });
-                    (this._props.subTitleFields || []).forEach(field => { fields[field] = true; });
-
-                    // Parse the fields
-                    let values = [];
-                    Object.keys(fields).forEach(field => {
-                        if (row[field]) {
-                            // Add the value
-                            values.push(row[field]);
-                        }
-                    });
-
-                    // Return the values
-                    return values.join(' ');
-                }
 
                 return data;
             }
