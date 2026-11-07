@@ -1,5 +1,6 @@
 import * as dtnet from "datatables.net-dt";
 import { Components } from "gd-sprest-bs";
+import { IColumn, IColumnControl, getColumns, getColumnControl } from "./columnControl";
 
 // DataTables.net
 import "datatables.net-bs5";
@@ -13,38 +14,6 @@ export interface ITiles {
     filterMultiExact: (idx: number, values?: string[]) => void;
     refresh?: (items: any[]) => void;
     search?: (value: string) => void;
-}
-
-interface IColumn {
-    columnControl?: object | object[];
-    description?: string;
-    filter?: boolean;
-    name: string;
-    render?: (data, type: string, row, meta) => any;
-    title?: string;
-    visible?: boolean;
-}
-
-interface IColumnControl {
-    order?: boolean;
-    orderAsc?: boolean;
-    orderDesc?: boolean;
-    orderRemove?: boolean;
-    orderClear?: boolean;
-    orderAddAsc?: boolean;
-    orderAddDesc?: boolean;
-    reorder?: boolean;
-    rowGroup?: boolean;
-    rowGroupAdd?: boolean;
-    rowGroupClear?: boolean;
-    rowGroupRemove?: boolean;
-    search?: boolean;
-    searchList?: boolean;
-    searchDropdown?: boolean;
-    statusOnly?: boolean;
-    spacer?: boolean;
-    title?: boolean;
-    visibleDropdown?: boolean;
 }
 
 export interface ITilesProps {
@@ -273,75 +242,6 @@ export class Tiles implements ITiles {
         return cardProps;
     }
 
-    // Returns the column control
-    private getColumnControl() {
-        let columnControls = [];
-
-        // Parse the column controls
-        (this._props.columnControls || []).forEach(controlProps => {
-            let colControl = [];
-
-            // Add the properties
-            controlProps?.rowGroup ? colControl.push("rowGroup") : null;
-            controlProps?.rowGroupAdd ? colControl.push("rowGroupAdd") : null;
-            controlProps?.rowGroupClear ? colControl.push("rowGroupClear") : null;
-            controlProps?.rowGroupRemove ? colControl.push("rowGroupRemove") : null;
-            controlProps?.order ? colControl.push("order") : null;
-            controlProps?.reorder ? colControl.push("reorder") : null;
-            controlProps?.search ? colControl.push("search") : null;
-            controlProps?.searchDropdown ? colControl.push("searchDropdown") : null;
-            controlProps?.searchList ? colControl.push(["searchList"]) : null;
-            controlProps?.visibleDropdown ? colControl.push("colVisDropdown") : null;
-
-            // Append the control
-            colControl.length > 0 ? columnControls.push(colControl.length > 1 ? colControl : colControl[0]) : null;
-        });
-
-        // Return the column controls or the default options
-        return columnControls.length > 0 ? columnControls : ["order"];
-    }
-
-    // Returns the columns
-    private getColumns() {
-        let colProps = this._props.columns || [];
-        let columns: object[] = [];
-
-        // Set the default column
-        columns.push({
-            data: null,
-            render: (data, type, row) => {
-                // See if this is the card
-                if (type === 'display') {
-                    // Return the card element
-                    return Components.Card(this.generateCard(data)).el;
-                }
-
-                return data;
-            }
-        });
-
-        // Parse the filter columns
-        colProps.forEach(colProp => {
-            // Set the column
-            let column: object = {
-                data: colProp.name || "",
-                name: colProp.name || "",
-                title: colProp.title || colProp.name || "",
-                visible: colProp.visible == false ? false : true
-            };
-
-            // Set the properties
-            colProp.columnControl ? column["columnControl"] = colProp.columnControl : null;
-            colProp.render ? column["render"] = colProp.render : null;
-
-            // Add the column
-            columns.push(column);
-        });
-
-        // Return the columns
-        return columns;
-    }
-
     // Returns the default properties for the datatable
     private getDefaultProperties(items: any[]) {
         // Get the column size
@@ -365,10 +265,24 @@ export class Tiles implements ITiles {
                 break;
         }
 
+        // Get the columns
+        let columns: object[] = [{
+            data: null,
+            render: (data, type, row) => {
+                // See if this is the card
+                if (type === 'display') {
+                    // Return the card element
+                    return Components.Card(this.generateCard(data)).el;
+                }
+
+                return data;
+            }
+        }];
+
         // Return the default properties
         return {
-            columnControl: this.getColumnControl(),
-            columns: this.getColumns(),
+            columnControl: getColumnControl(this._props.columnControls),
+            columns: columns.concat(getColumns(this._props.columns)),
             data: items,
             lengthMenu,
             pageLength: lengthMenu[0],
