@@ -18,6 +18,7 @@ interface IColumn {
     description?: string;
     filter?: boolean;
     name: string;
+    render?: (data, type: string, row, meta) => any;
     title?: string;
     visible?: boolean;
 }
@@ -319,6 +320,7 @@ export class Tiles implements ITiles {
             // Set the column
             let column: object = {
                 data: colProp.name || "",
+                render: colProp.render || null,
                 title: colProp.title || colProp.name || "",
                 visible: colProp.visible == false ? false : true
             };
