@@ -3,6 +3,8 @@ export interface IColumn {
     description?: string;
     filter?: boolean;
     name: string;
+    order?: "asc" | "desc";
+    orderIdx?: number;
     render?: (data, type: string, row, meta) => any;
     title?: string;
     visible?: boolean;
@@ -82,4 +84,30 @@ export function getColumnControl(props: IColumnControl[] = []) {
 
     // Return the column controls or the default options
     return columnControls.length > 0 ? columnControls : ["order"];
+}
+
+// Returns the default column order
+export function getDefaultOrder(props: IColumn[] = []): [number, string][] {
+    let order: [number, string][] = [];
+
+    // Parse the columns
+    let columns: { [key: number]: IColumn } = {};
+    for (let i = 0; i < props.length; i++) {
+        let colProp = props[i];
+
+        // See if the order is defined
+        if (colProp.order) {
+            // Add the column
+            columns[i] = colProp;
+        }
+    }
+
+    // Parse the columns
+    Object.keys(columns).sort().forEach(idx => {
+        // Add the order
+        order.push([parseInt(idx), columns[idx].order]);
+    })
+
+    // Return the order
+    return order;
 }

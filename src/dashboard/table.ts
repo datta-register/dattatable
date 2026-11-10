@@ -1,5 +1,6 @@
 import * as dtnet from "datatables.net-dt";
 import { Components } from "gd-sprest-bs";
+import { IColumn, IColumnControl, getColumnControl, getColumns } from "./columnControl";
 
 // DataTables.net
 import "datatables.net-bs5";
@@ -29,6 +30,7 @@ export interface IDataTable {
  */
 export interface IDataTableProps {
     className?: string;
+    columnControls?: IColumnControl[];
     columns: Components.ITableColumn[];
     dtProps?: any;
     el: HTMLElement;

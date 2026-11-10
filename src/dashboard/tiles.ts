@@ -1,6 +1,6 @@
 import * as dtnet from "datatables.net-dt";
 import { Components } from "gd-sprest-bs";
-import { IColumn, IColumnControl, getColumns, getColumnControl } from "./columnControl";
+import { IColumn, IColumnControl, getColumns, getColumnControl, getDefaultOrder } from "./columnControl";
 
 // DataTables.net
 import "datatables.net-bs5";
@@ -284,7 +284,9 @@ export class Tiles implements ITiles {
             columnControl: getColumnControl(this._props.columnControls),
             columns: columns.concat(getColumns(this._props.columns)),
             data: items,
+            deferRender: true,
             lengthMenu,
+            order: getDefaultOrder(this._props.columns),
             pageLength: lengthMenu[0],
             initComplete: (dt) => {
                 // Remove the margin class
