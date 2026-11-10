@@ -87,7 +87,7 @@ export function getColumnControl(props: IColumnControl[] = []) {
 }
 
 // Returns the default column order
-export function getDefaultOrder(props: IColumn[] = []): [number, string][] {
+export function getDefaultOrder(props: IColumn[] = [], incrementIdx: boolean = false): [number, string][] {
     let order: [number, string][] = [];
 
     // Parse the columns
@@ -105,7 +105,7 @@ export function getDefaultOrder(props: IColumn[] = []): [number, string][] {
     // Parse the columns
     Object.keys(columns).sort().forEach(idx => {
         // Add the order
-        order.push([parseInt(idx), columns[idx].order]);
+        order.push([parseInt(idx) + (incrementIdx ? 1 : 0), columns[idx].order]);
     })
 
     // Return the order

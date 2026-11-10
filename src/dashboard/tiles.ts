@@ -286,7 +286,7 @@ export class Tiles implements ITiles {
             data: items,
             deferRender: true,
             lengthMenu,
-            order: getDefaultOrder(this._props.columns),
+            order: getDefaultOrder(this._props.columns, true),
             pageLength: lengthMenu[0],
             initComplete: (dt) => {
                 // Remove the margin class
