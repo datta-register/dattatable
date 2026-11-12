@@ -42,6 +42,7 @@ export interface ITilesProps {
     onTitleRendered?: (el?: HTMLElement, item?: any) => void;
     showFooter?: boolean;
     showHeader?: boolean;
+    showPagination?: boolean;
     subTitleFields?: string[];
     subTitleTemplate?: string;
     titleFields?: string[];
@@ -244,50 +245,11 @@ export class Tiles implements ITiles {
 
     // Returns the default properties for the datatable
     private getDefaultProperties(items: any[]) {
-        // Get the column size
-        let colSize = this._props.colSize > 0 ? this._props.colSize : 4;
-        if (colSize > 4) { colSize = 4; }
-
-        // Determine the paging based on the column size
-        let lengthMenu = [];
-        switch (colSize) {
-            case 1:
-                lengthMenu = [4, 8, 16, 32];
-                break;
-            case 2:
-                lengthMenu = [8, 16, 32, 64];
-                break;
-            case 3:
-                lengthMenu = [12, 24, 48, 96];
-                break;
-            case 4:
-                lengthMenu = [16, 32, 64, 128];
-                break;
-        }
-
-        // Get the columns
-        let columns: object[] = [{
-            data: null,
-            render: (data, type, row) => {
-                // See if this is the card
-                if (type === 'display') {
-                    // Return the card element
-                    return Components.Card(this.generateCard(data)).el;
-                }
-
-                return data;
-            }
-        }];
-
-        // Return the default properties
-        return {
-            columnControl: getColumnControl(this._props.columnControls),
-            columns: columns.concat(getColumns(this._props.columns)),
+        // Set the default properties
+        let props: any = {
             data: items,
             deferRender: true,
-            lengthMenu,
             order: getDefaultOrder(this._props.columns, true),
-            pageLength: lengthMenu[0],
             initComplete: (dt) => {
                 // Remove the margin class
                 dt.tableWrapper.querySelector(".dt-layout-table").classList.remove("mt-2");
@@ -336,6 +298,52 @@ export class Tiles implements ITiles {
                 }
             }
         };
+
+        // Get the column size
+        let colSize = this._props.colSize > 0 ? this._props.colSize : 4;
+        if (colSize > 4) { colSize = 4; }
+
+        // Determine the paging based on the column size
+        props.lengthMenu = [];
+        switch (colSize) {
+            case 1:
+                props.lengthMenu = [4, 8, 16, 32];
+                break;
+            case 2:
+                props.lengthMenu = [8, 16, 32, 64];
+                break;
+            case 3:
+                props.lengthMenu = [12, 24, 48, 96];
+                break;
+            case 4:
+                props.lengthMenu = [16, 32, 64, 128];
+                break;
+        }
+
+        // Get the columns
+        let columns: object[] = [{
+            data: null,
+            render: (data, type, row) => {
+                // See if this is the card
+                if (type === 'display') {
+                    // Return the card element
+                    return Components.Card(this.generateCard(data)).el;
+                }
+
+                return data;
+            }
+        }];
+
+        // Set the column controls and columns
+        props.columnControl = getColumnControl(this._props.columnControls);
+        props.columns = columns.concat(getColumns(this._props.columns));
+
+        // Set the paging
+        props.pageLength = props.lengthMenu[0];
+        if (this._props.showPagination == false) { props.paging = false; }
+
+        // Return the default properties
+        return props;
     }
 
     // Method to reload the data
