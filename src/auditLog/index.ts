@@ -39,7 +39,7 @@ export interface IAuditLogViewProps {
     id: string;
     listName: string;
     onQuery?: (query: Types.IODataQuery) => Types.IODataQuery;
-    onTableCellRendering?: (el?: HTMLElement, column?: Components.ITableColumn, item?: IAuditLogItem) => void;
+    onTableCellRendering?: (data, type: string, row, meta) => string | Element;
     onTableRendering?: (props: IDataTableProps) => IDataTableProps;
 }
 
@@ -163,28 +163,33 @@ export class AuditLog {
                 {
                     name: "Created",
                     title: "Created",
-                    onRenderCell: viewProps.onTableCellRendering
+                    render: viewProps.onTableCellRendering
                 },
                 {
                     name: "Title",
                     title: "Title",
-                    onRenderCell: viewProps.onTableCellRendering
+                    render: viewProps.onTableCellRendering
                 },
                 {
                     name: "",
                     title: "User",
-                    onRenderCell: (el, col, item: IAuditLogItem) => {
-                        // Render the user information
-                        item.LogUser ? el.innerHTML = item.LogUser.Title : null;
+                    render: (data, type, item: IAuditLogItem, meta) => {
+                        if (type === "display") {
+                            // Render the user information
+                            data = item.LogUser ? item.LogUser.Title : data;
 
-                        // Call the event
-                        viewProps.onTableCellRendering ? viewProps.onTableCellRendering(el, col, item) : null;
+                            // Call the event
+                            viewProps.onTableCellRendering ? viewProps.onTableCellRendering(data, type, item, meta) : null;
+                        }
+
+                        // Return the data
+                        return data;
                     }
                 },
                 {
                     name: "LogComment",
                     title: "Comment",
-                    onRenderCell: viewProps.onTableCellRendering
+                    render: viewProps.onTableCellRendering
                 }
             ]
         };

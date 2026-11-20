@@ -5,7 +5,7 @@ export interface IColumn {
     name: string;
     order?: "asc" | "desc";
     orderIdx?: number;
-    render?: (data, type: string, row, meta) => any;
+    render?: (data, type: string, row, meta) => string | Element;
     title?: string;
     visible?: boolean;
 }
