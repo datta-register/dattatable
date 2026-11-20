@@ -1,10 +1,10 @@
 import { Components } from "gd-sprest-bs";
-import { Accordion, IAccordion } from "./accordion";
+import { Accordion, IAccordion, IAccordionProps } from "./accordion";
 import { FilterSlideout, IFilterItem } from "./filter";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Navigation } from "./navigation";
-import { DataTable, IDataTable } from "./table";
+import { DataTable, IDataTable, IDataTableProps } from "./table";
 import { Tiles, ITiles, ITilesProps } from "./tiles";
 
 // Export the components
@@ -18,22 +18,7 @@ export * from "./tiles";
 
 // Dashboard
 export interface IDashboardProps {
-    accordion?: {
-        bodyFields?: string[];
-        bodyTemplate?: string;
-        filterFields?: string[];
-        items: any[];
-        onItemBodyRender?: (el?: HTMLElement, item?: any) => void;
-        onItemClick?: (el?: HTMLElement, item?: any) => void;
-        onItemHeaderRender?: (el?: HTMLElement, item?: any) => void;
-        onItemRender?: (el?: HTMLElement, item?: any) => void;
-        onPaginationClick?: (pageNumber?: number) => void;
-        onPaginationRender?: (el?: HTMLElement) => void;
-        paginationLimit?: number;
-        showPagination?: boolean;
-        titleFields?: string[];
-        titleTemplate?: string;
-    }
+    accordion?: IAccordionProps;
     el: HTMLElement;
     footer?: {
         className?: string;
@@ -88,14 +73,7 @@ export interface IDashboardProps {
         onSearchRendered?: (el: HTMLElement) => void;
         onShowFilter?: () => void;
     }
-    table?: {
-        className?: string;
-        columns: Components.ITableColumn[];
-        dtProps?: any;
-        onRendering?: (dtProps: any) => any;
-        onRendered?: (el?: HTMLElement, dt?: any) => void;
-        rows?: any[];
-    }
+    table?: IDataTableProps;
     tiles?: ITilesProps;
     onRendered?: (el?: HTMLElement) => void;
     useModal?: boolean;
