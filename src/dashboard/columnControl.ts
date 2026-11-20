@@ -4,8 +4,10 @@ export interface IColumn {
     filter?: boolean;
     name: string;
     order?: "asc" | "desc";
+    orderable?: boolean;
     orderIdx?: number;
     render?: (data, type: string, row, meta) => string | Element;
+    searchable?: boolean;
     title?: string;
     visible?: boolean;
 }
@@ -48,7 +50,29 @@ export function getColumns(props: IColumn[] = []): object[] {
 
         // Set the properties
         colProp.columnControl ? column["columnControl"] = colProp.columnControl : null;
-        colProp.render ? column["render"] = colProp.render : null;
+        typeof (colProp.orderable) === "boolean" ? column["orderable"] = colProp.orderable : null;
+        typeof (colProp.searchable) === "boolean" ? column["searchable"] = colProp.searchable : null;
+
+        // See if we are disabling filter, order, search & sort
+        if (colProp.orderable === false && colProp.searchable === false && typeof (colProp.columnControl) === "undefined") {
+            // Remove any column controls
+            column["columnControl"] = [];
+        }
+
+        // See if there is a render event
+        if (colProp.render) {
+            // Create the render event
+            column["render"] = (data, type, row, meta) => {
+                // Call the event
+                const returnVal = colProp.render.call(this, data, type, row, meta);
+
+                // Ensure a value is being passed back
+                if (typeof (returnVal) === "undefined") { return type === "display" ? (data ?? "") : ""; }
+
+                // Return the value
+                return returnVal;
+            }
+        }
 
         // Add the column
         columns.push(column);
