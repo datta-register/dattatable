@@ -446,84 +446,132 @@ export class Documents {
 
         // Parse the columns
         Helper.Executor(this._tblProps.columns, col => {
-            let customEvent = col.onRenderCell;
+            let customEvent = col.render;
 
             // See if this is the type column
             if (col.name == "Type") {
                 // Set the event to render an icon
-                col.onRenderCell = (el, col, file: Types.SP.Attachment | Types.SP.File) => {
-                    // Render the file
-                    this.renderFileIcon(el, this.getFileName(file));
+                col.render = (data, type, file: Types.SP.Attachment | Types.SP.File, meta) => {
+                    if (type === "display") {
+                        // Create an element
+                        data = document.createElement("div");
 
-                    // Set the filter/sort value
-                    el.setAttribute("data-filter", getFileExt(this.getFileName(file)));
-                    el.setAttribute("data-sort", getFileExt(this.getFileName(file)));
+                        // Render the file
+                        this.renderFileIcon(data, this.getFileName(file));
 
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
+                        // Set the filter/sort value
+                        data.setAttribute("data-filter", getFileExt(this.getFileName(file)));
+                        data.setAttribute("data-sort", getFileExt(this.getFileName(file)));
+
+                        // Call the custom event
+                        data = customEvent ? customEvent(data, type, file, meta) : data;
+                    }
+
+                    // Return the data
+                    return data;
                 };
             }
             // Else, see if this is the file size
             else if (col.name == "FileSize") {
                 // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the file size value
-                    el.innerHTML = formatBytes(file.Length);
+                col.render = (data, type, file: Types.SP.File, meta) => {
+                    if (type === "display") {
+                        // Create an element
+                        data = document.createElement("div");
 
-                    // Set the sort value
-                    el.setAttribute("data-sort", file.Length.toString());
+                        // Render the file size value
+                        data.innerHTML = formatBytes(file.Length);
 
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
+                        // Set the sort value
+                        data.setAttribute("data-sort", file.Length.toString());
+
+                        // Call the custom event
+                        customEvent ? customEvent(data, type, file, meta) : null;
+                    }
+
+                    // Return the data
+                    return data;
                 }
             }
             // Else, see if this is a date/time field
             else if (col.name == "Created" || col.name == "Modified") {
                 // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the date/time value
-                    let value = col.name == "Created" ? file.TimeCreated : file.TimeLastModified;
-                    el.innerHTML = formatTimeValue(value);
+                col.render = (data, type, file: Types.SP.File, meta) => {
+                    if (type === "display") {
+                        // Create an element
+                        data = document.createElement("div");
 
-                    // Set the date/time filter/sort values
-                    el.setAttribute("data-filter", moment(value).format("dddd MMMM DD YYYY"));
-                    el.setAttribute("data-sort", value);
+                        // Render the date/time value
+                        let value = col.name == "Created" ? file.TimeCreated : file.TimeLastModified;
+                        data.innerHTML = formatTimeValue(value);
 
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
+                        // Set the date/time filter/sort values
+                        data.setAttribute("data-filter", moment(value).format("dddd MMMM DD YYYY"));
+                        data.setAttribute("data-sort", value);
+
+                        // Call the custom event
+                        customEvent ? customEvent(data, type, file, meta) : null;
+                    }
+
+                    // Return the data
+                    return data;
                 }
             }
             // Else, see if this is a user field
             else if (col.name == "Author" || col.name == "ModifiedBy") {
                 // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.File) => {
-                    // Render the Person field Title
-                    el.innerHTML = (file[col.name] ? file[col.name]["Title"] : null) || "";
+                col.render = (data, type, file: Types.SP.File, meta) => {
+                    if (type === "display") {
+                        // Create an element
+                        data = document.createElement("div");
 
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
+                        // Render the Person field Title
+                        data.innerHTML = (file[col.name] ? file[col.name]["Title"] : null) || "";
+
+                        // Call the custom event
+                        customEvent ? customEvent(data, type, file, meta) : null;
+                    }
+
+                    // Return the data
+                    return data;
                 }
             }
             // Else, see if this is the "actions" buttons
             else if (col.name == "Actions") {
                 // Set the event to render the size
-                col.onRenderCell = (el, col, file: Types.SP.Attachment | Types.SP.File) => {
-                    // Render the action buttons
-                    this.renderActionButtons(el, file);
+                col.render = (data, type, file: Types.SP.Attachment | Types.SP.File, meta) => {
+                    if (type === "display") {
+                        // Create an element
+                        data = document.createElement("div");
 
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
-                    this._props.onActionsRendered ? this._props.onActionsRendered(el, col, file) : null;
+                        // Render the action buttons
+                        this.renderActionButtons(data, file);
+
+                        // Call the custom event
+                        customEvent ? customEvent(data, type, file, meta) : null;
+                        this._props.onActionsRendered ? this._props.onActionsRendered(data, col, file) : null;
+                    }
+
+                    // Return the data
+                    return data;
                 }
             } else {
-                // Set the default render event
-                col.onRenderCell = (el, col, file: Types.SP.FileOData) => {
-                    // Set the value
-                    el.innerHTML = file[col.name] ||
-                        (file.ListItemAllFields && file.ListItemAllFields.FieldValuesAsText[col.name]) || "";
+                // Set the event to render the size
+                col.render = (data, type, file: Types.SP.FileOData, meta) => {
+                    if (type === "display") {
+                        // Create an element
+                        data = document.createElement("div");
 
-                    // Call the custom event
-                    customEvent ? customEvent(el, col, file) : null;
+                        // Set the value
+                        data.innerHTML = file[col.name] ||
+                            (file.ListItemAllFields && file.ListItemAllFields.FieldValuesAsText[col.name]) || "";
+
+                        // Call the custom event
+                        customEvent ? customEvent(data, type, file, meta) : null;
+                    }
+
+                    // Return the data
+                    return data;
                 }
             }
         });
