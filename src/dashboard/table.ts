@@ -1,6 +1,6 @@
 import * as dtnet from "datatables.net-dt";
 import { Components } from "gd-sprest-bs";
-import { IColumn, IColumnControl, getColumnControl, getColumns } from "./columnControl";
+import { IColumn, IColumnControl, getColumnControl, getColumns, getDefaultOrder } from "./columnControl";
 
 // DataTables.net
 import "datatables.net-bs5";
@@ -31,7 +31,7 @@ export interface IDataTable {
 export interface IDataTableProps {
     className?: string;
     columnControls?: IColumnControl[];
-    columns: Components.ITableColumn[];
+    columns: IColumn[];
     dtProps?: any;
     el: HTMLElement;
     onRendering?: (dtProps: any) => any;
@@ -85,113 +85,21 @@ export class DataTable implements IDataTable {
         this._datatable.draw(false);
     }
 
-    // Applies the datatables.net plugin
-    private applyPlugin(table: Components.ITable) {
-        // Get the default properties
-        this._props.dtProps = this.getDefaultProperties(this._props);
-
-        // Call the rendering event
-        this._props.dtProps = this._props.onRendering ? this._props.onRendering(this._props.dtProps) : this._props.dtProps;
-
-        // Get the datatables.net library so it works w/ mjs/js and render the datatable
-        let dtLib: any = dtnet["DataTable"] || dtnet;
-        this._datatable = new dtLib(table.el, this._props.dtProps);
-
-        // Call the rendered event in a separate thread to ensure the dashboard object is created
-        setTimeout(() => {
-            this._props.onRendered ? this._props.onRendered(this._props.el, this._datatable) : null;
-        }, 50);
-    }
-
-    private getDefaultProperties(props: IDataTableProps) {
+    // Returns the default properties
+    private getDefaultProperties(items: any[] = []) {
         // Return the default properties
-        return props?.dtProps || {
-            columnDefs: [{
-                targets: "_all",
-                render: (data, type, row, meta) => {
-                    // See if we are sorting
-                    if (type == "sort") {
-                        // Get the cell element
-                        let elCell = meta.settings.data[meta.row].cells ? meta.settings.data[meta.row].cells[meta.col] : null;
-                        if (elCell) {
-                            // Return the order/sort attribute, inner html or data value
-                            return elCell.getAttribute("data-order") || elCell.getAttribute("data-sort") || elCell.innerText || data;
-                        }
-                    }
-                    return data;
-                }
-            }],
-            // This will call the render event if the addRow method is used
-            createdRow: (row, data, dataIndex) => {
-                // Get the row
-                let rowId = data[data.length - 1];
-                let rowItem = null;
-                for (let i = 0; i < this._addRowItems.length; i++) {
-                    // See if this is the target row
-                    if (this._addRowItems[i].rowId == rowId) {
-                        // Remove it from the array
-                        rowItem = this._addRowItems.splice(i, 1)[0].row;
-                        break;
-                    }
-                }
+        return {
+            data: items,
+            columnControl: getColumnControl(this._props.columnControls),
+            columns: getColumns(this._props.columns),
+            order: getDefaultOrder(this._props.columns),
+            initComplete: (dt) => {
+                // Add the bootstrap classes
+                dt.table.classList.add("table");
+                dt.table.classList.add("table-striped");
 
-                // See if the row item was found, otherwise it wasn't rendered from the addRows function
-                if (rowItem) {
-                    let colIdx = 0;
-
-                    // Parse the columns
-                    for (let i = 0; i < this._props.columns.length; i++) {
-                        let column = this._props.columns[i];
-
-                        // Skip if this column is hidden
-                        if (this._datatable.column(i).visible() === false) { continue; }
-
-                        // See if an event exists
-                        if (column.onRenderCell) {
-                            // Call it
-                            column.onRenderCell(row.children[colIdx], column, rowItem || data, dataIndex);
-                        }
-
-                        // Increment the column index
-                        // Hidden columns will not have a child reference
-                        colIdx++;
-                    }
-                }
-            },
-            drawCallback: function (settings) {
-                // Get the table element
-                let elTable = settings.api.context[0].table as HTMLElement;
-                if (elTable) {
-                    // Styling option for striped rows
-                    elTable.classList.add('table-striped');
-                }
-
-                // Get the table wrapper element
-                let elTableWrapper = settings.api.context[0].tableWrapper as HTMLElement;
-                if (elTableWrapper) {
-                    // Remove the margin at the top
-                    elTableWrapper.querySelector('.dt-layout-table').classList.remove('mt-2');
-                    /*
-                    // Align the text to be centered
-                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('col-md');
-                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('d-md-flex');
-                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('justify-content-between');
-                    elTableWrapper.querySelector('.dt-info').parentElement.classList.remove('align-items-center');
-                    elTableWrapper.querySelector('.dt-info').classList.add('text-center');
-
-                    // Remove the label spacing to align with paging
-                    elTableWrapper.querySelector('.dt-length label').classList.add('d-none');
-
-                    // Push paging to the end
-                    elTableWrapper.querySelector('.dt-paging').classList.add('d-flex');
-                    elTableWrapper.querySelector('.dt-paging').classList.add('justify-content-end');
-                    elTableWrapper.querySelector('.dt-paging').classList.add('mx-0');
-                    elTableWrapper.querySelector('.dt-paging').classList.add('px-0');
-
-                    // Add spacing for the footer
-                    elTableWrapper.querySelector('.row :last-child').classList.add('mb-1');
-                    */
-                }
+                // Remove the margin class
+                dt.tableWrapper.querySelector(".dt-layout-table").classList.remove("mt-2");
             },
             language: {
                 lengthMenu: "_MENU_",
@@ -213,13 +121,42 @@ export class DataTable implements IDataTable {
                         type: "full_numbers"
                     }
                 }
-            },
-            ordering: {
-                indicators: false,
-                handler: false
-            },
-            columnControl: ["order", "searchDropdown"]
+            }
         };
+    }
+
+    // Method to render the table
+    private render(items: any[]) {
+        // Create the datatable element
+        let el = document.createElement("div");
+        el.classList.add("bs");
+        this._props?.el.appendChild(el);
+
+        // Set the table element
+        let elTable = document.createElement("table");
+        elTable.innerHTML = `<thead></thead><tbody></tbody>`;
+        el.appendChild(elTable);
+
+        // Add the custom class names
+        (this._props.className || "").split(' ').forEach(className => {
+            // Add the class name
+            className ? elTable.classList.add(className) : null;
+        });
+
+        // Get the default properties
+        let dtProps = this.getDefaultProperties(items);
+
+        // Call the rendering event
+        dtProps = this._props.onRendering ? this._props.onRendering(dtProps) : dtProps;
+
+        // Render the table
+        let dtLib: any = dtnet["DataTable"] || dtnet;
+        this._datatable = new dtLib(elTable, dtProps);
+
+        // Call the rendered event in a separate thread to ensure the dashboard object is created
+        setTimeout(() => {
+            this._props.onRendered ? this._props.onRendered(this._props.el) : null;
+        }, 50);
     }
 
     /** Public Interface */
@@ -279,16 +216,8 @@ export class DataTable implements IDataTable {
         // Clear the datatable element
         while (this._props.el.firstChild) { this._props.el.removeChild(this._props.el.firstChild); }
 
-        // Render the data table
-        this._table = Components.Table({
-            className: this._props.className,
-            el: this._props.el,
-            rows,
-            columns: this._props.columns
-        });
-
-        // Apply the plugin
-        this.applyPlugin(this._table);
+        // Render the table
+        this.render(rows);
     }
 
     // Removes a row by index

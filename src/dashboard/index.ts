@@ -222,7 +222,7 @@ export class Dashboard {
             this._navigation = new Navigation({
                 className: navProps.className,
                 el: this._props.el.querySelector("#navigation"),
-                hideFilter: navProps.showFilter != null ? !navProps.showFilter : false,
+                hideFilter: navProps.showFilter != null ? !navProps.showFilter : this._props.filters ? false : true,
                 hideSearch: navProps.showSearch != null ? !navProps.showSearch : false,
                 items: navProps.items,
                 itemsEnd: navProps.itemsEnd,
