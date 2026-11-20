@@ -33,7 +33,7 @@ export interface IDataTableProps {
     columnControls?: IColumnControl[];
     columns: IColumn[];
     dtProps?: any;
-    el: HTMLElement;
+    el?: HTMLElement;
     onRendering?: (dtProps: any) => any;
     onRendered?: (el?: HTMLElement, dt?: any) => void;
     rows?: any[];
