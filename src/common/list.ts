@@ -13,10 +13,10 @@ export interface IListProps<T = Types.SP.ListItem> {
     viewName?: string;
     onInitError?: (...args) => void;
     onInitialized?: () => void;
-    onItemLoading?: (item?: T) => void;
-    onItemsLoaded?: (items?: T[]) => void;
+    onItemLoading?: (item: T) => void;
+    onItemsLoaded?: (items: T[]) => void;
     onLoadFormError?: (...args) => void;
-    onRefreshItems?: (items?: T[]) => void | PromiseLike<any>;
+    onRefreshItems?: (items: T[]) => void | PromiseLike<any>;
     onResetForm?: () => void;
     webUrl?: string;
 }
